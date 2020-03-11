@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: cv-glmnet-model-r
+# key: cv-glmnet-model-r
+# --
+set.seed(100)
+model_02_glm_cv_lambda <- cv.glmnet(x = as.matrix(train_tbl),
+                                 y = as.matrix(train_tbl %>% select(lead_score_index)),
+                                 type.measure = "mae",
+                                 keep = TRUE,
+                                 alpha = 0.2
+                                 )

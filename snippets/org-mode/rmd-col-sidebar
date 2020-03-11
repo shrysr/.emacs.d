@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: rmd-col-sidebar
+# key: rmdcs
+# --
+Column {.sidebar}
+---------------------------------------------------------------

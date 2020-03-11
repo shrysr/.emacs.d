@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: cv_attach
+# key: cva
+# --
+<#part type="application/pdf" filename="/Users/shrysr/Desktop/Resume_Shreyas_Ragavan.pdf" disposition=attachment description=resume>
+<#/part>

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: ggplotly-tooltip-border-padding
+# key: ggplotly-tooltip-border-padding
+# --
+  ggplotly(g, tooltip = "text") %>%
+    layout(margin = list(b = 200))

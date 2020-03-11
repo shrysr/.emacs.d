@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: job_entry
+# key: jip
+# --
+:PROPERTIES:
+:EXPORT_FILE_NAME: ~/application_letters/jd/jd.org
+:LOCATION: Toronto, Ontario
+:COMPANY:
+:salary:   
+:job_title: Product Engiener
+:job_source: Linked In / Indeed / 
+:website: 
+:telephone:
+:address:  
+:requisition_id: 
+:END:

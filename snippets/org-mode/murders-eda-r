@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: murders-eda-r
+# key: meda
+# --
+#+BEGIN_SRC R :session murders_eda
+$0
+#+END_SRC

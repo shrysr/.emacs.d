@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Rassignment
+# key: ,.
+# --
+<- $0

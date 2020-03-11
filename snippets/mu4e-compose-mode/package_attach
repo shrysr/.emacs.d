@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: attach-package
+# key: attach
+# --
+
+<#part type="application/pdf" filename="~/org_cv/CV_Shreyas_Ragavan.pdf" disposition=attachment description=CV>
+<#/part>
+
+<#part type="application/pdf" filename="~/application_letters/Cover_letter_Shreyas_R.pdf" disposition=attachment description="Cover letter">
+<#/part>
+
+<#part type="application/pdf" filename="~/org_cv/Reference_letters/References_Shreyas.pdf" disposition=attachment description="Reference letters">
+<#/part>

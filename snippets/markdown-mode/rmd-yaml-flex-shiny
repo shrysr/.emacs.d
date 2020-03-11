@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: rmd-yaml-flex-shiny
+# key: rmd-yaml-flex-shiny
+# --
+
+---
+title: Lead Score prediction app
+author: Mortgage Data
+output:
+        flexdashboard::flex_dashboard:
+                css: style.css
+                orientation: rows
+                logo: ratezip-logo.png
+                theme : bootstrap
+                vertical_layout: scroll
+        html_document:
+                df_print: paged
+                toc: true
+                toc_depth: 5
+                toc_float: true
+runtime: shiny
+---

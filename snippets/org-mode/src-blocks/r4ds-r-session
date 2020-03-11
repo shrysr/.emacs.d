@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: r4ds-session
+# key: rds
+# --
+#+BEGIN_SRC R :session r4ds :results output
+$0
+#+END_SRC

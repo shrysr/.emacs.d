@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: text-min-r
+# key: tmrb
+# --
+#+BEGIN_SRC R :session tmrb
+$0
+#+END_SRC

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: shiny-action-button
+# key: shiny-action-button
+# --
+actionButton(inputId = "apply", label = "Apply", icon = icon("play"))

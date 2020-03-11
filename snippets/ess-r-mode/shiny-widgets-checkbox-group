@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: shiny-widgets-checkbox-group-buttons
+# key: shiny-widgets-cbgb
+# --
+shinyWidgets::checkboxGroupButtons(
+  inputId   = "checkbox_category_1",
+  label     = h4("Bike Type"),
+  choices   = unique(processed_data_tbl$category_1),
+  selected  = unique(processed_data_tbl$category_1),
+  checkIcon = list(
+    yes = icon("ok", lib = "glyphicon"),
+    no  = icon("remove", lib = "glyphicon")
+  ))

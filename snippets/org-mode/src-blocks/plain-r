@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: plainR
+# key: <r
+# --
+#+BEGIN_SRC R
+$0
+#+END_SRC

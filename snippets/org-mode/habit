@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: habit
+# key: habit
+# --
+** TODO 
+       SCHEDULED: 
+       :PROPERTIES:
+       :STYLE:    habit
+       :LAST_REPEAT: 
+       :END:

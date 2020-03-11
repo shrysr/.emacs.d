@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: inventory-project-r
+# key: invr
+# --
+#+BEGIN_SRC R :session invproj
+$0
+#+END_SRC

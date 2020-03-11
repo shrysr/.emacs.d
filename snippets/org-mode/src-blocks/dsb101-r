@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: dsb101R
+# key: <dsb1
+# --
+#+BEGIN_SRC R :session dsb1
+$0
+#+END_SRC

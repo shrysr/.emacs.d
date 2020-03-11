@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: islr-org
+# key: islr
+# --
+#+BEGIN_SRC R :session isl
+$0
+#+END_SRC

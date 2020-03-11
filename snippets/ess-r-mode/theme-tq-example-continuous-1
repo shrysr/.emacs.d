@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: theme-tq-example-1-continuous
+# key: theme-tq-example-1-continuous
+# --
+    theme_tq() +
+    expand_limits(y = 0) +
+    scale_y_continuous(labels = scales::dollar_format()) +
+    labs(x = "", y = "")

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: machine learning for hackers
+# key: <mlfh
+# --
+#+BEGIN_SRC R :session mlfh
+$0
+#+END_SRC

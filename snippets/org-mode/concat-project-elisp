@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: concat-project-dir
+# key: concatp
+# --
+(concat (org-entry-get nil "PRJ-DIR" t) "DESCRIPTION")

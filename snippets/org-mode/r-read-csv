@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: read-r-csv
+# key: rd-csv
+# --
+$1 <- read_csv("./00_data/$0")

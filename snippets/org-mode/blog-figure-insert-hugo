@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: blog-figure-insert
+# key: blog
+# --
+{{< figure src="/img/scheduler-algo.png" title="Scheduler Psuedo-Algorithm" >}}

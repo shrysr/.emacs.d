@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: app_stitch
+# key: asg
+# --
+pdfunite Cover_letter_Shreyas_R.pdf ~/org_cv/CV_Shreyas_Ragavan.pdf ~/org_cv/Reference_letters/References_Shreyas.pdf Application_Shreyas_R.pdf 

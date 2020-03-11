@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: advanced-r
+# key: <advr
+# --
+
+#+BEGIN_SRC R :session advr
+$0
+#+END_SRC

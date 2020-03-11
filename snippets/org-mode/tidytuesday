@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: tidytuesday
+# key: <tt
+# --
+#+BEGIN_SRC R :tangle ./00_scripts/p1_climate_spending.R :session tt
+$0
+#+END_SRC

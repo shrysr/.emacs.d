@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: salesdbd
+# key: sld
+# --
+
+#+BEGIN_SRC R :session salesdbd
+$0
+#+END_SRC

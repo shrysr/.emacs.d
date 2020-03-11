@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: r-glimpse-skim
+# key: r-glimpse-skim
+# --
+$1 %>% glimpse()
+$1 %>% skimr()

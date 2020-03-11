@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: easypackages-r
+# key: <easyp
+# --
+#+BEGIN_SRC R :session
+library("easypackages")
+libraries("$0")
+#+END_SRC

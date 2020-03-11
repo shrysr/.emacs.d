@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: shiny-expl
+# key: shi
+# --
+
+#+BEGIN_SRC R :session *R:shiny-exploration*
+$0
+#+END_SRC
+

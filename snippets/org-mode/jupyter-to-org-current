@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: jupyter-to-org-current
+# key: jup-org-current
+# --
+#+CALL: jupyter-to-org-current(path_ipynb="/Users/shreyas/my_projects/dsdj-activity-1/DSDJ_Activity1/Activity1_Notebook", path_md="TESTER007", path_org="TESTER007")

@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: shiny-radio-group-buttons
+# key: shiny-radio-group-buttons
+# --
+shinyWidgets::radioGroupButtons(
+  inputId  = "time_unit",
+  label    = "Time Unit",
+  choices  = c("D" = "day", "W" = "week", "M" = "month", "Q" = "quarter", "Y" = "year"),
+  selected = "month",
+  status   = "primary",
+  justified = TRUE,
+  checkIcon = list(
+    yes = icon("ok", lib = "glyphicon"),
+    no  = NULL
+    )
+)

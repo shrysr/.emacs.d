@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: fn-shiny-daterange
+# key: fn-shiny-daterange
+# --
+dateRangeInput(
+  inputId = "date_range",
+  label   = h4("Date Range"),
+  start   = min(processed_data_tbl$order.date),
+  end     = max(processed_data_tbl$order.date),
+  min     = min(processed_data_tbl$order.date),
+  max     = max(processed_data_tbl$order.date),
+  startview = "month")

@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: shiny-widgets-picker
+# key: shiny-widgets-picker
+# --
+shinyWidgets::pickerInput(
+  inputId  = "picker_category_2",
+  label    = h4("Bike Family"),
+  choices  = unique(processed_data_tbl$category_2),
+  selected = unique(processed_data_tbl$category_2),
+  multiple = TRUE,
+  options  = list(
+    `actions-box` = TRUE,
+    size = 10,
+    `selected-text-format` = "count > 3"
+  )

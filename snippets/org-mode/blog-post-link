@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: blog-post-link
+# key: <pl
+# --
+https://shrysr.github.io/post/$0

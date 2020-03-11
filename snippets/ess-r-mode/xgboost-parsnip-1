@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: xgboost-parsnip
+# key: xgb-p1
+# --
+set.seed(1234)
+
+model_xgboost <- boost_tree(mode = "regression",
+           mtry = 30,
+           learn_rate = 0.25,
+           tree_depth = 7) %>%
+  set_engine(engine = "xgboost") %>%
+  fit(price ~ ., data = train_tbl)

@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: org-pdf-export-options-all
+# key: org-export-header-options
+# --
+
+#+LATEX_CLASS: beamer
+#+BEAMER_INNER_theme: rounded
+#+TITLE: Project Proposal
+#+DATE: \today
+#+AUTHOR: Shreyas Ragavan
+#+EMAIL: shreyas@fastmail.com
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:comment d:(not "LOGBOOK") date:t
+#+OPTIONS: e:t email:t f:t inline:t num:t p:nil pri:nil stat:t
+#+OPTIONS: tags:t tasks:nil tex:t timestamp:nil toc:t todo:nil |:t
+#+CREATOR: Emacs 25.3.1 (Org mode 8.2.10)
+#+DESCRIPTION: Hello this is a description;
+#+EXCLUDE_TAGS: noexport
+#+KEYWORDS: Logistic Regression
+#+LANGUAGE: en
+#+SELECT_TAGS: export

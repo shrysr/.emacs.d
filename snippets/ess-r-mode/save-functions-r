@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: saving-models-files-R
+# key: saving-models-files-R
+# --
+
+# 4.4 Save Functions ----
+
+dump(c("separate_bike_model", "separate_bike_description"),
+     file = "00_scripts/02_process_data.R")

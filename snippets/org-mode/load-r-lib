@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: load-r-lib
+# key: load-r-lib
+# --
+# Loading Libraries
+library("easypackages")
+libraries("tidyverse", "tidyquant", "readxl", "parsnip", "recipes", "rsample", "yardstick", "rpart.plot")

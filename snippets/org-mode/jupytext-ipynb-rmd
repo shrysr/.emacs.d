@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: jupytext-ipynb-rmd
+# key: jupytext
+# --
+#+CALL: jupytext-ipynb-rmd(jup_notebook="./README.ipynb")
