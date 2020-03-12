@@ -1,4 +1,0 @@
-[submodule "scimax"]
-	path = scimax
-	url = git@github.com:jkitchin/scimax.git
-	master = master
