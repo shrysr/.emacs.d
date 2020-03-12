@@ -1233,10 +1233,6 @@ The type of archive is determined by `nb-archive-command'."
 	       (setq already-open nil)))
     (-uniq tags)))
 
-(nb-list-tags)
-
-(nb-search ".org$" "xref")
-
 (use-package ivy-xref
   :ensure t
   :init (if (< emacs-major-version 27)
@@ -1371,9 +1367,6 @@ The link target is optional, and defaults to line 1."
        (nth 0 parts)
        (nth 1 parts)
        (or (nth 2 parts) "1")))))
-
-(list (nb-parse-path "project::fpath")
-      (nb-parse-path "project::fpath::c6"))
 
 (defun nb-follow (path)
   "Open the project at PATH."
@@ -1806,3 +1799,6 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
   ("o" nb-follow-other "open other window")
   ("O" nb-follow-other-frame "Open other frame")
   ("y" nb-follow-sys "Open with system program"))
+
+(setq nb-notebook-directory "~/my_projects/")
+(global-set-key (kbd "M-s n") 'nb-hydra/body)

@@ -286,6 +286,7 @@ I have modified it to my own file names.
   :ensure t)
 #+END_SRC
 
+* TODO Snippets
 * Org-mode related
 
 These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
@@ -2366,7 +2367,7 @@ Here are the tags in this project.
 
 #+filetags: random
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (nb-list-tags)
 #+END_SRC
 
@@ -2459,7 +2460,7 @@ These commands will search for text in files in the current directory.
 
 Here is a function you can use to interactively search files by pattern. For example to find the string xref in org files you could do this:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (nb-search ".org$" "xref")
 #+END_SRC
 
@@ -2640,7 +2641,7 @@ The link target is optional, and defaults to line 1."
 
 Here are a few example paths and how they are parsed.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (list (nb-parse-path "project::fpath")
       (nb-parse-path "project::fpath::c6"))
 #+END_SRC
@@ -3155,7 +3156,6 @@ This is just the link definition.
  :face #'nb-link-face
  :keymap nb-link-map)
 
-
 #+END_SRC
 
 ***** Example links
@@ -3210,6 +3210,13 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
 
 #+RESULTS:
 : nb-hydra/body
+
+*** Customs settings for scimax notebooks
+
+#+BEGIN_SRC emacs-lisp
+(setq nb-notebook-directory "~/my_projects/")
+(global-set-key (kbd "M-s n") 'nb-hydra/body)
+#+END_SRC
 
 * Testing Area
 :PROPERTIES:
