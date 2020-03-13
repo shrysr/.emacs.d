@@ -1894,52 +1894,30 @@ packages being used by scimax-org are :
 
 
 #+BEGIN_SRC emacs-lisp
-      (straight-use-package 'emacsql-sqlite)
-      (straight-use-package 'gitter)
-  ;; (straight-use-package 'org-plus-contrib)
+(straight-use-package 'emacsql-sqlite)
+(straight-use-package 'gitter)
 
-  ;; (use-package scimax-org-radio-checkbox
-    ;;   :init (straight-use-package 'org-plus-contrib)
-    ;;   :straight (scimax-org-radio-checkbox 
-    ;;                  :host github :repo "jkitchin/scimax"))
-
-    ;;     (use-package scimax-org-latex
-    ;;       :straight (scimax-org-latex 
-    ;;                  :host github :repo "jkitchin/scimax"))
-
-    ;;     (use-package scimax-org-images
-    ;;       :straight (scimax-org-images  
-    ;;                  :host github :repo "jkitchin/scimax"))
-
-    ;;     (use-package scimax-org-src-blocks
-    ;;       :straight (scimax-org-src-blocks  
-    ;;                  :host github :repo "jkitchin/scimax")
-    ;;     :init (setq scimax-org-toggle-colored-src-blocks 'nil))
-
-    ;;     (straight-use-package 'fortran)
-    ;;     (straight-use-package 'cc-mode)
-
-        (use-package scimax-org
-          :straight (scimax-org :host github :repo "jkitchin/scimax")
-          :bind
-          :config
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((emacs-lisp . t)
-           (latex . t)
-           (python . t)
-           (shell . t)
-           (matlab . t)
-           (sqlite . t)
-           (ruby . t)
-           (perl . t)
-           (org . t)
-           (dot . t)
-           (plantuml . t)
-           (R . t)
-           (fortran . nil)
-           (C . t)))
-          )
+(use-package scimax-org
+  :straight (scimax-org :host github :repo "jkitchin/scimax")
+  :bind
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (latex . t)
+     (python . t)
+     (shell . t)
+     (matlab . t)
+     (sqlite . t)
+     (ruby . t)
+     (perl . t)
+     (org . t)
+     (dot . t)
+     (plantuml . t)
+     (R . t)
+     (fortran . nil)
+     (C . t)))
+  )
 
 #+END_SRC
 
