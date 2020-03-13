@@ -25,7 +25,10 @@ index:scimax
 - [ ] General org mode optimisations
 - [ ] Remove all the Org ID's. There should be an automated method for this.
 - [ ] Scimax journal or org-journal
-
+- [ ] Setup the hyper key
+- [ ] Properly setup the diminish mode as default for lisp and other
+  modes. This is set for org, possible because of scimax-org.
+ 
 * Init setup
 
 This part of the config has to be tangled to init.el so that straight and use-package can be setup.
@@ -291,32 +294,7 @@ I have modified it to my own file names.
 
 These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
 
-** org-id
-:PROPERTIES:
-:ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
-:END:
 
-Using the org-id for reference to headings ensures that even if the heading changes, the links will still work.
-
-In addition, I would like an org id to be created every time the capture is used. This facilitates using packages like org-brain which rely extensively on org-id's.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'org-id)
-(setq org-id-link-to-org-use-id t)
-(org-link-set-parameters "id" :store #'org-id-store-link)
-(org-link-set-parameters "nb" :store nil)
-;; Update ID file .org-id-locations on startup
-;; This adds too much time to startup
-;; (org-id-update-id-locations)
-
-(setq org-id-method (quote uuidgen))
-(setq org-id-track-globally t)
-(setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
-(add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
-#+end_src
-
-#+RESULTS:
-| org-id-get-create |
 ** Installing org and org plus contrib via straight
 :PROPERTIES:
 :ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
@@ -1245,14 +1223,17 @@ This is an indispensable tool. The additional options of showing the timestamp a
 
 #+RESULTS:
 : t
-** yasnippet
+** yasnippet and ivy-yasnippet
 :PROPERTIES:
 :ID:       2BEDC957-9D0A-4BEC-AE97-CCD186A98724
 :END:
 
+- [ ] setup the shortcut 'H-,' as desinged in scimax default for ivy-yasnippet
+
 #+BEGIN_SRC emacs-lisp
-(use-package yasnippet)
-(global-set-key (kbd "M-s i") 'ivy-yasnippet)
+  (use-package yasnippet)
+  (use-package ivy-yasnippet
+      :bind ("M-s i" . ivy-yasnippet))
 #+END_SRC
 ** swiper or grep
 :PROPERTIES:
@@ -1728,7 +1709,10 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 
 #+RESULTS:
 
-** All the bars and startup messages 
+** All the bars and startup messages
+:PROPERTIES:
+:ID:       38F9FE46-13E7-4281-8DC0-7C9F9AAB673C
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (menu-bar-mode -1)
@@ -1739,6 +1723,9 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+END_SRC
 
 ** Visual Fill Column at 79
+:PROPERTIES:
+:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package visual-fill-column
@@ -1748,6 +1735,9 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+END_SRC
 
 ** Auto-fill text mode
+:PROPERTIES:
+:ID:       751B3E4C-1BBC-419D-BAD3-8F4A3880FB6D
+:END:
 - Note taken on [2020-03-12 Thu 08:46] \\
   I need to check whether this interferes with mu4e and general org mode usage.
 
@@ -1818,6 +1808,25 @@ These packages and customisations are the ones I enjoy using from Scimax.
 
   (use-package avy)
 
+(use-package pydoc)
+
+(use-package pyvenv
+:config
+(require 'pyvenv))
+
+(use-package rainbow-mode)
+
+(use-package elpy
+  :config
+  (elpy-enable))
+
+(use-package esup)
+
+;; Provides functions for working with files
+(use-package f)
+
+
+
 #+END_SRC
 
 #+RESULTS:
@@ -1854,30 +1863,16 @@ These packages and customisations are the ones I enjoy using from Scimax.
 ;; setting up helm-bibtex
 (setq helm-bibtex-bibliography "~/my_org/references/references.bib"
       helm-bibtex-library-path "~/my_org/org/references/pdfs"
-      helm-bibtex-notes-path "~/my_org/references/research_notes.org"))
-#+END_SRC
+      helm-bibtex-notes-path "~/my_org/references/research_notes.org")
 
-#+RESULTS:
-: t
-
-*** TODO scimax-ipython
-:PROPERTIES:
-:ID:       D134F9A9-5391-480D-8124-31C7B8C60C34
-:header-args: :tangle no
-:END:
-This is a requirement of scimax-org. Apparently, it also seems to apply the leuven theme for some reason. It also requires functions in scimax-org-babel-python.el
-
-#+BEGIN_SRC emacs-lisp 
-(use-package scimax-org-babel-python
-      :straight (scimax-org-babel-python :host github :repo "jkitchin/scimax")
-      :after org )
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp 
-(use-package scimax-org-babel-ipython-upstream
-      :straight (scimax-org-babel-ipython-upstream :host github :repo "jkitchin/scimax")
-      :after org )
-
+(setq bibtex-autokey-year-length 4
+	bibtex-autokey-name-year-separator "-"
+	bibtex-autokey-year-title-separator "-"
+	bibtex-autokey-titleword-separator "-"
+	bibtex-autokey-titlewords 2
+	bibtex-autokey-titlewords-stretch 1
+	bibtex-autokey-titleword-length 5
+	org-ref-bibtex-hydra-key-binding (kbd "H-b")))
 #+END_SRC
 
 #+RESULTS:
@@ -1888,27 +1883,77 @@ This is a requirement of scimax-org. Apparently, it also seems to apply the leuv
 :ID:       055A34FB-F13E-4521-9BAF-C4C785F20F5F
 :END:
 
+This requires the scimax-ob-ipython-upstream package, as well as a bunch of
+other packages. This has to be evaluated and pruned as required. List of
+packages being used by scimax-org are :
+
+1. [ ] scimax-org-radio-checkbox
+2. [ ] scimax-org-latex : for latex based overlays in org documents
+3. [X] scimax-ob-ipython-upstream : the enhancements and monkeypatches over
+   the upstream ob-ipython package
+
+
 #+BEGIN_SRC emacs-lisp
-    (use-package scimax-org
-      :straight (scimax-org :host github :repo "jkitchin/scimax")
-      :bind
-      ("s--" . org-subscript-region-or-point)
-      ("s-=" . org-superscript-region-or-point)
-      ("s-i" . org-italics-region-or-point)
-      ("s-b" . org-bold-region-or-point)
-      ("s-v" . org-verbatim-region-or-point)
-      ("s-c" . org-code-region-or-point)
-      ("s-u" . org-underline-region-or-point)
-      ("s-+" . org-strikethrough-region-or-point)
-      ("s-4" . org-latex-math-region-or-point)
-      ("s-e" . ivy-insert-org-entity)
-      :config
-      (require 'scimax-org))
+      (straight-use-package 'emacsql-sqlite)
+      (straight-use-package 'gitter)
+  ;; (straight-use-package 'org-plus-contrib)
+
+  ;; (use-package scimax-org-radio-checkbox
+    ;;   :init (straight-use-package 'org-plus-contrib)
+    ;;   :straight (scimax-org-radio-checkbox 
+    ;;                  :host github :repo "jkitchin/scimax"))
+
+    ;;     (use-package scimax-org-latex
+    ;;       :straight (scimax-org-latex 
+    ;;                  :host github :repo "jkitchin/scimax"))
+
+    ;;     (use-package scimax-org-images
+    ;;       :straight (scimax-org-images  
+    ;;                  :host github :repo "jkitchin/scimax"))
+
+    ;;     (use-package scimax-org-src-blocks
+    ;;       :straight (scimax-org-src-blocks  
+    ;;                  :host github :repo "jkitchin/scimax")
+    ;;     :init (setq scimax-org-toggle-colored-src-blocks 'nil))
+
+    ;;     (straight-use-package 'fortran)
+    ;;     (straight-use-package 'cc-mode)
+
+        (use-package scimax-org
+          :straight (scimax-org :host github :repo "jkitchin/scimax")
+          :bind
+          :config
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((emacs-lisp . t)
+           (latex . t)
+           (python . t)
+           (shell . t)
+           (matlab . t)
+           (sqlite . t)
+           (ruby . t)
+           (perl . t)
+           (org . t)
+           (dot . t)
+           (plantuml . t)
+           (R . t)
+           (fortran . nil)
+           (C . t)))
+          )
 
 #+END_SRC
 
 #+RESULTS:
 : ivy-insert-org-entity
+*** scimax literate programming
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package scimax-literate-programming
+    :straight (scimax-literate-programming :host github :repo "jkitchin/scimax"))
+#+END_SRC
+
+#+RESULTS:
+
 *** scimax-hydra
 :PROPERTIES:
 :ID:       D3004CAB-BFAF-48B8-8FBA-7CB75FC33007
@@ -1962,15 +2007,69 @@ This is a requirement of scimax-org. Apparently, it also seems to apply the leuv
 
 #+RESULTS:
 
-*** scimax-ob
+*** TODO scimax-ipython
+:PROPERTIES:
+:ID:       D134F9A9-5391-480D-8124-31C7B8C60C34
+:END:
 
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package scimax-ob
-    :straight (scimax-ob :host github :repo "jkitchin/scimax"))
+- [ ] Bind the org-babel autocomplete to a convenient key. The function is
+  =scimax-ob-ipython-complete-ivy=. Possibly =s-=.
+- [ ] fix the ob-ipython straight build to symlink the client.py file as
+  well. Wonder if this is going to be an issue for others. 
+
+Summary of scimax's ipython customisations:
+1. John is currently using the upstream ob-ipython.
+2. John's earlier ob-ipython fork is likely to be depreciated in the future. 
+3. John has integrated the upstream ob-ipython with several patches of his
+   own. These are contained in two pacakges: scimax-ob.el and
+   scimax-org-babel-ipython-upstream. The latter monkeypatches over the
+   upstream ob-ipython fork.
+4. In short, john's old ob-ipython fork is no longer required for my purposes.
+
+#+BEGIN_SRC emacs-lisp
+;;    (straight-use-package 'org-plus-contrib)
+    (use-package ob-ipython
+      :straight (ob-ipython :host github :repo "gregsexton/ob-ipython"))
+
+  ;;; * Applying John's customisations and monkeypatches 
+  ;;; These are related to ipython kernel management
+    (use-package scimax-org-babel-ipython-upstream
+          :straight (scimax-org-babel-ipython-upstream :host github :repo "jkitchin/scimax"))
+
+  ;;; * These  are related mostly to org-babel customisations
+    (use-package scimax-ob
+      :straight (scimax-ob :host github :repo "jkitchin/scimax"))
+
+          ;;; * For reference : to use John's old ob-ipython fork 
+  ;; (use-package ob-ipython
+          ;;   :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
+          ;;   :config
+          ;;   (require 'ob-ipython))
+
+      ;;; * The customisations pertaining to the old ob-ipython fork are: 
+      ;; (use-package scimax-org-babel-ipython
+      ;;       :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
+
+(setq python-shell-interpreter "python3")
+(setq org-babel-python-command "python3")
+
+(setq flycheck-python-pycompile-executable "python3")
+ #+end_SRC
+
+ #+RESULTS:
+ : python3
+
+*** scimax-python enhancements
+This requires the beacon package and is a requirement for scimax-org as well.
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'beacon)
+(use-package scimax-org-babel-python
+      :straight (scimax-org-babel-python :host github :repo "jkitchin/scimax"))
+
 #+END_SRC
 
 #+RESULTS:
-: t
 
 ** Scimax Notebook
 :PROPERTIES:
@@ -2002,6 +2101,9 @@ This is a requirement of scimax-org. Apparently, it also seems to apply the leuv
 #+END_SRC
 
 *** The notebook code
+:PROPERTIES:
+:ID:       51CA5905-9994-4DE8-A90C-2E1E70172A76
+:END:
 - Note taken on [2020-03-12 Thu 09:36] \\
   I'm not sure if the preamble and lexical binding are required any more. It is
   after all included at the beginning of the init and this is not a separate
@@ -2046,6 +2148,9 @@ This is a requirement of scimax-org. Apparently, it also seems to apply the leuv
 #+END_SRC
 
 **** Variable definitions
+:PROPERTIES:
+:ID:       9CB70DCC-04A0-4484-8B23-3BA76B732879
+:END:
 
 #+BEGIN_SRC emacs-lisp  :tangle yes :results silent
 (defcustom nb-notebook-directory
@@ -2105,6 +2210,9 @@ to the top of the directory with ls."
 **** Notebook functions
 
 ***** Make a new notebook
+:PROPERTIES:
+:ID:       93CAE051-4EEF-4E8E-B40B-A69D88DAF324
+:END:
 
 We store all projects by default in nb-notebook-directory. You can use nested directories in this to make hierarchies of projects, e.g. if you have several research projects you might use research/project-one and research/project-two as the directory names. It is also ok to have even deeper nesting eg. letters/undergraduates/student-1 or administrative/nonsense/committees/committee-on-committees.
 
@@ -2135,6 +2243,9 @@ We store all projects by default in nb-notebook-directory. You can use nested di
 #+END_SRC
 
 ***** Open an existing project
+:PROPERTIES:
+:ID:       CA616277-5C46-4BDA-BB36-04639EBCCCC5
+:END:
 
 This just uses a custom switch project action for opening an existing project.
 
@@ -2151,6 +2262,9 @@ This is a thin wrapper on `projectile-switch-project' that opens the master file
 #+END_SRC
 
 ***** Make a notebook by cloning a git repo
+:PROPERTIES:
+:ID:       9C18D282-62AF-4329-8062-90801B54AF1D
+:END:
 
 This is a convenience function that should allow you to make a notebook from a git repo url.
 
@@ -2179,6 +2293,9 @@ default name based on the url is suggested."
 
 
 ***** Clone an existing project
+:PROPERTIES:
+:ID:       708C4EA1-9EFD-48D1-B8E8-855CE69CE053
+:END:
 
 This is helpful when you want to keep a copy of the repo, for example. It is not a feature I use a lot though.
 
@@ -2204,6 +2321,9 @@ This is helpful when you want to keep a copy of the repo, for example. It is not
 #+END_SRC
 
 **** Notebook agenda
+:PROPERTIES:
+:ID:       1A8350CF-266C-4BDF-A366-A5E9AD75F222
+:END:
 
 I usually want to do project management in a notebook, e.g. keep track of TODOs, what to do next etc. I don't always put project org-files in my regular agenda files for performance reasons. Here we generate an agenda for that using just the org-files in the current directory.
 
@@ -2255,6 +2375,9 @@ directory. You may want to make this a directory local variable."
 #+END_SRC
 
 **** Notebook archive files
+:PROPERTIES:
+:ID:       541FA6B1-591A-442D-8B19-3CDA9C525D96
+:END:
 
 The idea here is it is sometimes useful to create an archive file (e.g. a zip file) of your project, e.g. to upload to zenodo/figshare, or to share with a collaborator.
 
@@ -2326,6 +2449,9 @@ The type of archive is determined by `nb-archive-command'."
 
 
 **** TODO List the tags in a notebook
+:PROPERTIES:
+:ID:       927FE3C7-9430-462C-988E-495EB9218754
+:END:
 
 The notebook is just a collection of org-files, so it should be possible to use the agenda commands to search for things in it using tags and properties. That means it would be helpful to get a list of tags in the notebook, e.g. to help construct the queries, or to make sure you use them consistently. Here we loop through all the org-files and collect the tags in a list. This is lightly tested, and in a large project might be slow.
 
@@ -2457,6 +2583,9 @@ These commands will search for text in files in the current directory.
 
 
 ***** Limiting scope to some kinds of files
+:PROPERTIES:
+:ID:       60CC553B-8E8C-4763-BD0A-EE743F48491F
+:END:
 
 Here is a function you can use to interactively search files by pattern. For example to find the string xref in org files you could do this:
 
@@ -2528,6 +2657,9 @@ Here is a function you can use to interactively search files by pattern. For exa
 : nb-search-all
 
 **** Jump to an org file in the notebook / table of contents
+:PROPERTIES:
+:ID:       D1BD9E4A-B16D-492E-BA41-DDCEC099C6C8
+:END:
 
 Issue [[https://github.com/jkitchin/scimax/issues/332][332]] requested a way to make something like a table of contents for the org files in a notebook. This function builds a list of candidates that show the title, date and filename for selection.
 
@@ -2597,6 +2729,9 @@ Issue [[https://github.com/jkitchin/scimax/issues/332][332]] requested a way to 
 
 
 **** Help
+:PROPERTIES:
+:ID:       25BA9C42-C628-4BDF-A568-F3345938B640
+:END:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defun nb-help ()
@@ -2606,6 +2741,9 @@ Issue [[https://github.com/jkitchin/scimax/issues/332][332]] requested a way to 
 #+END_SRC
 
 *** Notebook/project links
+:PROPERTIES:
+:ID:       69002193-A5B4-425B-9B9D-62F7EBAB95B8
+:END:
 
 I often want to make links between projects. For example, I may have notes in a proposal I want to reference, or I may want a link to work one of my students has done. Regular links don't work well for this. You cannot use absolute paths, because your project directory may be in another path than a collaborators. Absolute paths also break if you move the directory. Even relative paths don't work reliably because you may store the two projects in different relative locations. id links have potential to work, but I find them slow especially when you have never opened the org-file with that id in it; then org-mode may not be able to find it.
 
@@ -2652,6 +2790,9 @@ Here are a few example paths and how they are parsed.
 
 
 **** Follow a link
+:PROPERTIES:
+:ID:       2691DB45-A415-442C-87CE-19C9D507E872
+:END:
 
 Following a link means opening the file it points to.
 
@@ -2819,6 +2960,9 @@ We may want to open this link with a system program, e.g. if it is an ipynb or s
 #+END_SRC
 
 **** Store a project link
+:PROPERTIES:
+:ID:       A199F5C6-456E-4C79-928F-6800D563ABC6
+:END:
 
 This adds a capability for using C-c l to store a link in org-mode. It creates a link that should go the position of the cursor at the time the link was stored.
 
@@ -2845,6 +2989,9 @@ This adds a capability for using C-c l to store a link in org-mode. It creates a
 #+END_SRC
 
 **** Link completion
+:PROPERTIES:
+:ID:       E58F341D-C42D-48E0-9A4F-52311B1FFAFC
+:END:
 
 This makes it easy to type C-c C-l then type nb <enter> and then get to choose a project and file with completion to insert a link.
 
@@ -2869,6 +3016,9 @@ This makes it easy to type C-c C-l then type nb <enter> and then get to choose a
 #+END_SRC
 
 **** Link face
+:PROPERTIES:
+:ID:       B0FE7314-280B-4AE3-96C4-6BAD41C205E4
+:END:
 
 We use a face to show if a link is valid. Valid means there is one match, red means there is no match, and orange means there is more than one project that matches. That can happen if you have multiple clones of a git repo for example.
 
@@ -2909,6 +3059,9 @@ If we can't find a project or file, it will be red."
 #+END_SRC
 
 **** Tooltips for the link
+:PROPERTIES:
+:ID:       ABAB4E52-161A-455B-92FD-9E6EE62C3016
+:END:
 
 The links have a tooltip that tells you the path that will be opened, or helpful information about issues with the link (not found, or multiple repos).
 
@@ -2952,6 +3105,9 @@ The links have a tooltip that tells you the path that will be opened, or helpful
 #+END_SRC
 
 **** Activating the link
+:PROPERTIES:
+:ID:       04FF49A9-2BB5-4A8C-92A9-F8F0EB752FE8
+:END:
 
 I am a big fan of image overlays on links that are images. We make that happen for notebook links here.
 
@@ -3012,6 +3168,9 @@ BRACKETP is non-nil for bracketed links."
 : nb-activate-link
 
 **** A keymap
+:PROPERTIES:
+:ID:       1FB5C9EE-D345-4FBA-893D-6368570042A9
+:END:
 
 I often want to open a link in the Finder/Explorer or bash. We make a keymap to make that easy here.
 
@@ -3142,6 +3301,9 @@ Here is our keymap.
 
 
 **** Defining the link
+:PROPERTIES:
+:ID:       DB35E05E-FCAF-49B6-9B09-73C42A4FB54F
+:END:
 
 This is just the link definition.
 
@@ -3181,6 +3343,9 @@ nb:eeg-pitt::./obipy-resources/6d9672694ff9a17f61f22a2b1be01575-10220Ctf.png
 prj:students::README.org
 
 *** A notebook hydra
+:PROPERTIES:
+:ID:       6B26E4FC-C32C-4459-8FD5-9234A52C913A
+:END:
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defhydra nb-hydra (:hint nil :color blue)
@@ -3212,12 +3377,41 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
 : nb-hydra/body
 
 *** Customs settings for scimax notebooks
+:PROPERTIES:
+:ID:       D3A39991-54F0-4809-9036-A5D8E55B3BB7
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq nb-notebook-directory "~/my_projects/")
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
 #+END_SRC
 
+* org-id
+:PROPERTIES:
+:ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
+:END:
+
+Using the org-id for reference to headings ensures that even if the heading changes, the links will still work.
+
+In addition, I would like an org id to be created every time the capture is used. This facilitates using packages like org-brain which rely extensively on org-id's.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; (require 'org-id)
+  ;; (setq org-id-link-to-org-use-id t)
+  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; ;; Update ID file .org-id-locations on startup
+  ;; ;; This adds too much time to startup
+  ;; ;; (org-id-update-id-locations)
+
+  ;; (setq org-id-method (quote uuidgen))
+  ;; (setq org-id-track-globally t)
+  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+#+end_src
+
+#+RESULTS:
+| org-id-get-create |
 * Testing Area
 :PROPERTIES:
 :header-args: :tangle no
@@ -3453,8 +3647,37 @@ Source: https://github.com/m-parashar/emax64/issues/5
 
 These are packages and snippets that disabled from tangling and execution. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
-** Org-brain add ons
-*** Org-brain navigation helpers
+** Polybrain
+*** Forked org-brain
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-brain
+    :straight (org-brain :type git :host github :repo "dustinlacewell/org-brain")
+    :after org
+    :ensure t
+    :bind  ("M-s v" . org-brain-visualize)
+    :bind (:map org-brain-visualize-mode-map
+              ;; Navigation
+              ("C-p" . my/org-brain-visualize-parent)
+              ("C-n" . my/org-brain-visualize-child))
+    :init
+    (setq org-brain-path "~/my_org/brain/")
+    ;; ;; For Evil users
+    ;; (with-eval-after-load 'evil
+   ;;   (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    :config
+    (setq org-id-track-globally t)
+    (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+    (push '("b" "Brain" plain (function org-brain-goto-end)
+            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:" :empty-lines 1)
+          org-capture-templates)
+    (setq org-brain-visualize-default-choices 'all)
+    (setq org-brain-title-max-length 12)
+    (add-hook 'org-brain-refile 'org-id-get-create))
+;; (global-set-key (kbd "M-s v") #'org-brain-visualize)
+#+END_SRC
+
+*** polybrain navigation helpers
 :PROPERTIES:
 :ID:       097E6DB9-79E7-4AFB-9533-E625603B60F4
 :END:
@@ -3479,7 +3702,7 @@ These are packages and snippets that disabled from tangling and execution. Some 
     (org-brain-visualize child))))
 
 #+END_SRC
-*** Polybrain
+*** polybrain package
 :PROPERTIES:
 :ID:       DC735D2F-8395-4C5E-BB66-5918110B02BD
 :END:
@@ -3492,10 +3715,11 @@ These are packages and snippets that disabled from tangling and execution. Some 
                 ("C-x C-s" . polybrain-save)
                 ("<M-tab>" . polybrain-switch))
 :config
+(use-package polymode)
 (require 'polybrain))
 
 #+END_SRC
-*** TEST Org-brain export
+** TEST Org-brain export
 :PROPERTIES:
 :ID:       37472632-AC12-4DD9-998C-A25D5B444695
 :END:

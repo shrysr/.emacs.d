@@ -1,15 +1,15 @@
-;;; -*- lexical-binding: t; -*-
+   ;;; -*- lexical-binding: t; -*-
 
-(let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
-(bootstrap-version 3))
-(unless (file-exists-p bootstrap-file)
-(with-current-buffer
-(url-retrieve-synchronously
-"https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-'silent 'inhibit-cookies)
-(goto-char (point-max))
-(eval-print-last-sexp)))
-(load bootstrap-file nil 'nomessage))
+ (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
+ (bootstrap-version 3))
+ (unless (file-exists-p bootstrap-file)
+ (with-current-buffer
+ (url-retrieve-synchronously
+ "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+ 'silent 'inhibit-cookies)
+ (goto-char (point-max))
+ (eval-print-last-sexp)))
+ (load bootstrap-file nil 'nomessage))
 
 (setq straight-use-package-by-default t)
 (straight-use-package 'use-package)
@@ -144,8 +144,8 @@ Inserted by installing 'org-mode' or when a release is made."
 :config
 (add-hook 'org-mode-hook 'org-bullets-mode))
 
-(with-eval-after-load 'org
-(add-hook 'org-mode-hook #'org-indent-mode))
+   (with-eval-after-load 'org
+   (add-hook 'org-mode-hook #'org-indent-mode))
 
 (use-package ox-pandoc
   :ensure t
@@ -344,7 +344,7 @@ Inserted by installing 'org-mode' or when a release is made."
   ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
   (push (org-projectile-project-todo-entry) org-capture-templates))
 
-(use-package org-brain
+  (use-package org-brain
     :after org
     :ensure t
     :bind  ("M-s v" . org-brain-visualize)
@@ -468,20 +468,20 @@ Inserted by installing 'org-mode' or when a release is made."
   :after treemacs magit
   :ensure t)
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((clojure . t)
-   (scheme . t)
-   (sqlite . t)
-   (R . t)
-   (lisp . t)
-   (sql .  t)
-   (shell . t)
-   ;; (ipython . t)
-;;   (jupyter . t)
-;;   (ein . t)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((clojure . t)
+     (scheme . t)
+     (sqlite . t)
+     (R . t)
+     (lisp . t)
+     (sql .  t)
+     (shell . t)
+     ;; (ipython . t)
+  ;;   (jupyter . t)
+  ;;   (ein . t)
+     )
    )
- )
 
 (with-eval-after-load 'org
 (setq org-babel-default-header-args
@@ -549,8 +549,9 @@ Inserted by installing 'org-mode' or when a release is made."
 ;; changes being made to your file live!
 )
 
-(use-package yasnippet)
-(global-set-key (kbd "M-s i") 'ivy-yasnippet)
+  (use-package yasnippet)
+  (use-package ivy-yasnippet
+      :bind ("M-s i" . ivy-yasnippet))
 
 (use-package swiper
   :bind
@@ -795,12 +796,12 @@ Inserted by installing 'org-mode' or when a release is made."
 ;; Attempt to solve the problem of forwarding emails especailly with attachments.
 ;(advice-add '(org-msg-mode) :after #'mu4e-compose-forward))
 
-(use-package org-beautify-theme
-:after (org)
-:config
-(setq org-fontify-whole-heading-line t)
-(setq org-fontify-quote-and-verse-blocks t)
-(setq org-hide-emphasis-markers t))
+ (use-package org-beautify-theme
+ :after (org)
+ :config
+ (setq org-fontify-whole-heading-line t)
+ (setq org-fontify-quote-and-verse-blocks t)
+ (setq org-hide-emphasis-markers t))
 
 ;; For Linux
 (if (system-type-is-gnu)
@@ -863,43 +864,60 @@ Inserted by installing 'org-mode' or when a release is made."
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
-;; (defconst scimax-dir (file-name-directory (or load-file-name (buffer-file-name)))
+  ;; (defconst scimax-dir (file-name-directory (or load-file-name (buffer-file-name)))
 
-(defconst scimax-dir "./straight/repos/scimax")
+  (defconst scimax-dir "./straight/repos/scimax")
 
-(use-package helm-bibtex)
+  (use-package helm-bibtex)
 
-(use-package helm-projectile)
+  (use-package helm-projectile)
 
-;; (use-package help-fns+
-;;     :straight (help-fns+ :host github :repo "jkitchin/scimax"))
+  ;; (use-package help-fns+
+  ;;     :straight (help-fns+ :host github :repo "jkitchin/scimax"))
 
 
-;; Functions for working with hash tables
-(use-package ht)
+  ;; Functions for working with hash tables
+  (use-package ht)
 
-(use-package htmlize)
+  (use-package htmlize)
 
-(use-package hy-mode)
+  (use-package hy-mode)
 
-(use-package hydra
-  :init
-  (setq hydra-is-helpful t)
+  (use-package hydra
+    :init
+    (setq hydra-is-helpful t)
 
+    :config
+    (require 'hydra-ox))
+
+  (use-package ivy-hydra)
+
+  (use-package jedi)
+
+  (use-package jedi-direx)
+
+  (use-package diminish)
+
+  (use-package avy)
+
+(use-package pydoc)
+
+(use-package pyvenv
+:config
+(require 'pyvenv))
+
+(use-package rainbow-mode)
+
+(use-package elpy
   :config
-  (require 'hydra-ox))
+  (elpy-enable))
 
-(use-package ivy-hydra)
+(use-package esup)
 
-(use-package jedi)
+;; Provides functions for working with files
+(use-package f)
 
-(use-package jedi-direx)
-
-(use-package diminish)
-
-(use-package avy)
-
-(use-package org-ref
+  (use-package org-ref
     :straight (org-ref :host github :repo "jkitchin/org-ref")
 :config
 (require 'doi-utils)
@@ -923,40 +941,112 @@ Inserted by installing 'org-mode' or when a release is made."
 ;; setting up helm-bibtex
 (setq helm-bibtex-bibliography "~/my_org/references/references.bib"
       helm-bibtex-library-path "~/my_org/org/references/pdfs"
-      helm-bibtex-notes-path "~/my_org/references/research_notes.org"))
+      helm-bibtex-notes-path "~/my_org/references/research_notes.org")
 
-(use-package scimax-org
-  :straight (scimax-org :host github :repo "jkitchin/scimax")
-  :bind
-  ("s--" . org-subscript-region-or-point)
-  ("s-=" . org-superscript-region-or-point)
-  ("s-i" . org-italics-region-or-point)
-  ("s-b" . org-bold-region-or-point)
-  ("s-v" . org-verbatim-region-or-point)
-  ("s-c" . org-code-region-or-point)
-  ("s-u" . org-underline-region-or-point)
-  ("s-+" . org-strikethrough-region-or-point)
-  ("s-4" . org-latex-math-region-or-point)
-  ("s-e" . ivy-insert-org-entity)
-  :config
-  (require 'scimax-org))
+(setq bibtex-autokey-year-length 4
+	bibtex-autokey-name-year-separator "-"
+	bibtex-autokey-year-title-separator "-"
+	bibtex-autokey-titleword-separator "-"
+	bibtex-autokey-titlewords 2
+	bibtex-autokey-titlewords-stretch 1
+	bibtex-autokey-titleword-length 5
+	org-ref-bibtex-hydra-key-binding (kbd "H-b")))
 
-(use-package scimax-hydra
-  :straight (scimax-hydra :host github :repo "jkitchin/scimax")
-  :bind ("<f12>" . scimax/body))
+      (straight-use-package 'emacsql-sqlite)
+      (straight-use-package 'gitter)
+  ;; (straight-use-package 'org-plus-contrib)
 
-(use-package scimax-journal
-  :after scimax-org
-  :init (setq scimax-journal-root-dir "~/my_org/journal/")
-  :straight (scimax-journal :host github :repo "jkitchin/scimax"))
+  ;; (use-package scimax-org-radio-checkbox
+    ;;   :init (straight-use-package 'org-plus-contrib)
+    ;;   :straight (scimax-org-radio-checkbox 
+    ;;                  :host github :repo "jkitchin/scimax"))
 
-(use-package scimax-yas
-  :after scimax-org
-  :straight (scimax-yas :host github :repo "jkitchin/scimax"))
+    ;;     (use-package scimax-org-latex
+    ;;       :straight (scimax-org-latex 
+    ;;                  :host github :repo "jkitchin/scimax"))
 
-(use-package scimax-ivy
-  :after scimax-org
-  :straight (scimax-ivy :host github :repo "jkitchin/scimax"))
+    ;;     (use-package scimax-org-images
+    ;;       :straight (scimax-org-images  
+    ;;                  :host github :repo "jkitchin/scimax"))
+
+    ;;     (use-package scimax-org-src-blocks
+    ;;       :straight (scimax-org-src-blocks  
+    ;;                  :host github :repo "jkitchin/scimax")
+    ;;     :init (setq scimax-org-toggle-colored-src-blocks 'nil))
+
+    ;;     (straight-use-package 'fortran)
+    ;;     (straight-use-package 'cc-mode)
+
+        (use-package scimax-org
+          :straight (scimax-org :host github :repo "jkitchin/scimax")
+          :bind
+          :config
+        (org-babel-do-load-languages
+         'org-babel-load-languages
+         '((emacs-lisp . t)
+           (latex . t)
+           (python . t)
+           (shell . t)
+           (matlab . t)
+           (sqlite . t)
+           (ruby . t)
+           (perl . t)
+           (org . t)
+           (dot . t)
+           (plantuml . t)
+           (R . t)
+           (fortran . nil)
+           (C . t)))
+          )
+
+  (use-package scimax-hydra
+    :straight (scimax-hydra :host github :repo "jkitchin/scimax")
+    :bind ("<f12>" . scimax/body))
+
+    (use-package scimax-journal
+      :after scimax-org
+      :init (setq scimax-journal-root-dir "~/my_org/journal/")
+      :straight (scimax-journal :host github :repo "jkitchin/scimax"))
+
+  (use-package scimax-yas
+    :after scimax-org
+    :straight (scimax-yas :host github :repo "jkitchin/scimax"))
+
+  (use-package scimax-ivy
+    :after scimax-org
+    :straight (scimax-ivy :host github :repo "jkitchin/scimax"))
+
+;;    (straight-use-package 'org-plus-contrib)
+    (use-package ob-ipython
+      :straight (ob-ipython :host github :repo "gregsexton/ob-ipython"))
+
+  ;;; * Applying John's customisations and monkeypatches 
+  ;;; These are related to ipython kernel management
+    (use-package scimax-org-babel-ipython-upstream
+          :straight (scimax-org-babel-ipython-upstream :host github :repo "jkitchin/scimax"))
+
+  ;;; * These  are related mostly to org-babel customisations
+    (use-package scimax-ob
+      :straight (scimax-ob :host github :repo "jkitchin/scimax"))
+
+          ;;; * For reference : to use John's old ob-ipython fork 
+  ;; (use-package ob-ipython
+          ;;   :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
+          ;;   :config
+          ;;   (require 'ob-ipython))
+
+      ;;; * The customisations pertaining to the old ob-ipython fork are: 
+      ;; (use-package scimax-org-babel-ipython
+      ;;       :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
+
+(setq python-shell-interpreter "python3")
+(setq org-babel-python-command "python3")
+
+(setq flycheck-python-pycompile-executable "python3")
+
+(straight-use-package 'beacon)
+(use-package scimax-org-babel-python
+      :straight (scimax-org-babel-python :host github :repo "jkitchin/scimax"))
 
 ;;; scimax-notebook.el ---    -*- lexical-binding: t -*-
 
@@ -1802,3 +1892,16 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
 
 (setq nb-notebook-directory "~/my_projects/")
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
+
+  ;; (require 'org-id)
+  ;; (setq org-id-link-to-org-use-id t)
+  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; ;; Update ID file .org-id-locations on startup
+  ;; ;; This adds too much time to startup
+  ;; ;; (org-id-update-id-locations)
+
+  ;; (setq org-id-method (quote uuidgen))
+  ;; (setq org-id-track-globally t)
+  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
