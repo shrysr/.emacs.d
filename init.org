@@ -2,30 +2,36 @@
 #+TITLE: shrysr's Dotemacs
 
 * Introduction
-I've been using my own configuration over that of Scimax for the past many years. My first step into Emacs was primarily the desire to use org-mode.
 
-** Inspiration
+I've been using my own configuration over that of Scimax for the past many
+years. This is a reboot to reverse the bias, and in the process try to
+contribute to the reliability and modularity of Scimax.
+
+** TODO Inspirations
 
 - [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
--
+- Many others to be added soon.
 
 * Tasks
+This is just a general checklist and is by no means comprehensive.
 
-index:scimax
+[[index: * scimax][Scimax Headings]]
 
-- [ ] nb-new
-- [ ] org speed commands
-- [ ] New headline or list entry on RET
+- [X] nb-new
+- [X] org speed commands
+- [X] New headline or list entry on RET
 - [ ] Spellcheck
 - [ ] flycheck
-- [ ] PDF tools
-- [ ] scimax hydras
-- [ ] org-ref : delayed loading
+- [X] PDF tools
+- [X] scimax hydras
+- [X] org-ref
+- [ ] Delayed loading for org-ref ? Irrelevant with straight.el ? 
 - [ ] hotspots
-- [ ] General org mode optimisations
-- [ ] Remove all the Org ID's. There should be an automated method for this.
-- [ ] Scimax journal or org-journal
-- [ ] Setup the hyper key
+- [X] General org mode optimisations
+- [ ] Scimax ipython functionality replication with necessary modifications for using straight.el
+- [ ] Remove all the Org ID's to enable regeneration. There should be an automated method for this.
+- [X] Scimax journal or org-journal
+- [X] Setup the hyper key
 - [ ] Properly setup the diminish mode as default for lisp and other
   modes. This is set for org, possible because of scimax-org.
  
@@ -1337,7 +1343,16 @@ This configuration is picked up from scimax.
     (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
 #+END_SRC
 
-* Email
+** Super and Hyper key setting
+
+#+BEGIN_SRC emacs-lisp
+(if (system-type-is-darwin)
+    (progn
+      (setq mac-left-command-modifier 'super)
+      (setq mac-right-option-modifier 'hyper)))
+#+END_SRC
+
+* Email                                                            :noexport:
 ** TODO [#A] mu4e
 :PROPERTIES:
 :ID:       87453c9b-3981-4097-84e7-e309f867ee46
@@ -1743,6 +1758,7 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 * Scimax stuff
 These packages and customisations are the ones I enjoy using from Scimax.
@@ -1955,6 +1971,7 @@ packages being used by scimax-org are :
     (use-package scimax-journal
       :after scimax-org
       :init (setq scimax-journal-root-dir "~/my_org/journal/")
+      :bind ("H-j" . scimax-journal/body)
       :straight (scimax-journal :host github :repo "jkitchin/scimax"))
 #+END_SRC
 
@@ -2005,7 +2022,6 @@ Summary of scimax's ipython customisations:
 4. In short, john's old ob-ipython fork is no longer required for my purposes.
 
 #+BEGIN_SRC emacs-lisp
-;;    (straight-use-package 'org-plus-contrib)
     (use-package ob-ipython
       :straight (ob-ipython :host github :repo "gregsexton/ob-ipython"))
 
@@ -2018,20 +2034,16 @@ Summary of scimax's ipython customisations:
     (use-package scimax-ob
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
-          ;;; * For reference : to use John's old ob-ipython fork 
-  ;; (use-package ob-ipython
-          ;;   :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
-          ;;   :config
-          ;;   (require 'ob-ipython))
-
-      ;;; * The customisations pertaining to the old ob-ipython fork are: 
-      ;; (use-package scimax-org-babel-ipython
-      ;;       :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
 (setq python-shell-interpreter "python3")
 (setq org-babel-python-command "python3")
-
 (setq flycheck-python-pycompile-executable "python3")
+
+;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
+;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
+;;; It would also be nice ot have a clear method to take care of the path expansion
+
+(call-process "/bin/bash" nil t nil "-c" "ln -s ~/.emacs.d/straight/repos/ob-ipython/client.py ~/.emacs.d/straight/build/ob-ipython/")
  #+end_SRC
 
  #+RESULTS:
@@ -4599,3 +4611,17 @@ Facing trouble enabling flyspell in the mac. This seems to be a solution, as out
 
 #+RESULTS:
 : /usr/local/Cellar/aspell/0.60.6.1_1/bin/aspell
+** To use John's old ob-ipython fork
+
+#+BEGIN_SRC emacs-lisp
+;;;* For reference : to use John's old ob-ipython fork. The require may not be necessary here
+(use-package ob-ipython
+  :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
+  :config
+  (require 'ob-ipython))
+
+;;; * The customisations pertaining to the old ob-ipython fork are: 
+(use-package scimax-org-babel-ipython
+  :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
+
+#+END_SRC

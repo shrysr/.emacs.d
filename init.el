@@ -636,6 +636,11 @@ Inserted by installing 'org-mode' or when a release is made."
 
 (if (system-type-is-darwin)
     (progn
+      (setq mac-left-command-modifier 'super)
+      (setq mac-right-option-modifier 'hyper)))
+
+(if (system-type-is-darwin)
+    (progn
       (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
       (require 'mu4e)
       (require 'mu4e-contrib)
@@ -863,6 +868,7 @@ Inserted by installing 'org-mode' or when a release is made."
 (setq-default fill-column 79)
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
 
   ;; (defconst scimax-dir (file-name-directory (or load-file-name (buffer-file-name)))
 
@@ -984,6 +990,7 @@ Inserted by installing 'org-mode' or when a release is made."
     (use-package scimax-journal
       :after scimax-org
       :init (setq scimax-journal-root-dir "~/my_org/journal/")
+      :bind ("H-j" . scimax-journal/body)
       :straight (scimax-journal :host github :repo "jkitchin/scimax"))
 
   (use-package scimax-yas
@@ -994,7 +1001,6 @@ Inserted by installing 'org-mode' or when a release is made."
     :after scimax-org
     :straight (scimax-ivy :host github :repo "jkitchin/scimax"))
 
-;;    (straight-use-package 'org-plus-contrib)
     (use-package ob-ipython
       :straight (ob-ipython :host github :repo "gregsexton/ob-ipython"))
 
@@ -1007,20 +1013,16 @@ Inserted by installing 'org-mode' or when a release is made."
     (use-package scimax-ob
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
-          ;;; * For reference : to use John's old ob-ipython fork 
-  ;; (use-package ob-ipython
-          ;;   :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
-          ;;   :config
-          ;;   (require 'ob-ipython))
-
-      ;;; * The customisations pertaining to the old ob-ipython fork are: 
-      ;; (use-package scimax-org-babel-ipython
-      ;;       :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
 (setq python-shell-interpreter "python3")
 (setq org-babel-python-command "python3")
-
 (setq flycheck-python-pycompile-executable "python3")
+
+;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
+;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
+;;; It would also be nice ot have a clear method to take care of the path expansion
+
+(call-process "/bin/bash" nil t nil "-c" "ln -s ~/.emacs.d/straight/repos/ob-ipython/client.py ~/.emacs.d/straight/build/ob-ipython/")
 
 (straight-use-package 'beacon)
 (use-package scimax-org-babel-python
