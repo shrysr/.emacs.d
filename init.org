@@ -16,6 +16,13 @@ the pain of the initial iterations. Come join us on ##apoptosis on irc.
 
 ** Other literate configs
 
+** TODO Shortcuts and links 
+
+This is an attempt to use org-ref's index method to list specific headings
+
+- [[index:-* scimax][scimax Active stuff]]
+- 
+
 * Tasks
 
 index:scimax
@@ -32,11 +39,13 @@ index:scimax
 - [X] General org mode optimisations
 - [ ] Remove all the Org ID's. There should be an automated method for this.
 - [X] Scimax journal
-- [ ] Setup the hyper key
+- [X] Setup the hyper key
 - [ ] Properly setup the diminish mode as default for lisp and other
   modes. This is set for org, possible because of scimax-org.
 - [ ] Check if the entire configuration loads when the straight folder is deleted.
 - [ ] Figure out freezing packages
+- [ ] Fix the jit and font lock issues
+- [ ] Figure out optimal method of capturing tasks : maybe using org-projectile
 
 * Init setup
 
@@ -4475,7 +4484,7 @@ Source: http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/
 #+RESULTS:
 : bjm/elfeed-save-db-and-bury
 
-*** Scimax + Elfeed-org and elfeed-goodies setup [/]
+*** CANCEL Scimax + Elfeed-org and elfeed-goodies setup [/]
 :PROPERTIES:
 :ID:       8302d89f-756b-4a47-87aa-3f3df5a39a3f
 :END:
