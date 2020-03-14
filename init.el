@@ -72,30 +72,10 @@
   (string-equal system-type "gnu/linux")
   )
 
-(setq epa-file-encrypt-to "shreyas@fastmail.com")
-
-(require 'auth-source)
-(setq auth-sources
-      '((:source "~/.authinfo.gpg"
-		 "~/.bitly-access.token.gpg")))
-
-(setq epa-file-cache-passphrase-for-symmetric-encryption t)
-
-(use-package git-gutter
-  :ensure t
-  :config
-  (global-git-gutter-mode 't)
-  :diminish git-gutter-mode)
-
-(use-package magit
-:demand t
-:config
-(global-set-key (kbd "C-x g") 'magit-status)
-(setq magit-revert-buffers 'silent)
-(setq magit-process-find-password-functions '(magit-process-password-auth-source)))
-
-(use-package git-timemachine
-  :ensure t)
+(setq
+ org-directory "~/my_org/"
+ org-agenda-files '("~/my_org/")
+ )
 
 ;;______________________________________________________________________
 ;;;;  Installing Org with straight.el
@@ -144,112 +124,30 @@ Inserted by installing 'org-mode' or when a release is made."
 :config
 (add-hook 'org-mode-hook 'org-bullets-mode))
 
-   (with-eval-after-load 'org
-   (add-hook 'org-mode-hook #'org-indent-mode))
+(setq epa-file-encrypt-to "shreyas@fastmail.com")
 
-(use-package ox-pandoc
+(require 'auth-source)
+(setq auth-sources
+      '((:source "~/.authinfo.gpg"
+		 "~/.bitly-access.token.gpg")))
+
+(setq epa-file-cache-passphrase-for-symmetric-encryption t)
+
+(use-package git-gutter
   :ensure t
-  :defer nil)
+  :config
+  (global-git-gutter-mode 't)
+  :diminish git-gutter-mode)
 
-(setq org-agenda-start-on-weekday 1)
+(use-package magit
+:demand t
+:config
+(global-set-key (kbd "C-x g") 'magit-status)
+(setq magit-revert-buffers 'silent)
+(setq magit-process-find-password-functions '(magit-process-password-auth-source)))
 
-(setq org-agenda-tags-column -150)
-
-(setq
- org-directory "~/my_org/"
- org-agenda-files '("~/my_org/")
- )
-
-(setq org-agenda-custom-commands
-      '(("c" "Simple agenda view"
-         ((tags "recurr"
-		((org-agenda-overriding-header "Recurring Tasks")))
-          (agenda "")
-          (todo "")))
-        ("o" agenda "Office mode" ((org-agenda-tag-filter-preset '("-course" "-habit" "-someday" "-book" "-emacs"))))
-        ("qc" tags "+commandment")
-	("e" tags "+org")
-	("w" agenda "Today" ((org-agenda-tag-filter-preset '("+work"))))
-	("W" todo-tree "WAITING")
-	("q" . "Custom queries") ;; gives label to "q"
-	("d" . "ds related")	 ;; gives label to "d"
-	("ds" agenda "Datascience" ((org-agenda-tag-filter-preset '("+datascience"))))
-	("qw" agenda "MRPS" ((org-agenda-tag-filter-preset '("+canjs"))))
-	("qa" "Archive tags search" org-tags-view ""
-         ((org-agenda-files (file-expand-wildcards "~/my_org/*.org*"))))
-        ("j" "Journal Search" search ""
-         ''((org-agenda-text-search-extra-files (file-expand-wildcards "~/my_org/journal/"))))
-        ("S" search ""
-	 ((org-agenda-files '("~/my_org/"))
-	  (org-agenda-text-search-extra-files )))
-	)
-      )
-
-(setq org-agenda-text-search-extra-files '(agenda-archives))
-
-(setq org-agenda-search-view-always-boolean t)
-
-(require 'org-habit)
-(setq org-habit-graph-column 90)
-
-(setq org-datetree-add-timestamp nil)
-
-(setq org-capture-templates
-      '(("t" "Task entry")
-        ("tt" "Todo - Fast" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
-	 "** TODO %?")
-        ("tj" "Todo -Job journal" entry (file+olp+datetree "~/my_org/ds-jobs.org" "Job Search Journal")
-	 "** TODO %?")
-        ("te" "Todo - Emacs" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
-         "** TODO %?")
-        ("td" "Datascience inbox" entry (file+headline "~/my_org/datascience.org" "@Datascience @Inbox")
-         "** TODO %?")
-	("tm" "Mail Link Todo" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
-	 "** TODO Mail: %a ")
-        ("l" "Link/Snippet" entry (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
-         "** %? %a ")
-        ("e" "Protocol info" entry ;; 'w' for 'org-protocol'
-         (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
-         "*** %a, \n %:initial")
-        ("n" "Notes")
-        ("ne" "Emacs note" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("nn" "General note" entry (file+headline "~/my_org/notes.org" "@NOTES")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("nd" "Datascience note" entry (file+headline "~/my_org/datascience.org" "@Datascience @Notes")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("g" "BGR stuff")
-        ("gi" "Inventory project")
-        ("gil" "Daily log" entry (file+olp+datetree "~/my_org/bgr.org" "Inventory management Project") "** %? %i")
-        ("C" "Commandment" entry (file+datetree "~/my_org/lifebook.org" "")
-         "** %? %i :commandment:")
-        ("J" "Job search" entry (file+headline "~/my_org/mrps_canjs.org" "MRPS #CANJS")
-         "** TODO %? %i ")
-        ("w" "Website" plain
-         (function org-website-clipper)
-         "* %a %T\n" :immediate-finish t)
-        ("j" "Journal entry" entry (function org-journal-find-location)
-         "* %(format-time-string org-journal-time-format) %?")
-        ("i" "Whole article capture" entry
-         (file+headline "~/my_org/full_article_archive.org" "" :empty-lines 1)
-         "** %a, %T\n %:initial" :empty-lines 1)
-        ("c" "Clocking capture")
-        ("ct" "Clock TODO" entry (clock) "** TODO %?")
-        ("cn" "Clock Note" entry (clock) "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("r" "Review note" entry (file+weektree "~/my_org/lifebook.org" "#Personal #Reviews")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-         ))
-
-(defadvice org-capture
-    (after make-full-window-frame activate)
-  "Advise capture to be the only window when used as a popup"
-  (if (equal "emacs-capture" (frame-parameter nil 'name))
-      (delete-other-windows)))
-
-(defadvice org-capture-finalize
-    (after delete-capture-frame activate)
-  "Advise capture-finalize to close the frame"
-  (if (equal "emacs-capture" (frame-parameter nil 'name))))
+(use-package git-timemachine
+  :ensure t)
 
 (use-package pdf-tools
   :ensure t
@@ -468,36 +366,6 @@ Inserted by installing 'org-mode' or when a release is made."
   :after treemacs magit
   :ensure t)
 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((clojure . t)
-     (scheme . t)
-     (sqlite . t)
-     (R . t)
-     (lisp . t)
-     (sql .  t)
-     (shell . t)
-     ;; (ipython . t)
-  ;;   (jupyter . t)
-  ;;   (ein . t)
-     )
-   )
-
-(with-eval-after-load 'org
-(setq org-babel-default-header-args
-'((:session . "none")
-(:results . "silent")
-(:exports . "code")
-(:cache . "no")
-(:noweb . "no")
-(:hlines . "no")
-(:tangle . "no"))))
-
-(with-eval-after-load 'org
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-confirm-shell-link-function nil)
-  (setq org-confirm-elisp-link-function nil))
-
 ;; Superior lisp editing
 (use-package lispy
   :config
@@ -633,6 +501,28 @@ Inserted by installing 'org-mode' or when a release is made."
     (define-key ivy-minibuffer-map (kbd "<left>") 'ivy-backward-delete-char)
     (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
     (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
+
+(set-register ?n (cons 'file "~/my_org/notes.org"))
+(set-register ?l (cons 'file "~/application_letters/letter.md"))
+(set-register ?k (cons 'file "~/application_letters/Cover_letter_Shreyas_R.pdf"))
+(set-register ?p (cons 'file "~/org_cv/CV_Shreyas_Ragavan.pdf"))
+(set-register ?r (cons 'file "~/org_cv/CV_Shreyas_Ragavan.org"))
+(set-register ?t (cons 'file "~/my_org/todo-global.org"))
+(set-register ?i (cons 'file "~/dotemacs/.emacs.d/new-init.org"))
+(set-register ?j (cons 'file "~/my_org/mrps_canjs.org"))
+(set-register ?f (cons 'file "~/scimax/user/sr-cust/"))
+(set-register ?d (cons 'file "~/my_org/datascience.org"))
+(set-register ?m (cons 'file "~/my_org/"))
+(set-register ?b (cons 'file "~/my_org/blog-book.org"))
+(set-register ?g (cons 'file "~/my_gits/"))
+
+(global-set-key (kbd "M-s u") 'mu4e-update-mail-and-index)
+(global-set-key (kbd "M-s m") 'mu4e)
+(global-set-key (kbd "C-x m") 'mu4e-compose-new)
+
+(global-set-key (kbd "C-x t") 'org-insert-todo-heading)
+(global-set-key (kbd "C-c d") 'org-time-stamp)
+(global-set-key (kbd "M-s s") 'org-save-all-org-buffers)
 
 (if (system-type-is-darwin)
     (progn
@@ -796,74 +686,6 @@ Inserted by installing 'org-mode' or when a release is made."
 ;; Attempt to solve the problem of forwarding emails especailly with attachments.
 ;(advice-add '(org-msg-mode) :after #'mu4e-compose-forward))
 
- (use-package org-beautify-theme
- :after (org)
- :config
- (setq org-fontify-whole-heading-line t)
- (setq org-fontify-quote-and-verse-blocks t)
- (setq org-hide-emphasis-markers t))
-
-;; For Linux
-(if (system-type-is-gnu)
-    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
-
-;; For Mac OS
-(if (system-type-is-darwin)
-    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
-
-(use-package spaceline
-  :demand t
-  :init
-  (setq powerline-default-separator 'arrow-fade)
-  :config
-  (disable-theme 'smart-mode-line-light)
-  (require 'spaceline-config)
-  (spaceline-emacs-theme)
-  (spaceline-toggle-buffer-position-off)
-)
-
-(setq org-fontify-done-headline t)
-(custom-set-faces
- '(org-done ((t (:foreground "DarkGreen"
-			     :weight normal
-			     :strike-through t))))
- '(org-headline-done
-   ((((class color) (min-colors 16) (background dark))
-     (:foreground "LightSalmon" :strike-through t)))))
-
-(set-face-attribute 'org-todo nil
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
-(set-face-attribute 'org-done nil
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
-(set-face-attribute 'org-priority nil
-                    :inherit font-lock-keyword-face
-                    :inverse-video t
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    )
-
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-(setq inhibit-startup-message t initial-scratch-message nil)
-
-(use-package visual-fill-column
-:config (global-visual-fill-column-mode))
-
-(setq-default fill-column 79)
-
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-
   ;; (defconst scimax-dir (file-name-directory (or load-file-name (buffer-file-name)))
 
   (defconst scimax-dir "./straight/repos/scimax")
@@ -998,7 +820,7 @@ Inserted by installing 'org-mode' or when a release is made."
     (use-package ob-ipython
       :straight (ob-ipython :host github :repo "gregsexton/ob-ipython"))
 
-  ;;; * Applying John's customisations and monkeypatches 
+  ;;; * Applying John's customisations and monkeypatches
   ;;; These are related to ipython kernel management
     (use-package scimax-org-babel-ipython-upstream
           :straight (scimax-org-babel-ipython-upstream :host github :repo "jkitchin/scimax"))
@@ -1007,13 +829,13 @@ Inserted by installing 'org-mode' or when a release is made."
     (use-package scimax-ob
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
-          ;;; * For reference : to use John's old ob-ipython fork 
+          ;;; * For reference : to use John's old ob-ipython fork
   ;; (use-package ob-ipython
           ;;   :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
           ;;   :config
           ;;   (require 'ob-ipython))
 
-      ;;; * The customisations pertaining to the old ob-ipython fork are: 
+      ;;; * The customisations pertaining to the old ob-ipython fork are:
       ;; (use-package scimax-org-babel-ipython
       ;;       :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
@@ -1025,6 +847,11 @@ Inserted by installing 'org-mode' or when a release is made."
 (straight-use-package 'beacon)
 (use-package scimax-org-babel-python
       :straight (scimax-org-babel-python :host github :repo "jkitchin/scimax"))
+
+(use-package ox-ipynb
+  :straight (ox-ipynb :host github :repo "jkitchin/ox-ipynb")
+:config
+(require 'ox-ipynb))
 
 ;;; scimax-notebook.el ---    -*- lexical-binding: t -*-
 
@@ -1870,6 +1697,178 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
 
 (setq nb-notebook-directory "~/my_projects/")
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
+
+   (with-eval-after-load 'org
+   (add-hook 'org-mode-hook #'org-indent-mode))
+
+(setq org-agenda-start-on-weekday 1)
+
+(setq org-agenda-tags-column -150)
+
+(setq org-agenda-custom-commands
+      '(("c" "Simple agenda view"
+         ((tags "recurr"
+		((org-agenda-overriding-header "Recurring Tasks")))
+          (agenda "")
+          (todo "")))
+        ("o" agenda "Office mode" ((org-agenda-tag-filter-preset '("-course" "-habit" "-someday" "-book" "-emacs"))))
+        ("qc" tags "+commandment")
+	("e" tags "+org")
+	("w" agenda "Today" ((org-agenda-tag-filter-preset '("+work"))))
+	("W" todo-tree "WAITING")
+	("q" . "Custom queries") ;; gives label to "q"
+	("d" . "ds related")	 ;; gives label to "d"
+	("ds" agenda "Datascience" ((org-agenda-tag-filter-preset '("+datascience"))))
+	("qw" agenda "MRPS" ((org-agenda-tag-filter-preset '("+canjs"))))
+	("qa" "Archive tags search" org-tags-view ""
+         ((org-agenda-files (file-expand-wildcards "~/my_org/*.org*"))))
+        ("j" "Journal Search" search ""
+         ''((org-agenda-text-search-extra-files (file-expand-wildcards "~/my_org/journal/"))))
+        ("S" search ""
+	 ((org-agenda-files '("~/my_org/"))
+	  (org-agenda-text-search-extra-files )))
+	)
+      )
+
+(setq org-agenda-text-search-extra-files '(agenda-archives))
+
+(setq org-agenda-search-view-always-boolean t)
+
+(require 'org-habit)
+(setq org-habit-graph-column 90)
+
+(setq org-datetree-add-timestamp nil)
+
+(setq org-capture-templates
+      '(("t" "Task entry")
+        ("tt" "Todo - Fast" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
+	 "** TODO %?")
+        ("tj" "Todo -Job journal" entry (file+olp+datetree "~/my_org/ds-jobs.org" "Job Search Journal")
+	 "** TODO %?")
+        ("te" "Todo - Emacs" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
+         "** TODO %?")
+        ("td" "Datascience inbox" entry (file+headline "~/my_org/datascience.org" "@Datascience @Inbox")
+         "** TODO %?")
+	("tm" "Mail Link Todo" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
+	 "** TODO Mail: %a ")
+        ("l" "Link/Snippet" entry (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
+         "** %? %a ")
+        ("e" "Protocol info" entry ;; 'w' for 'org-protocol'
+         (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
+         "*** %a, \n %:initial")
+        ("n" "Notes")
+        ("ne" "Emacs note" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("nn" "General note" entry (file+headline "~/my_org/notes.org" "@NOTES")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("nd" "Datascience note" entry (file+headline "~/my_org/datascience.org" "@Datascience @Notes")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("g" "BGR stuff")
+        ("gi" "Inventory project")
+        ("gil" "Daily log" entry (file+olp+datetree "~/my_org/bgr.org" "Inventory management Project") "** %? %i")
+        ("C" "Commandment" entry (file+datetree "~/my_org/lifebook.org" "")
+         "** %? %i :commandment:")
+        ("J" "Job search" entry (file+headline "~/my_org/mrps_canjs.org" "MRPS #CANJS")
+         "** TODO %? %i ")
+        ("w" "Website" plain
+         (function org-website-clipper)
+         "* %a %T\n" :immediate-finish t)
+        ("j" "Journal entry" entry (function org-journal-find-location)
+         "* %(format-time-string org-journal-time-format) %?")
+        ("i" "Whole article capture" entry
+         (file+headline "~/my_org/full_article_archive.org" "" :empty-lines 1)
+         "** %a, %T\n %:initial" :empty-lines 1)
+        ("c" "Clocking capture")
+        ("ct" "Clock TODO" entry (clock) "** TODO %?")
+        ("cn" "Clock Note" entry (clock) "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("r" "Review note" entry (file+weektree "~/my_org/lifebook.org" "#Personal #Reviews")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+         ))
+
+(defadvice org-capture
+    (after make-full-window-frame activate)
+  "Advise capture to be the only window when used as a popup"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))
+      (delete-other-windows)))
+
+(defadvice org-capture-finalize
+    (after delete-capture-frame activate)
+  "Advise capture-finalize to close the frame"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))))
+
+(require 'ox-org)
+(require 'ox-word)
+(require 'ox-md)
+(use-package ox-pandoc
+  :straight t)
+
+ (use-package org-beautify-theme
+ :after (org)
+ :config
+ (setq org-fontify-whole-heading-line t)
+ (setq org-fontify-quote-and-verse-blocks t)
+ (setq org-hide-emphasis-markers t))
+
+;; For Linux
+(if (system-type-is-gnu)
+    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
+
+;; For Mac OS
+(if (system-type-is-darwin)
+    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
+
+(use-package spaceline
+  :demand t
+  :init
+  (setq powerline-default-separator 'arrow-fade)
+  :config
+  (disable-theme 'smart-mode-line-light)
+  (require 'spaceline-config)
+  (spaceline-emacs-theme)
+  (spaceline-toggle-buffer-position-off)
+)
+
+(setq org-fontify-done-headline t)
+(custom-set-faces
+ '(org-done ((t (:foreground "DarkGreen"
+			     :weight normal
+			     :strike-through t))))
+ '(org-headline-done
+   ((((class color) (min-colors 16) (background dark))
+     (:foreground "LightSalmon" :strike-through t)))))
+
+(set-face-attribute 'org-todo nil
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    :inverse-video t
+                    )
+(set-face-attribute 'org-done nil
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    :inverse-video t
+                    )
+(set-face-attribute 'org-priority nil
+                    :inherit font-lock-keyword-face
+                    :inverse-video t
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    )
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+(setq inhibit-startup-message t initial-scratch-message nil)
+
+(use-package visual-fill-column
+:config (global-visual-fill-column-mode))
+
+(setq-default fill-column 79)
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
   ;; (require 'org-id)
   ;; (setq org-id-link-to-org-use-id t)

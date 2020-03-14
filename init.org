@@ -1,34 +1,43 @@
 #+PROPERTY: header-args :tangle yes
 #+TITLE: shrysr's Dotemacs
 
-* Introduction
-I've been using my own configuration over that of Scimax for the past many years. My first step into Emacs was primarily the desire to use org-mode.
+* TODO Introduction
+
+I've been using my own configuration over that of Scimax for the past many
+years. However, Scimax is more of an application and one that is customise to
+specific needs. This configuration is a reboot into creating my own Emacs
+configuration, while extracting what I need from scimax, while still keeping
+the entire distribution accessible.
 
 ** Inspiration
 
-- [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
--
+[[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]'s encouragement and help pretty much got me started and through
+the pain of the initial iterations. Come join us on ##apoptosis on irc.
+
+** Other literate configs
 
 * Tasks
 
 index:scimax
 
-- [ ] nb-new
-- [ ] org speed commands
-- [ ] New headline or list entry on RET
+- [X] nb-new
+- [X] org speed commands
+- [X] New headline or list entry on RET
 - [ ] Spellcheck
 - [ ] flycheck
-- [ ] PDF tools
-- [ ] scimax hydras
-- [ ] org-ref : delayed loading
-- [ ] hotspots
-- [ ] General org mode optimisations
+- [X] PDF tools
+- [X] scimax hydras
+- [X] org-ref
+- [X] hotspots
+- [X] General org mode optimisations
 - [ ] Remove all the Org ID's. There should be an automated method for this.
-- [ ] Scimax journal or org-journal
+- [X] Scimax journal
 - [ ] Setup the hyper key
 - [ ] Properly setup the diminish mode as default for lisp and other
   modes. This is set for org, possible because of scimax-org.
- 
+- [ ] Check if the entire configuration loads when the straight folder is deleted.
+- [ ] Figure out freezing packages
+
 * Init setup
 
 This part of the config has to be tangled to init.el so that straight and use-package can be setup.
@@ -191,6 +200,93 @@ Since I switch between a Linux machine and a Mac frequently, it is better to def
 
 #+END_SRC
 
+* Custom variables and paths
+*** Default org directory and agenda file directory
+:PROPERTIES:
+:ID:       be1c3eed-5e7d-4f62-a5f4-127c0ee30a73
+:END:
+
+#+begin_src emacs-lisp
+(setq
+ org-directory "~/my_org/"
+ org-agenda-files '("~/my_org/")
+ )
+ #+end_src
+
+ #+RESULTS:
+ | ~/my_org/ |
+* Installing org and org plus contrib via straight
+  :PROPERTIES:
+  :ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
+  :END:
+Reference: [[https://github.crookster.org/switching-to-straight.el-from-emacs-26-builtin-package.el/][Crookster's blog post]]
+
+#+BEGIN_SRC emacs-lisp
+;;______________________________________________________________________
+;;;;  Installing Org with straight.el
+;;; https://github.com/raxod502/straight.el/blob/develop/README.md#installing-org-with-straightel
+(require 'subr-x)
+(straight-use-package 'git)
+
+(defun org-git-version ()
+  "The Git version of 'org-mode'.
+Inserted by installing 'org-mode' or when a release is made."
+  (require 'git)
+  (let ((git-repo (expand-file-name
+                   "straight/repos/org/" user-emacs-directory)))
+    (string-trim
+     (git-run "describe"
+              "--match=release\*"
+              "--abbrev=6"
+              "HEAD"))))
+
+(defun org-release ()
+  "The release version of 'org-mode'.
+Inserted by installing 'org-mode' or when a release is made."
+  (require 'git)
+  (let ((git-repo (expand-file-name
+                   "straight/repos/org/" user-emacs-directory)))
+    (string-trim
+     (string-remove-prefix
+      "release_"
+      (git-run "describe"
+               "--match=release\*"
+               "--abbrev=0"
+               "HEAD")))))
+
+(provide 'org-version)
+
+;; (straight-use-package 'org) ; or org-plus-contrib if desired
+
+(use-package org-plus-contrib
+   :mode (("\\.org$" . org-mode))
+   :bind
+   ("C-c l" . org-store-link)
+   ("C-c a" . org-agenda))
+#+END_SRC
+
+* Org-mode related packages
+
+  - Note taken on [2020-03-13 Fri 18:04] \\
+    The agenda and capture mechanics should be integrated with the config of scimax-org.el or conversely, I need to consider extracting relevant information from scimax-org.el into my config. Scimax is already modified at the moment to incorporate straight.el
+
+These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
+
+** Org bullets
+:PROPERTIES:
+:ID:       0A9A08EC-7693-43CF-85B3-85CAC5129AE1
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+:after (org)
+:config
+(add-hook 'org-mode-hook 'org-bullets-mode))
+#+END_SRC
+
+#+RESULTS:
+: t
+
 * Crypto
 
 ** Basic crypto
@@ -290,380 +386,7 @@ I have modified it to my own file names.
 #+END_SRC
 
 * TODO Snippets
-* Org-mode related
 
-These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
-
-
-** Installing org and org plus contrib via straight
-:PROPERTIES:
-:ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
-:END:
-Reference: [[https://github.crookster.org/switching-to-straight.el-from-emacs-26-builtin-package.el/][Crookster's blog post]]
-
-#+BEGIN_SRC emacs-lisp
-;;______________________________________________________________________
-;;;;  Installing Org with straight.el
-;;; https://github.com/raxod502/straight.el/blob/develop/README.md#installing-org-with-straightel
-(require 'subr-x)
-(straight-use-package 'git)
-
-(defun org-git-version ()
-  "The Git version of 'org-mode'.
-Inserted by installing 'org-mode' or when a release is made."
-  (require 'git)
-  (let ((git-repo (expand-file-name
-                   "straight/repos/org/" user-emacs-directory)))
-    (string-trim
-     (git-run "describe"
-              "--match=release\*"
-              "--abbrev=6"
-              "HEAD"))))
-
-(defun org-release ()
-  "The release version of 'org-mode'.
-Inserted by installing 'org-mode' or when a release is made."
-  (require 'git)
-  (let ((git-repo (expand-file-name
-                   "straight/repos/org/" user-emacs-directory)))
-    (string-trim
-     (string-remove-prefix
-      "release_"
-      (git-run "describe"
-               "--match=release\*"
-               "--abbrev=0"
-               "HEAD")))))
-
-(provide 'org-version)
-
-;; (straight-use-package 'org) ; or org-plus-contrib if desired
-
-(use-package org-plus-contrib
-   :mode (("\\.org$" . org-mode))
-   :bind
-   ("C-c l" . org-store-link)
-   ("C-c a" . org-agenda))
-#+END_SRC
-
-** Org bullets
-:PROPERTIES:
-:ID:       0A9A08EC-7693-43CF-85B3-85CAC5129AE1
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-bullets
-:after (org)
-:config
-(add-hook 'org-mode-hook 'org-bullets-mode))
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** Indent by header level
-:PROPERTIES:
-:ID:       0E677A20-CB11-47A7-BDEE-093684D5CD6D
-:END:
-
-This is a hook loaded after org mode. It is worth noting that such hooks have the potential to slow down search, opening multiple files like in org-agenda, tramp files and so on. Therefore, this should be handled
-wisely.
-
-- [ ] Maybe have a method to switch off all the hooks after org mode since this mode is being used extensively.
-
-   #+BEGIN_SRC emacs-lisp
-   (with-eval-after-load 'org
-   (add-hook 'org-mode-hook #'org-indent-mode))
-   #+END_SRC
-
-   #+RESULTS:
-   | org-indent-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-block-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
-
-** TEST ox-pandoc
-:PROPERTIES:
-:ID:       1B23050A-3ABD-48C9-A0B1-6294414748E0
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(use-package ox-pandoc
-  :ensure t
-  :defer nil)
-#+END_SRC
-
-#+RESULTS:
-** Agenda mechanics
-*** Weekday starts on Monday
-    :PROPERTIES:
-    :ID:       d9f341b0-ad88-40ca-a19a-9ca710b2d681
-    :END:
-
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-start-on-weekday 1)
-#+end_src
-
-*** Display heading tags farther to the right
-    :PROPERTIES:
-    :ID:       4d9c3678-f06d-49c5-9f80-184c0e2fac4e
-    :END:
-
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-tags-column -150)
-#+end_src
-
-*** Default org directory and agenda file directory
-:PROPERTIES:
-:ID:       be1c3eed-5e7d-4f62-a5f4-127c0ee30a73
-:END:
-
-#+begin_src emacs-lisp
-(setq
- org-directory "~/my_org/"
- org-agenda-files '("~/my_org/")
- )
- #+end_src
-
- #+RESULTS:
- | ~/my_org/ |
-
-*** TODO Agenda customisation
-    :PROPERTIES:
-    :ID:       0b93631b-5a2d-4764-92b0-f5cdf42fffe7
-    :END:
-
-- Note taken on [2019-02-07 Thu 08:26]  \\
-  Need to clear up the search functions, enabling complete search in journal files. Archive and some external directories are included, since they are explictly in org mode.
-
-#+BEGIN_SRC emacs-lisp
-
-(setq org-agenda-custom-commands
-      '(("c" "Simple agenda view"
-         ((tags "recurr"
-		((org-agenda-overriding-header "Recurring Tasks")))
-          (agenda "")
-          (todo "")))
-        ("o" agenda "Office mode" ((org-agenda-tag-filter-preset '("-course" "-habit" "-someday" "-book" "-emacs"))))
-        ("qc" tags "+commandment")
-	("e" tags "+org")
-	("w" agenda "Today" ((org-agenda-tag-filter-preset '("+work"))))
-	("W" todo-tree "WAITING")
-	("q" . "Custom queries") ;; gives label to "q"
-	("d" . "ds related")	 ;; gives label to "d"
-	("ds" agenda "Datascience" ((org-agenda-tag-filter-preset '("+datascience"))))
-	("qw" agenda "MRPS" ((org-agenda-tag-filter-preset '("+canjs"))))
-	("qa" "Archive tags search" org-tags-view ""
-         ((org-agenda-files (file-expand-wildcards "~/my_org/*.org*"))))
-        ("j" "Journal Search" search ""
-         ''((org-agenda-text-search-extra-files (file-expand-wildcards "~/my_org/journal/"))))
-        ("S" search ""
-	 ((org-agenda-files '("~/my_org/"))
-	  (org-agenda-text-search-extra-files )))
-	)
-      )
-#+end_src
-
-*** TEST Include gpg files in agenda generation
-    :PROPERTIES:
-    :ID:       4c1a0a00-d123-4b6a-a209-219872d43ca1
-    :END:
-
-Source: https://emacs.stackexchange.com/questions/36542/include-org-gpg-files-in-org-agenda
-Note that this must be set first and then the agenda files specified.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(unless (string-match-p "\\.gpg" org-agenda-file-regexp)
-  (setq org-agenda-file-regexp
-        (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
-                                  org-agenda-file-regexp)))
-
-;;(setq org-agenda-file-regexp "\\`\\\([^.].*\\.org\\\|[0-9]\\\{8\\\}\\\(\\.gpg\\\)?\\\)\\'")
-#+end_src
-
-#+RESULTS:
-
-*** TEST Expanding search locations
-    :PROPERTIES:
-    :ID:       63a20a98-6090-4087-889d-7398df5b6bb9
-    :END:
-
-I initially included my journal location to the agenda search. However it is very slow compared to using grep/rgrep/ag. Therefore, the agenda full text search is now limited to the project directory and the org-brain directory. The snippet below enables searching recursively within folders.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-agenda-text-search-extra-files '(agenda-archives))
-
-(setq org-agenda-text-search-extra-files (apply 'append
-						(mapcar
-						 (lambda (directory)
-						   (directory-files-recursively
-						    directory org-agenda-file-regexp))
-						 '("~/my_projects/" "~/my_org/brain/"))))
-#+end_src
-
-*** TODO Adding org archive for text search. Optimise this
-:PROPERTIES:
-:CREATED:  <2019-02-07 Thu 08:29>
-:ID:       D8743646-BD5B-463C-AB4B-CAB8AF8AA535
-:END:
-
-- Note taken on [2020-02-22 Sat 13:25] \\
-  I don't really use this anymore. I prefer grep or ag for searching through all my text files. The caveat is that the files have to under a single root directory.
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-text-search-extra-files '(agenda-archives))
-#+end_src
-
-#+RESULTS:
-| agenda-archives |
-
-*** Enable default fuzzy search like in google
-    :PROPERTIES:
-    :ID:       a8012ca5-8f07-419f-8aed-11d43651bcca
-    :END:
-
-#+BEGIN_SRC emacs-lisp
-(setq org-agenda-search-view-always-boolean t)
-#+end_src
-
-*** DONE org-habit
-CLOSED: [2019-02-12 Tue 13:21]
-:PROPERTIES:
-:ID:       951e7ed9-783d-44b9-869d-fe048e41e93f
-:END:
-- Note taken on [2019-02-12 Tue 13:20] \\
-  Adding a require has brought org-habit back on track.
-- Note taken on [2019-02-07 Thu 09:50] \\
-  Appears the use-package config for org-habit is not correct and there is some issue in downloading it as a package.
-
-I want to shift the org habit graph in the agenda further out right so as to leave enough room for the headings to be visible.
-
-#+BEGIN_SRC emacs-lisp
-(require 'org-habit)
-(setq org-habit-graph-column 90)
-#+end_src
-
-#+RESULTS:
-: 90
-** TODO Capture mechanics
-- Note taken on [2019-02-07 Thu 08:24]  \\
-  need to clean this up.
-*** Removing timestamp from datetree captures
-:PROPERTIES:
-:ID:       4ED98157-D6D9-463C-BE2B-FAE5DB1FC3C6
-:END:
-#+BEGIN_SRC emacs-lisp
-(setq org-datetree-add-timestamp nil)
-#+END_SRC
-
-#+RESULTS:
-
-*** Capture templates
-    :PROPERTIES:
-    :ID:       50f2b318-d9e6-4403-af24-875c662d888d
-    :END:
-
-#+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      '(("t" "Task entry")
-        ("tt" "Todo - Fast" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
-	 "** TODO %?")
-        ("tj" "Todo -Job journal" entry (file+olp+datetree "~/my_org/ds-jobs.org" "Job Search Journal")
-	 "** TODO %?")
-        ("te" "Todo - Emacs" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
-         "** TODO %?")
-        ("td" "Datascience inbox" entry (file+headline "~/my_org/datascience.org" "@Datascience @Inbox")
-         "** TODO %?")
-	("tm" "Mail Link Todo" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
-	 "** TODO Mail: %a ")
-        ("l" "Link/Snippet" entry (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
-         "** %? %a ")
-        ("e" "Protocol info" entry ;; 'w' for 'org-protocol'
-         (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
-         "*** %a, \n %:initial")
-        ("n" "Notes")
-        ("ne" "Emacs note" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("nn" "General note" entry (file+headline "~/my_org/notes.org" "@NOTES")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("nd" "Datascience note" entry (file+headline "~/my_org/datascience.org" "@Datascience @Notes")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("g" "BGR stuff")
-        ("gi" "Inventory project")
-        ("gil" "Daily log" entry (file+olp+datetree "~/my_org/bgr.org" "Inventory management Project") "** %? %i")
-        ("C" "Commandment" entry (file+datetree "~/my_org/lifebook.org" "")
-         "** %? %i :commandment:")
-        ("J" "Job search" entry (file+headline "~/my_org/mrps_canjs.org" "MRPS #CANJS")
-         "** TODO %? %i ")
-        ("w" "Website" plain
-         (function org-website-clipper)
-         "* %a %T\n" :immediate-finish t)
-        ("j" "Journal entry" entry (function org-journal-find-location)
-         "* %(format-time-string org-journal-time-format) %?")
-        ("i" "Whole article capture" entry
-         (file+headline "~/my_org/full_article_archive.org" "" :empty-lines 1)
-         "** %a, %T\n %:initial" :empty-lines 1)
-        ("c" "Clocking capture")
-        ("ct" "Clock TODO" entry (clock) "** TODO %?")
-        ("cn" "Clock Note" entry (clock) "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-        ("r" "Review note" entry (file+weektree "~/my_org/lifebook.org" "#Personal #Reviews")
-         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-         ))
-#+end_src
-
-#+RESULTS:
-| t  | Task entry        |       |                                                                |                  |
-| tt | Todo - Fast       | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO %?       |
-| tj | Todo -Job journal | entry | (file+olp+datetree ~/my_org/ds-jobs.org Job Search Journal)     | ** TODO %?       |
-| te | Todo - Emacs      | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | ** TODO %?       |
-| td | Datascience inbox | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | ** TODO %?       |
-| tm | Mail Link Todo    | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO Mail: %a |
-| l  | Link/Snippet      | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)     | ** %? %a         |
-| e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)     | *** %a,            |
-
-*** TEST Closing org-capture frame on abort
-    :PROPERTIES:
-    :ID:       1f79f2ff-2185-451d-8485-8f11c7b1de41
-    :END:
-- Note taken on [2019-03-13 Wed 07:35] \\
-  This basically ensures a clean exit in case of aborting a capture.
-- Note taken on [2019-02-07 Thu 08:53]  \\
-  Needs further review.
-
-Source: http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection
-
-#+BEGIN_SRC emacs-lisp
-(defadvice org-capture
-    (after make-full-window-frame activate)
-  "Advise capture to be the only window when used as a popup"
-  (if (equal "emacs-capture" (frame-parameter nil 'name))
-      (delete-other-windows)))
-
-(defadvice org-capture-finalize
-    (after delete-capture-frame activate)
-  "Advise capture-finalize to close the frame"
-  (if (equal "emacs-capture" (frame-parameter nil 'name))))
-
-#+end_src
-
-#+RESULTS:
-: org-capture-finalize
-
-*** TODO Controlling org-capture buffers
-:PROPERTIES:
-:ID:       FB3E4494-6AAA-4CA3-8A43-726E9E7143A7
-:END:
-- Note taken on [2019-03-13 Wed 08:01] \\
-  This interferes with org-journal's capture format.
-
-I dislike the way org-capture disrupts my current window, and shows me the capture buffer, and the target buffer as well. I would prefer a small pop up window, and then a revert back to the existing windows once the capture is completed or aborted. However this does not seem possible without modifying Org-mode's source code. This is a workaround described at https://stackoverflow.com/questions/54192239/open-org-capture-buffer-in-specific-Window ,which partially resolves the issue by enabling just a single capture buffer.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-
-(defun my-org-capture-place-template-dont-delete-windows (oldfun args)
-  (cl-letf (((symbol-function 'delete-other-windows) 'ignore))
-    (apply oldfun args)))
-
-(with-eval-after-load "org-capture"
-  (advice-add 'org-capture-place-template :around 'my-org-capture-place-template-dont-delete-windows))
-#+END_SRC
-
-#+RESULTS:
 * PDF related
 ** STABLE PDF Tools
 CLOSED: [2019-10-23 Wed 09:26]
@@ -1059,59 +782,7 @@ As such most of these
 
 #+RESULTS:
 
-* TODO org-babel
-:PROPERTIES:
-:header-args: tangle no
-:END
-Since I work a lot with org babel for my mixed code notebooks, this gets it's own section. I would like to incorporate useful scimax customisations for this as well.
-- [ ] Incorporate Scimax's customisations in general
-- [ ] Particularly incorporate ipython block customisation
-
-** Languages to load
-:PROPERTIES:
-:ID:       2FEFFC39-99A5-4C72-A814-008D82B49492
-:END:
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((clojure . t)
-     (scheme . t)
-     (sqlite . t)
-     (R . t)
-     (lisp . t)
-     (sql .  t)
-     (shell . t)
-     ;; (ipython . t)
-  ;;   (jupyter . t)
-  ;;   (ein . t)
-     )
-   )
-#+end_src
-
-** TODO Default Header arguments and other options
-:PROPERTIES:
-:ID:       EC40BAAB-3EC9-4E5C-B90C-806AEDAB83DE
-:END:
-#+BEGIN_SRC emacs-lisp
-
-(with-eval-after-load 'org
-(setq org-babel-default-header-args
-'((:session . "none")
-(:results . "silent")
-(:exports . "code")
-(:cache . "no")
-(:noweb . "no")
-(:hlines . "no")
-(:tangle . "no"))))
-
-(with-eval-after-load 'org
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-confirm-shell-link-function nil)
-  (setq org-confirm-elisp-link-function nil))
-#+END_SRC
-
 * Code
-
 ** lispy
 :PROPERTIES:
 :ID:       0D58C0FC-C29D-4BEF-9030-904200CD2F85
@@ -1128,7 +799,6 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
 		(lispy-mode)
 		(eldoc-mode)))))
 #+END_SRC
-
 * Selection, bookmarks and jumps
 ** Expand region package
    :PROPERTIES:
@@ -1336,6 +1006,56 @@ This configuration is picked up from scimax.
     (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
     (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
 #+END_SRC
+* Shortcuts and registers
+
+Eventually, I hope to have the most common commands mapped to my own hydra. For
+now though...
+
+** Registers
+    :PROPERTIES:
+    :ID:       291c63f6-9332-4199-b162-b0c3c6d512dd
+    :END:
+
+#+begin_src emacs-lisp
+(set-register ?n (cons 'file "~/my_org/notes.org"))
+(set-register ?l (cons 'file "~/application_letters/letter.md"))
+(set-register ?k (cons 'file "~/application_letters/Cover_letter_Shreyas_R.pdf"))
+(set-register ?p (cons 'file "~/org_cv/CV_Shreyas_Ragavan.pdf"))
+(set-register ?r (cons 'file "~/org_cv/CV_Shreyas_Ragavan.org"))
+(set-register ?t (cons 'file "~/my_org/todo-global.org"))
+(set-register ?i (cons 'file "~/dotemacs/.emacs.d/new-init.org"))
+(set-register ?j (cons 'file "~/my_org/mrps_canjs.org"))
+(set-register ?f (cons 'file "~/scimax/user/sr-cust/"))
+(set-register ?d (cons 'file "~/my_org/datascience.org"))
+(set-register ?m (cons 'file "~/my_org/"))
+(set-register ?b (cons 'file "~/my_org/blog-book.org"))
+(set-register ?g (cons 'file "~/my_gits/"))
+#+end_src
+
+
+** Mu4e related
+:PROPERTIES:
+:ID:       d2549bee-334e-42df-958f-f1874dee87c6
+:END:
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-s u") 'mu4e-update-mail-and-index)
+(global-set-key (kbd "M-s m") 'mu4e)
+(global-set-key (kbd "C-x m") 'mu4e-compose-new)
+#+end_src
+
+#+RESULTS:
+: mu4e-compose-new
+** Org related shortcuts
+    :PROPERTIES:
+    :ID:       4ac333a0-2fb2-49ca-bb99-c9c551ce5b46
+    :END:
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x t") 'org-insert-todo-heading)
+(global-set-key (kbd "C-c d") 'org-time-stamp)
+(global-set-key (kbd "M-s s") 'org-save-all-org-buffers)
+#+end_src
 
 * Email
 ** TODO [#A] mu4e
@@ -1596,156 +1316,9 @@ This configuration is picked up from scimax.
 
 #+RESULTS:
 
-* Aesthetics
-** Theme : org-beautify
-:PROPERTIES:
-:ID:       C93143D4-EEC8-4D14-A008-1E74BF447D63
-:END:
-
-Found this theme thanks to Dustin. It feels therapeutic, though Leuven and Zenburn are great themes in their own right. Maybe I'll consider using zenburn as my dark theme and org-beautify as the light version. It may even be worth creating a darker version of teh org-beautify theme.
-
- #+BEGIN_SRC emacs-lisp
- (use-package org-beautify-theme
- :after (org)
- :config
- (setq org-fontify-whole-heading-line t)
- (setq org-fontify-quote-and-verse-blocks t)
- (setq org-hide-emphasis-markers t))
-
- #+END_SRC
-
- #+RESULTS:
- : t
-
-** Font Customisation based on OS
-   :PROPERTIES:
-   :ID:       9e3c92e5-1049-4582-b165-0cd3ba7e2d95
-   :END:
-
-The same font is named differently in Antergos (Linux) and in the Mac OS.
-
-#+begin_src emacs-lisp
-;; For Linux
-(if (system-type-is-gnu)
-    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
-
-;; For Mac OS
-(if (system-type-is-darwin)
-    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
-#+end_src
-
-#+RESULTS:
-
-** TEST Spaceline : modeline configuration
-   :PROPERTIES:
-   :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
-   :END:
-Source: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
-
-#+BEGIN_SRC emacs-lisp
-(use-package spaceline
-  :demand t
-  :init
-  (setq powerline-default-separator 'arrow-fade)
-  :config
-  (disable-theme 'smart-mode-line-light)
-  (require 'spaceline-config)
-  (spaceline-emacs-theme)
-  (spaceline-toggle-buffer-position-off)
-)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** Striking out Done headlines
-:PROPERTIES:
-:ID:       3263d812-c3f5-4947-b2de-c75c537d19df
-:END:
-
-source: Sacha Chua
-
-#+begin_src emacs-lisp
-(setq org-fontify-done-headline t)
-(custom-set-faces
- '(org-done ((t (:foreground "DarkGreen"
-			     :weight normal
-			     :strike-through t))))
- '(org-headline-done
-   ((((class color) (min-colors 16) (background dark))
-     (:foreground "LightSalmon" :strike-through t)))))
-#+end_src
-
-#+RESULTS:
-
-** Formatting keywords as boxes with inverted colors
-:PROPERTIES:
-:ID:       62dcdc53-ee2f-4db2-afda-6b68a05cbeda
-:END:
-
-Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to-emacs-org-mode][link]] ,
-
-#+BEGIN_SRC emacs-lisp
-(set-face-attribute 'org-todo nil
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
-(set-face-attribute 'org-done nil
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
-(set-face-attribute 'org-priority nil
-                    :inherit font-lock-keyword-face
-                    :inverse-video t
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    )
-#+END_SRC
-
-#+RESULTS:
-
-** All the bars and startup messages
-:PROPERTIES:
-:ID:       38F9FE46-13E7-4281-8DC0-7C9F9AAB673C
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-(setq inhibit-startup-message t initial-scratch-message nil)
-#+END_SRC
-
-** Visual Fill Column at 79
-:PROPERTIES:
-:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(use-package visual-fill-column
-:config (global-visual-fill-column-mode))
-
-(setq-default fill-column 79)
-#+END_SRC
-
-** Auto-fill text mode
-:PROPERTIES:
-:ID:       751B3E4C-1BBC-419D-BAD3-8F4A3880FB6D
-:END:
-- Note taken on [2020-03-12 Thu 08:46] \\
-  I need to check whether this interferes with mu4e and general org mode usage.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-#+END_SRC
 * Scimax stuff
-These packages and customisations are the ones I enjoy using from Scimax.
+These packages and customisations are the ones I enjoy using from Scimax. A
+bunch of changes were required to accomodate the usage of the Org packagge from straight.el
 
 ** Adding scimax to the path and setting the scimax directory
 :PROPERTIES:
@@ -1993,11 +1566,11 @@ packages being used by scimax-org are :
 - [ ] Bind the org-babel autocomplete to a convenient key. The function is
   =scimax-ob-ipython-complete-ivy=. Possibly =s-=.
 - [ ] fix the ob-ipython straight build to symlink the client.py file as
-  well. Wonder if this is going to be an issue for others. 
+  well. Wonder if this is going to be an issue for others.
 
 Summary of scimax's ipython customisations:
 1. John is currently using the upstream ob-ipython.
-2. John's earlier ob-ipython fork is likely to be depreciated in the future. 
+2. John's earlier ob-ipython fork is likely to be depreciated in the future.
 3. John has integrated the upstream ob-ipython with several patches of his
    own. These are contained in two pacakges: scimax-ob.el and
    scimax-org-babel-ipython-upstream. The latter monkeypatches over the
@@ -2009,7 +1582,7 @@ Summary of scimax's ipython customisations:
     (use-package ob-ipython
       :straight (ob-ipython :host github :repo "gregsexton/ob-ipython"))
 
-  ;;; * Applying John's customisations and monkeypatches 
+  ;;; * Applying John's customisations and monkeypatches
   ;;; These are related to ipython kernel management
     (use-package scimax-org-babel-ipython-upstream
           :straight (scimax-org-babel-ipython-upstream :host github :repo "jkitchin/scimax"))
@@ -2018,13 +1591,13 @@ Summary of scimax's ipython customisations:
     (use-package scimax-ob
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
-          ;;; * For reference : to use John's old ob-ipython fork 
+          ;;; * For reference : to use John's old ob-ipython fork
   ;; (use-package ob-ipython
           ;;   :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
           ;;   :config
           ;;   (require 'ob-ipython))
 
-      ;;; * The customisations pertaining to the old ob-ipython fork are: 
+      ;;; * The customisations pertaining to the old ob-ipython fork are:
       ;; (use-package scimax-org-babel-ipython
       ;;       :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
@@ -2038,6 +1611,14 @@ Summary of scimax's ipython customisations:
  : python3
 
 *** scimax-python enhancements
+:PROPERTIES:
+:ID:       FCDEBD56-8F22-458F-84F5-D3FAEBCD6B77
+:END:
+
+***
+:PROPERTIES:
+:ID:       CFE2496D-BF83-4687-B22C-30002A9BBF4D
+:END:
 This requires the beacon package and is a requirement for scimax-org as well.
 
 #+BEGIN_SRC emacs-lisp
@@ -2048,6 +1629,21 @@ This requires the beacon package and is a requirement for scimax-org as well.
 #+END_SRC
 
 #+RESULTS:
+
+*** ox-ipynb
+:PROPERTIES:
+:ID:       9DA015F2-6FE0-471D-9E16-4FF514268F40
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-ipynb
+  :straight (ox-ipynb :host github :repo "jkitchin/ox-ipynb")
+:config
+(require 'ox-ipynb))
+#+END_SRC
+
+#+RESULTS:
+: t
 
 ** Scimax Notebook
 :PROPERTIES:
@@ -3363,7 +2959,447 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
 (setq nb-notebook-directory "~/my_projects/")
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
 #+END_SRC
+* Org mode customisations
+** Indent by header level
+:PROPERTIES:
+:ID:       0E677A20-CB11-47A7-BDEE-093684D5CD6D
+:END:
 
+This is a hook loaded after org mode. It is worth noting that such hooks have the potential to slow down search, opening multiple files like in org-agenda, tramp files and so on. Therefore, this should be handled
+wisely.
+
+- [ ] Maybe have a method to switch off all the hooks after org mode since this mode is being used extensively.
+
+   #+BEGIN_SRC emacs-lisp
+   (with-eval-after-load 'org
+   (add-hook 'org-mode-hook #'org-indent-mode))
+   #+END_SRC
+
+   #+RESULTS:
+   | org-indent-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-block-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
+** Agenda mechanics
+*** Weekday starts on Monday
+    :PROPERTIES:
+    :ID:       d9f341b0-ad88-40ca-a19a-9ca710b2d681
+    :END:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-start-on-weekday 1)
+#+end_src
+
+*** Display heading tags farther to the right
+    :PROPERTIES:
+    :ID:       4d9c3678-f06d-49c5-9f80-184c0e2fac4e
+    :END:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-tags-column -150)
+#+end_src
+
+*** TODO Agenda customisation
+    :PROPERTIES:
+    :ID:       0b93631b-5a2d-4764-92b0-f5cdf42fffe7
+    :END:
+
+- Note taken on [2019-02-07 Thu 08:26]  \\
+  Need to clear up the search functions, enabling complete search in journal files. Archive and some external directories are included, since they are explictly in org mode.
+
+#+BEGIN_SRC emacs-lisp
+
+(setq org-agenda-custom-commands
+      '(("c" "Simple agenda view"
+         ((tags "recurr"
+		((org-agenda-overriding-header "Recurring Tasks")))
+          (agenda "")
+          (todo "")))
+        ("o" agenda "Office mode" ((org-agenda-tag-filter-preset '("-course" "-habit" "-someday" "-book" "-emacs"))))
+        ("qc" tags "+commandment")
+	("e" tags "+org")
+	("w" agenda "Today" ((org-agenda-tag-filter-preset '("+work"))))
+	("W" todo-tree "WAITING")
+	("q" . "Custom queries") ;; gives label to "q"
+	("d" . "ds related")	 ;; gives label to "d"
+	("ds" agenda "Datascience" ((org-agenda-tag-filter-preset '("+datascience"))))
+	("qw" agenda "MRPS" ((org-agenda-tag-filter-preset '("+canjs"))))
+	("qa" "Archive tags search" org-tags-view ""
+         ((org-agenda-files (file-expand-wildcards "~/my_org/*.org*"))))
+        ("j" "Journal Search" search ""
+         ''((org-agenda-text-search-extra-files (file-expand-wildcards "~/my_org/journal/"))))
+        ("S" search ""
+	 ((org-agenda-files '("~/my_org/"))
+	  (org-agenda-text-search-extra-files )))
+	)
+      )
+#+end_src
+
+*** TEST Include gpg files in agenda generation
+    :PROPERTIES:
+    :ID:       4c1a0a00-d123-4b6a-a209-219872d43ca1
+    :END:
+
+Source: https://emacs.stackexchange.com/questions/36542/include-org-gpg-files-in-org-agenda
+Note that this must be set first and then the agenda files specified.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(unless (string-match-p "\\.gpg" org-agenda-file-regexp)
+  (setq org-agenda-file-regexp
+        (replace-regexp-in-string "\\\\\\.org" "\\\\.org\\\\(\\\\.gpg\\\\)?"
+                                  org-agenda-file-regexp)))
+
+;;(setq org-agenda-file-regexp "\\`\\\([^.].*\\.org\\\|[0-9]\\\{8\\\}\\\(\\.gpg\\\)?\\\)\\'")
+#+end_src
+
+#+RESULTS:
+
+*** TEST Expanding search locations
+    :PROPERTIES:
+    :ID:       63a20a98-6090-4087-889d-7398df5b6bb9
+    :END:
+
+I initially included my journal location to the agenda search. However it is very slow compared to using grep/rgrep/ag. Therefore, the agenda full text search is now limited to the project directory and the org-brain directory. The snippet below enables searching recursively within folders.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-agenda-text-search-extra-files '(agenda-archives))
+
+(setq org-agenda-text-search-extra-files (apply 'append
+						(mapcar
+						 (lambda (directory)
+						   (directory-files-recursively
+						    directory org-agenda-file-regexp))
+						 '("~/my_projects/" "~/my_org/brain/"))))
+#+end_src
+
+*** TODO Adding org archive for text search. Optimise this
+:PROPERTIES:
+:CREATED:  <2019-02-07 Thu 08:29>
+:ID:       D8743646-BD5B-463C-AB4B-CAB8AF8AA535
+:END:
+
+- Note taken on [2020-02-22 Sat 13:25] \\
+  I don't really use this anymore. I prefer grep or ag for searching through all my text files. The caveat is that the files have to under a single root directory.
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-text-search-extra-files '(agenda-archives))
+#+end_src
+
+#+RESULTS:
+| agenda-archives |
+
+*** Enable default fuzzy search like in google
+    :PROPERTIES:
+    :ID:       a8012ca5-8f07-419f-8aed-11d43651bcca
+    :END:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-search-view-always-boolean t)
+#+end_src
+
+*** DONE org-habit
+CLOSED: [2019-02-12 Tue 13:21]
+:PROPERTIES:
+:ID:       951e7ed9-783d-44b9-869d-fe048e41e93f
+:END:
+- Note taken on [2019-02-12 Tue 13:20] \\
+  Adding a require has brought org-habit back on track.
+- Note taken on [2019-02-07 Thu 09:50] \\
+  Appears the use-package config for org-habit is not correct and there is some issue in downloading it as a package.
+
+I want to shift the org habit graph in the agenda further out right so as to leave enough room for the headings to be visible.
+
+#+BEGIN_SRC emacs-lisp
+(require 'org-habit)
+(setq org-habit-graph-column 90)
+#+end_src
+
+#+RESULTS:
+: 90
+** TODO Capture mechanics
+- Note taken on [2019-02-07 Thu 08:24]  \\
+  need to clean this up.
+*** Removing timestamp from datetree captures
+:PROPERTIES:
+:ID:       4ED98157-D6D9-463C-BE2B-FAE5DB1FC3C6
+:END:
+#+BEGIN_SRC emacs-lisp
+(setq org-datetree-add-timestamp nil)
+#+END_SRC
+
+#+RESULTS:
+
+*** Capture templates
+    :PROPERTIES:
+    :ID:       50f2b318-d9e6-4403-af24-875c662d888d
+    :END:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      '(("t" "Task entry")
+        ("tt" "Todo - Fast" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
+	 "** TODO %?")
+        ("tj" "Todo -Job journal" entry (file+olp+datetree "~/my_org/ds-jobs.org" "Job Search Journal")
+	 "** TODO %?")
+        ("te" "Todo - Emacs" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
+         "** TODO %?")
+        ("td" "Datascience inbox" entry (file+headline "~/my_org/datascience.org" "@Datascience @Inbox")
+         "** TODO %?")
+	("tm" "Mail Link Todo" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
+	 "** TODO Mail: %a ")
+        ("l" "Link/Snippet" entry (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
+         "** %? %a ")
+        ("e" "Protocol info" entry ;; 'w' for 'org-protocol'
+         (file+headline "~/my_org/link_database.org" ".UL Unfiled Links")
+         "*** %a, \n %:initial")
+        ("n" "Notes")
+        ("ne" "Emacs note" entry (file+headline "~/my_org/todo-global.org" "@Emacs notes and tasks")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("nn" "General note" entry (file+headline "~/my_org/notes.org" "@NOTES")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("nd" "Datascience note" entry (file+headline "~/my_org/datascience.org" "@Datascience @Notes")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("g" "BGR stuff")
+        ("gi" "Inventory project")
+        ("gil" "Daily log" entry (file+olp+datetree "~/my_org/bgr.org" "Inventory management Project") "** %? %i")
+        ("C" "Commandment" entry (file+datetree "~/my_org/lifebook.org" "")
+         "** %? %i :commandment:")
+        ("J" "Job search" entry (file+headline "~/my_org/mrps_canjs.org" "MRPS #CANJS")
+         "** TODO %? %i ")
+        ("w" "Website" plain
+         (function org-website-clipper)
+         "* %a %T\n" :immediate-finish t)
+        ("j" "Journal entry" entry (function org-journal-find-location)
+         "* %(format-time-string org-journal-time-format) %?")
+        ("i" "Whole article capture" entry
+         (file+headline "~/my_org/full_article_archive.org" "" :empty-lines 1)
+         "** %a, %T\n %:initial" :empty-lines 1)
+        ("c" "Clocking capture")
+        ("ct" "Clock TODO" entry (clock) "** TODO %?")
+        ("cn" "Clock Note" entry (clock) "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+        ("r" "Review note" entry (file+weektree "~/my_org/lifebook.org" "#Personal #Reviews")
+         "** %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
+         ))
+#+end_src
+
+#+RESULTS:
+| t  | Task entry        |       |                                                                |                  |
+| tt | Todo - Fast       | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO %?       |
+| tj | Todo -Job journal | entry | (file+olp+datetree ~/my_org/ds-jobs.org Job Search Journal)     | ** TODO %?       |
+| te | Todo - Emacs      | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | ** TODO %?       |
+| td | Datascience inbox | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | ** TODO %?       |
+| tm | Mail Link Todo    | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO Mail: %a |
+| l  | Link/Snippet      | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)     | ** %? %a         |
+| e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)     | *** %a,            |
+
+*** TEST Closing org-capture frame on abort
+    :PROPERTIES:
+    :ID:       1f79f2ff-2185-451d-8485-8f11c7b1de41
+    :END:
+- Note taken on [2019-03-13 Wed 07:35] \\
+  This basically ensures a clean exit in case of aborting a capture.
+- Note taken on [2019-02-07 Thu 08:53]  \\
+  Needs further review.
+
+Source: http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection
+
+#+BEGIN_SRC emacs-lisp
+(defadvice org-capture
+    (after make-full-window-frame activate)
+  "Advise capture to be the only window when used as a popup"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))
+      (delete-other-windows)))
+
+(defadvice org-capture-finalize
+    (after delete-capture-frame activate)
+  "Advise capture-finalize to close the frame"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))))
+
+#+end_src
+
+#+RESULTS:
+: org-capture-finalize
+
+*** TODO Controlling org-capture buffers
+:PROPERTIES:
+:ID:       FB3E4494-6AAA-4CA3-8A43-726E9E7143A7
+:END:
+- Note taken on [2019-03-13 Wed 08:01] \\
+  This interferes with org-journal's capture format.
+
+I dislike the way org-capture disrupts my current window, and shows me the capture buffer, and the target buffer as well. I would prefer a small pop up window, and then a revert back to the existing windows once the capture is completed or aborted. However this does not seem possible without modifying Org-mode's source code. This is a workaround described at https://stackoverflow.com/questions/54192239/open-org-capture-buffer-in-specific-Window ,which partially resolves the issue by enabling just a single capture buffer.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+
+(defun my-org-capture-place-template-dont-delete-windows (oldfun args)
+  (cl-letf (((symbol-function 'delete-other-windows) 'ignore))
+    (apply oldfun args)))
+
+(with-eval-after-load "org-capture"
+  (advice-add 'org-capture-place-template :around 'my-org-capture-place-template-dont-delete-windows))
+#+END_SRC
+
+#+RESULTS:
+** Export setup
+   :PROPERTIES:
+   :ID:       ED7CF454-297A-41D9-A151-B514D476E4AD
+   :END:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ox-org)
+(require 'ox-word)
+(require 'ox-md)
+(use-package ox-pandoc
+  :straight t)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Aesthetics
+** Theme : org-beautify
+:PROPERTIES:
+:ID:       C93143D4-EEC8-4D14-A008-1E74BF447D63
+:END:
+
+Found this theme thanks to Dustin. It feels therapeutic, though Leuven and Zenburn are great themes in their own right. Maybe I'll consider using zenburn as my dark theme and org-beautify as the light version. It may even be worth creating a darker version of teh org-beautify theme.
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package org-beautify-theme
+ :after (org)
+ :config
+ (setq org-fontify-whole-heading-line t)
+ (setq org-fontify-quote-and-verse-blocks t)
+ (setq org-hide-emphasis-markers t))
+
+ #+END_SRC
+
+ #+RESULTS:
+ : t
+
+** Font Customisation based on OS
+   :PROPERTIES:
+   :ID:       9e3c92e5-1049-4582-b165-0cd3ba7e2d95
+   :END:
+
+The same font is named differently in Antergos (Linux) and in the Mac OS.
+
+#+begin_src emacs-lisp
+;; For Linux
+(if (system-type-is-gnu)
+    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
+
+;; For Mac OS
+(if (system-type-is-darwin)
+    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
+#+end_src
+
+#+RESULTS:
+
+** TEST Spaceline : modeline configuration
+   :PROPERTIES:
+   :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
+   :END:
+Source: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
+
+#+BEGIN_SRC emacs-lisp
+(use-package spaceline
+  :demand t
+  :init
+  (setq powerline-default-separator 'arrow-fade)
+  :config
+  (disable-theme 'smart-mode-line-light)
+  (require 'spaceline-config)
+  (spaceline-emacs-theme)
+  (spaceline-toggle-buffer-position-off)
+)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** Striking out Done headlines
+:PROPERTIES:
+:ID:       3263d812-c3f5-4947-b2de-c75c537d19df
+:END:
+
+source: Sacha Chua
+
+#+begin_src emacs-lisp
+(setq org-fontify-done-headline t)
+(custom-set-faces
+ '(org-done ((t (:foreground "DarkGreen"
+			     :weight normal
+			     :strike-through t))))
+ '(org-headline-done
+   ((((class color) (min-colors 16) (background dark))
+     (:foreground "LightSalmon" :strike-through t)))))
+#+end_src
+
+#+RESULTS:
+
+** Formatting keywords as boxes with inverted colors
+:PROPERTIES:
+:ID:       62dcdc53-ee2f-4db2-afda-6b68a05cbeda
+:END:
+
+Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to-emacs-org-mode][link]] ,
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'org-todo nil
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    :inverse-video t
+                    )
+(set-face-attribute 'org-done nil
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    :inverse-video t
+                    )
+(set-face-attribute 'org-priority nil
+                    :inherit font-lock-keyword-face
+                    :inverse-video t
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    )
+#+END_SRC
+
+#+RESULTS:
+
+** All the bars and startup messages
+:PROPERTIES:
+:ID:       38F9FE46-13E7-4281-8DC0-7C9F9AAB673C
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+(setq inhibit-startup-message t initial-scratch-message nil)
+#+END_SRC
+
+** Visual Fill Column at 79
+:PROPERTIES:
+:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package visual-fill-column
+:config (global-visual-fill-column-mode))
+
+(setq-default fill-column 79)
+#+END_SRC
+
+** Auto-fill text mode
+:PROPERTIES:
+:ID:       751B3E4C-1BBC-419D-BAD3-8F4A3880FB6D
+:END:
+- Note taken on [2020-03-12 Thu 08:46] \\
+  I need to check whether this interferes with mu4e and general org mode usage.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+END_SRC
 * org-id
 :PROPERTIES:
 :ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
@@ -3394,6 +3430,8 @@ In addition, I would like an org id to be created every time the capture is used
 :PROPERTIES:
 :header-args: :tangle no
 :END:
+
+The packages in this section are not enabled by default.
 
 ** Modeline adjustments
 
@@ -4042,7 +4080,6 @@ https://github.com/cute-jumper/helm-ext
 : t
 
 ** Scimax customisations
-
 *** Enabling Scimax Statistics
 - Note taken on [2019-10-07 Mon 13:17] \\
   The default config is insufficient and in particular, uses the ess-smart-underscore package which is not useful to my general workflow.
