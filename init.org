@@ -928,50 +928,200 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+RESULTS:
 : org-capture
 
-* Knowledge management
-** org-brain [1/2]
+* Helm packages and functions
 
-#+BEGIN_QUOTE
-org-brain implements a variant of concept mapping in Emacs, using org-mode.
-
-You can think of org-brain as a combination of a wiki and a mind map, where each wiki page / mind map node is an org-mode file which resides in your org-brain-path, or a headline with an ID property in one of those files. These are called entries. Entries can be linked together, and you can then view the network of links as a mind map, using M-x org-brain-visualize
-
-[[https://github.com/Kungsgeten/org-brain][org-brain on github]]
-#+END_QUOTE
-
-*** STABLE Basic setup along with org-id
-CLOSED: [2019-04-11 Thu 08:52]
-:PROPERTIES:
-:ID:       ae3c3f14-d570-4fc0-b3b2-156020ba7c61
-:END:
-
-Since org-brain requires the org id for a heading to be recognized and displayed, it is convenient to have capture and refile mechanisms that create the org-id if the heading does not have it.
-
-Further streamlining is necessary as such.
+** helm-ag
 
 #+BEGIN_SRC emacs-lisp
+(straight-use-package 'helm-ag)
+#+END_SRC
+
+** helm-org-rifle 
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-org-rifle
+  :straight t
+  :config
+  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
+#+END_SRC
+
+* Knowledge management
+** org-brain
+
+#+begin_src emacs-lisp :noweb t
   (use-package org-brain
+    ;; :straight (org-brain :type git :host github :repo "dustinlacewell/org-brain")
+    :straight t
     :after org
-    :ensure t
-    :bind  ("M-s v" . org-brain-visualize)
-    :init
-    (setq org-brain-path "~/my_org/brain/")
-    ;; ;; For Evil users
-    ;; (with-eval-after-load 'evil
-   ;;   (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    :bind ("M-s v" . org-brain-visualize)
     :config
-    (setq org-id-track-globally t)
-    (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
-    (push '("b" "Brain" plain (function org-brain-goto-end)
-            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:" :empty-lines 1)
-          org-capture-templates)
-    (setq org-brain-visualize-default-choices 'all)
-    (setq org-brain-title-max-length 12)
-    (add-hook 'org-brain-refile 'org-id-get-create))
-;; (global-set-key (kbd "M-s v") #'org-brain-visualize)
+    ;; this unbinds all default org-brain bindings
+    (setcdr org-brain-visualize-mode-map nil)
+    (setq
+     ;; org-brain-path (f-join path-of-this-repo "brain")
+     org-brain-visualize-default-choices 'all
+     org-brain-include-file-entries t
+     org-brain-scan-for-header-entries t
+     org-brain-file-entries-use-title t
+     org-brain-show-full-entry t
+     org-brain-show-text t
+     org-id-track-globally t
+     org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
+     org-brain-title-max-length 24))
+#+end_src
+
+#+RESULTS:
+: org-brain-visualize
+
+*** Navigation Helpers
+
+#+begin_src emacs-lisp
+  (defun my/org-brain-visualize-parent ()
+    (interactive)
+    (when (org-brain-parents (org-brain-entry-at-pt)) (org-brain-visualize-parent (org-brain-entry-at-pt))))
+
+  (defun my/org-brain-visualize-child (entry &optional all)
+    (interactive (list (org-brain-entry-at-pt)))
+    (when (org-brain-children entry)
+      (let* ((entries (if all (org-brain-children entry)
+                      (org-brain--linked-property-entries
+                       entry org-brain-children-property-name)))
+           (child (cond
+                   ((equal 1 (length entries)) (car-safe entries))
+                   ((not entries) (error (concat entry " has no children")))
+                   (t (org-brain-choose-entry "Goto child: " entries nil t)))))
+        (org-brain-visualize child))))
+
+  (defun my/next-button-with-category (category)
+    (let ((original-point (point))
+          (first-result (text-property-search-forward 'brain-category category t t)))
+      (when first-result
+            (goto-char (prop-match-beginning first-result)))
+      (when (eq original-point (point))
+        (beginning-of-buffer)
+        (let ((second-result (text-property-search-forward 'brain-category category t t)))
+          (when second-result
+            (goto-char (prop-match-beginning second-result))))
+        (when (eq 0 (point))
+          (goto-char original-point))
+        )
+      ))
+
+  (defun my/previous-button-with-category (category)
+    (let ((result (text-property-search-backwards 'brain-category category nil t)))))
+
+  (defun my/next-brain-child ()
+    (interactive)
+    (my/next-button-with-category 'child))
+
+  (defun my/next-brain-history ()
+    (interactive)
+    (my/next-button-with-category 'history))
+
+  (defun my/avy-brain-jump (category)
+    (avy-jump "\\<." :pred (lambda () (and (eq category (get-text-property (point) 'brain-category))
+                                      (eq (- (point) 1) (button-start (button-at (point))))))
+              :action (lambda (p) (goto-char (+ 1 p)) (push-button))))
+
+  (defun my/avy-brain-jump-history ()
+    (interactive)
+    (my/avy-brain-jump 'history))
+
+  (defun my/avy-brain-jump-child ()
+    (interactive)
+    (my/avy-brain-jump 'child))
+
+  (defun my/avy-brain-jump-parent ()
+    (interactive)
+    (my/avy-brain-jump 'parent))
+
+  (defun my/avy-brain-jump-friend ()
+    (interactive)
+    (my/avy-brain-jump 'friend))
+
+  (defun my/avy-brain-jump-sibling ()
+    (interactive)
+    (my/avy-brain-jump 'sibling))
+#+end_src
+
+#+RESULTS:
+: my/avy-brain-jump-sibling
+
+** polybrain
+
+#+name: polybrain
+#+begin_src emacs-lisp :noweb t
+  (use-package polybrain
+    :defer nil
+    :after org-brain
+    :straight (polybrain :type git :host github :repo "dustinlacewell/polybrain.el")
+    :bind (:map org-brain-visualize-mode-map
+           ("m" . org-brain-visualize-mind-map)
+           ("<tab>" . backward-button)
+           ("S-<tab>" . forward-button)
+           ("DEL" . org-brain-visualize-back)
+           ("r" . org-brain-open-resource)
+           ("v" . org-brain-visualize)
+
+           ("i" . org-brain-pin)
+           ("T" . org-brain-set-title)
+           ("t" . org-brain-set-tags)
+           ("d" . org-brain-delete-entry)
+           ("R" . org-brain-visualize-add-resource)
+           ("o" . org-brain-goto-current)
+           ("O" . org-brain-goto)
+
+           ("c" . org-brain-add-child)
+           ("C" . org-brain-remove-child)
+
+           ("p" . org-brain-add-parent)
+           ("P" . org-brain-remove-parent)
+
+           ("f" . org-brain-add-friendship)
+           ("F" . org-brain-remove-friendship)
+
+           ("e" . org-brain-annotate-edge)
+
+
+           ("M-p" . my/avy-brain-jump-parent)
+           ("M-c" . my/avy-brain-jump-child)
+           ("M-s" . my/avy-brain-jump-sibling)
+           ("M-f" . my/avy-brain-jump-friend)
+           ("M-h" . my/avy-brain-jump-history)
+
+           :map poly-brain-mode-map
+           ("C-x C-s" . polybrain-save)
+           ("<M-SPC>" . polybrain-switch))
+    :config 
+    (require 'polybrain))
+#+end_src
+
+#+RESULTS: polybrain
+
+** deflayer
+
+This will help with different settings for different brains. Eventually, I hope
+I can use the same settings. 
+
+#+BEGIN_SRC emacs-lisp
+
+    (use-package deflayer
+      :straight (deflayer :type git :host github :repo "dustinlacewell/deflayer.el")
+      :config
+      (require 'map)
+      (require 'deflayer))
+
+    (deflayer sr-brain org-brain
+      ((org-brain-path "~/my_org/brain/")))
+
+    (deflayer episteme org-brain
+      ((org-brain-path "~/my_projects/episteme/brain/")))
+
 #+END_SRC
 
 #+RESULTS:
+: deflayer-activate-episteme
+
 ** org-web-tools
 :PROPERTIES:
 :ID:       CE6402C3-BDF9-4B59-A01A-DC7EF461CC5A
