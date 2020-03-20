@@ -856,6 +856,20 @@ This has to be combined with desktop.el or some other method to enable persisten
   )
 #+END_SRC
 
+** TODO Bufler
+
+For the few occassions that I use the buffer-list command, I think the bufler
+package provides a more functional interface. 
+
+- [ ] explore the workspace configuration format. Can this restricted on a
+  frame basis like eyebrowse? Does that even make sense? 
+
+#+BEGIN_SRC emacs-lisp
+(use-package bufler
+  :straight (bufler :host github :repo "alphapapa/bufler.el")
+:bind ("C-x C-b" . bufler-list))
+#+END_SRC
+
 * Emacs information
 ** which key
 :PROPERTIES:
@@ -3632,19 +3646,6 @@ In addition, I would like an org id to be created every time the capture is used
         (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
 #+END_SRC
 
-** TODO Bufler
-
-For the few occassionst that I use the buffer-list command, I think the bufler
-package provides a more functional interface. 
-
-- [ ] explore the workspace configuration format. Can this restricted on a
-  frame basis like eyebrowse? Does that even make sense? 
-
-#+BEGIN_SRC emacs-lisp
-(use-package bufler
-  :straight (bufler :host github :repo "alphapapa/bufler.el")
-:bind ("C-x C-b" . bufler-list))
-#+END_SRC
 
 ** Modeline adjustments
 

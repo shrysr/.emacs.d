@@ -337,6 +337,10 @@ Inserted by installing 'org-mode' or when a release is made."
   (eyebrowse-mode 1)
   )
 
+(use-package bufler
+  :straight (bufler :host github :repo "alphapapa/bufler.el")
+:bind ("C-x C-b" . bufler-list))
+
 (use-package which-key
   :defer 5
   :ensure t
