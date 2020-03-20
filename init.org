@@ -3545,15 +3545,18 @@ prj:students::README.org
 :PROPERTIES:
 :ID:       6B26E4FC-C32C-4459-8FD5-9234A52C913A
 :END:
+- Note taken on [2020-03-18 Wed 08:14] \\
+  Adding a shortcut to the function to clone a git repo and create a notebook.
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defhydra nb-hydra (:hint nil :color blue)
   "
-navigation      search              utilities            link
+navigation      search              utilities                link
 --------------------------------------------------------------------------------
-_f_: file       _sa_: search all   _b_: Open in bash      _o_: open other window
-_d_: dir        _ss_: search some  _e_: Open in explorer  _O_: open other frame
-_D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
+_f_: file       _sa_: search all   _b_: Open in bash         _o_: open other window
+_d_: dir        _ss_: search some  _e_: Open in explorer     _O_: open other frame
+_D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
+                                  _g_: clone to new notebook
 "
   ("b" bash "bash")
   ("e" explorer "explorer")
