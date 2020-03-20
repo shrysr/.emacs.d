@@ -158,6 +158,65 @@ There are a number of repositories of configurations and packages that I would l
                    user-emacs-directory))
 #+END_SRC
 
+** Lexical let
+
+#+BEGIN_SRC emacs-lisp
+(require 'cl)
+#+END_SRC
+
+#+RESULTS:
+: cl
+
+* Auto-save setup
+
+Copied from ldleworth's config. I think this makes sense for me at the
+moment. Here is a summary: 
+
+- Setup auto-save for every file that is visited.
+- Set the auto-save directory explicitly to save all the auto-saves in a single location.
+  - The directory will be created if not available, and will be ignored for
+    git.
+- Use the autosave directory for backups as well. 
+- [ ] Save every 20 seconds (experiment with the time frame)
+- [ ] Backup on each save.
+  - [ ] This uses a package. I am not sure whether this is necessary.
+- Backup files even if version controlled
+- [ ] Copy files to avoid various problems.
+  - [ ] check whether this causes any lag with operating emacs.
+- keep 10 versions of old backups and delete old backups.
+
+
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default t)
+(setq auto-save-timeout 20
+      auto-save-interval 20)
+
+(defvar emacs-autosave-directory
+(concat user-emacs-directory "autosaves/"))
+
+(unless (file-exists-p emacs-autosave-directory)
+(make-directory emacs-autosave-directory))
+
+(setq auto-save-file-name-transforms
+`((".*" ,emacs-autosave-directory t)))
+
+(setq backup-directory-alist `((".*" . ,emacs-autosave-directory)))
+
+(use-package backup-each-save
+:straight t
+:config (add-hook 'after-save-hook 'backup-each-save))
+
+(setq vc-make-backup-files t)
+
+(setq backup-by-copying t)
+
+(setq kept-new-versions 10
+kept-old-verisons 0
+delete-old-versions t)
+
+#+END_SRC
+
+
 * OS Level variables
 :PROPERTIES:
 :header-args: :tangle yes
