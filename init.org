@@ -1156,16 +1156,13 @@ This package contains a bunch of useful tools which can cut down a lot of work
   )
 #+END_SRC
 
-** Scimax notebook
-:PROPERTIES:
-:ID:       EEC0DFD5-0343-4C96-81E2-7268DEDF3136
-:END:
-The concept and functionality of the scimax notebook is so incredibly useful, that I had to lift it verbatim from Scimax, and hope to hack on it a little further.
-
-- [ ] Fix the scimax apps references and the hydra
+** Epubs in emacs 
 
 #+BEGIN_SRC emacs-lisp
-
+(use-package nov
+:straight t
+:config
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+END_SRC
 
 * TEST Treemacs [0/3]
@@ -1493,7 +1490,7 @@ This configuration is picked up from scimax.
 	'ivy--regex-ignore-order)
   :bind
   (("M-x" . counsel-M-x)
-   ("C-x b" . ivy-switch-buffer)
+   ("C-x b" . counsel-switch-buffer)
    ("C-x C-f" . counsel-find-file)
    ("C-x l" . counsel-locate)
    ("C-h f" . counsel-describe-function)
@@ -1970,6 +1967,7 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 * Scimax stuff
+
 These packages and customisations are the ones I enjoy using from Scimax.
 
 ** Adding scimax to the path and setting the scimax directory
@@ -2484,12 +2482,11 @@ default name based on the url is suggested."
     (when (file-exists-p path)
       (error "%S already exists" path))
     (make-directory path t)
-    (shell-command-to-string (format "git clone %s \"%s\"" urlg path))
+    (shell-command-to-string (format "git clone %s \"%s\"" url path))
     (dired path)))
 
 
 #+END_SRC
-
 
 ***** Clone an existing project
 :PROPERTIES:
@@ -3564,6 +3561,7 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
   ("d" projectile-find-dir "find dir")
   ("D" projectile-dired "open root in dired")
   ("n" nb-new "new notebook")
+  ("g"  nb-git-clone "clone to new nb")
 
   ("sa" nb-search-all "search all files")
   ("ss" nb-search "search some files")
@@ -3618,6 +3616,35 @@ In addition, I would like an org id to be created every time the capture is used
 :PROPERTIES:
 :header-args: :tangle no
 :END:
+** helm-ag functions
+*** Episteme search
+
+#+BEGIN_SRC emacs-lisp
+(defun episteme-search ()
+  (interactive)
+  (helm-do-ag (my/project-directory "episteme/brain"))
+  (let* ((p (point))
+         (f (org-brain-first-headline-position))
+         (adjusted-point (max 0 (- p f))))
+    (org-brain-visualize (file-name-sans-extension (buffer-name)))
+    (with-current-buffer "*org-brain*"
+      (let ((minmax (polybrain--get-point-min-max)))
+        (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
+#+END_SRC
+
+** TODO Bufler
+
+For the few occassionst that I use the buffer-list command, I think the bufler
+package provides a more functional interface. 
+
+- [ ] explore the workspace configuration format. Can this restricted on a
+  frame basis like eyebrowse? Does that even make sense? 
+
+#+BEGIN_SRC emacs-lisp
+(use-package bufler
+  :straight (bufler :host github :repo "alphapapa/bufler.el")
+:bind ("C-x C-b" . bufler-list))
+#+END_SRC
 
 ** Modeline adjustments
 
@@ -3849,10 +3876,56 @@ Source: https://github.com/m-parashar/emax64/issues/5
 
 These are packages and snippets that disabled from tangling and execution. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
-** Polybrain
-*** Forked org-brain
+** org-brain
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+#+BEGIN_QUOTE
+org-brain implements a variant of concept mapping in Emacs, using org-mode.
+
+You can think of org-brain as a combination of a wiki and a mind map, where each wiki page / mind map node is an org-mode file which resides in your org-brain-path, or a headline with an ID property in one of those files. These are called entries. Entries can be linked together, and you can then view the network of links as a mind map, using M-x org-brain-visualize
+
+[[https://github.com/Kungsgeten/org-brain][org-brain on github]]
+#+END_QUOTE
+
+*** STABLE Basic setup along with org-id
+CLOSED: [2019-04-11 Thu 08:52]
+:PROPERTIES:
+:ID:       ae3c3f14-d570-4fc0-b3b2-156020ba7c61
+:END:
+
+Since org-brain requires the org id for a heading to be recognized and displayed, it is convenient to have capture and refile mechanisms that create the org-id if the heading does not have it.
+
+Further streamlining is necessary as such.
 
 #+BEGIN_SRC emacs-lisp
+  (use-package org-brain
+    :after org
+    :ensure t
+    :bind  ("M-s v" . org-brain-visualize)
+    :init
+    ;; (setq org-brain-path "~/my_org/brain/")
+    ;; ;; for Evil users
+    ;; (with-eval-after-load 'evil
+   ;;   (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    :config
+    (setq org-id-track-globally t)
+    (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+    (push '("b" "Brain" plain (function org-brain-goto-end)
+            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:" :empty-lines 1)
+          org-capture-templates)
+    (setq org-brain-visualize-default-choices 'all)
+    (setq org-brain-title-max-length 12)
+    (add-hook 'org-brain-refile 'org-id-get-create))
+;; (global-set-key (kbd "M-s v") #'org-brain-visualize)
+#+END_SRC
+
+#+RESULTS:
+** Polybrain 
+*** Dustin's forked org-brain
+
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-brain
     :straight (org-brain :type git :host github :repo "dustinlacewell/org-brain")
     :after org
@@ -4144,6 +4217,7 @@ Installing the SLIME package
 #+BEGIN_SRC emacs-lisp
 (use-package slime
   :ensure t
+  :straight t
   )
 #+END_SRC
 

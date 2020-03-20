@@ -44,6 +44,35 @@
   )
 (message "Completed OS Level variables load")
 
+(require 'cl)
+
+(setq auto-save-default t)
+(setq auto-save-timeout 20
+      auto-save-interval 20)
+
+(defvar emacs-autosave-directory
+(concat user-emacs-directory "autosaves/"))
+
+(unless (file-exists-p emacs-autosave-directory)
+(make-directory emacs-autosave-directory))
+
+(setq auto-save-file-name-transforms
+`((".*" ,emacs-autosave-directory t)))
+
+(setq backup-directory-alist `((".*" . ,emacs-autosave-directory)))
+
+(use-package backup-each-save
+:straight t
+:config (add-hook 'after-save-hook 'backup-each-save))
+
+(setq vc-make-backup-files t)
+
+(setq backup-by-copying t)
+
+(setq kept-new-versions 10
+kept-old-verisons 0
+delete-old-versions t)
+
 ;; Get current system's name
 (defun insert-system-name()
   (interactive)
@@ -344,25 +373,155 @@ Inserted by installing 'org-mode' or when a release is made."
   ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
   (push (org-projectile-project-todo-entry) org-capture-templates))
 
+(straight-use-package 'helm-ag)
+
+(use-package helm-org-rifle
+  :straight t
+  :config
+  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
+
   (use-package org-brain
+    ;; :straight (org-brain :type git :host github :repo "dustinlacewell/org-brain")
+    :straight t
     :after org
-    :ensure t
-    :bind  ("M-s v" . org-brain-visualize)
-    :init
-    (setq org-brain-path "~/my_org/brain/")
-    ;; ;; For Evil users
-    ;; (with-eval-after-load 'evil
-   ;;   (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    :bind ("M-s v" . org-brain-visualize)
     :config
-    (setq org-id-track-globally t)
-    (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
-    (push '("b" "Brain" plain (function org-brain-goto-end)
-            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:" :empty-lines 1)
-          org-capture-templates)
-    (setq org-brain-visualize-default-choices 'all)
-    (setq org-brain-title-max-length 12)
-    (add-hook 'org-brain-refile 'org-id-get-create))
-;; (global-set-key (kbd "M-s v") #'org-brain-visualize)
+    ;; this unbinds all default org-brain bindings
+    (setcdr org-brain-visualize-mode-map nil)
+    (setq
+     ;; org-brain-path (f-join path-of-this-repo "brain")
+     org-brain-visualize-default-choices 'all
+     org-brain-include-file-entries t
+     org-brain-scan-for-header-entries t
+     org-brain-file-entries-use-title t
+     org-brain-show-full-entry t
+     org-brain-show-text t
+     org-id-track-globally t
+     org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
+     org-brain-title-max-length 24))
+
+  (defun my/org-brain-visualize-parent ()
+    (interactive)
+    (when (org-brain-parents (org-brain-entry-at-pt)) (org-brain-visualize-parent (org-brain-entry-at-pt))))
+
+  (defun my/org-brain-visualize-child (entry &optional all)
+    (interactive (list (org-brain-entry-at-pt)))
+    (when (org-brain-children entry)
+      (let* ((entries (if all (org-brain-children entry)
+                      (org-brain--linked-property-entries
+                       entry org-brain-children-property-name)))
+           (child (cond
+                   ((equal 1 (length entries)) (car-safe entries))
+                   ((not entries) (error (concat entry " has no children")))
+                   (t (org-brain-choose-entry "Goto child: " entries nil t)))))
+        (org-brain-visualize child))))
+
+  (defun my/next-button-with-category (category)
+    (let ((original-point (point))
+          (first-result (text-property-search-forward 'brain-category category t t)))
+      (when first-result
+            (goto-char (prop-match-beginning first-result)))
+      (when (eq original-point (point))
+        (beginning-of-buffer)
+        (let ((second-result (text-property-search-forward 'brain-category category t t)))
+          (when second-result
+            (goto-char (prop-match-beginning second-result))))
+        (when (eq 0 (point))
+          (goto-char original-point))
+        )
+      ))
+
+  (defun my/previous-button-with-category (category)
+    (let ((result (text-property-search-backwards 'brain-category category nil t)))))
+
+  (defun my/next-brain-child ()
+    (interactive)
+    (my/next-button-with-category 'child))
+
+  (defun my/next-brain-history ()
+    (interactive)
+    (my/next-button-with-category 'history))
+
+  (defun my/avy-brain-jump (category)
+    (avy-jump "\\<." :pred (lambda () (and (eq category (get-text-property (point) 'brain-category))
+                                      (eq (- (point) 1) (button-start (button-at (point))))))
+              :action (lambda (p) (goto-char (+ 1 p)) (push-button))))
+
+  (defun my/avy-brain-jump-history ()
+    (interactive)
+    (my/avy-brain-jump 'history))
+
+  (defun my/avy-brain-jump-child ()
+    (interactive)
+    (my/avy-brain-jump 'child))
+
+  (defun my/avy-brain-jump-parent ()
+    (interactive)
+    (my/avy-brain-jump 'parent))
+
+  (defun my/avy-brain-jump-friend ()
+    (interactive)
+    (my/avy-brain-jump 'friend))
+
+  (defun my/avy-brain-jump-sibling ()
+    (interactive)
+    (my/avy-brain-jump 'sibling))
+
+  (use-package polybrain
+    :defer nil
+    :after org-brain
+    :straight (polybrain :type git :host github :repo "dustinlacewell/polybrain.el")
+    :bind (:map org-brain-visualize-mode-map
+           ("m" . org-brain-visualize-mind-map)
+           ("<tab>" . backward-button)
+           ("S-<tab>" . forward-button)
+           ("DEL" . org-brain-visualize-back)
+           ("r" . org-brain-open-resource)
+           ("v" . org-brain-visualize)
+
+           ("i" . org-brain-pin)
+           ("T" . org-brain-set-title)
+           ("t" . org-brain-set-tags)
+           ("d" . org-brain-delete-entry)
+           ("R" . org-brain-visualize-add-resource)
+           ("o" . org-brain-goto-current)
+           ("O" . org-brain-goto)
+
+           ("c" . org-brain-add-child)
+           ("C" . org-brain-remove-child)
+
+           ("p" . org-brain-add-parent)
+           ("P" . org-brain-remove-parent)
+
+           ("f" . org-brain-add-friendship)
+           ("F" . org-brain-remove-friendship)
+
+           ("e" . org-brain-annotate-edge)
+
+
+           ("M-p" . my/avy-brain-jump-parent)
+           ("M-c" . my/avy-brain-jump-child)
+           ("M-s" . my/avy-brain-jump-sibling)
+           ("M-f" . my/avy-brain-jump-friend)
+           ("M-h" . my/avy-brain-jump-history)
+
+           :map poly-brain-mode-map
+           ("C-x C-s" . polybrain-save)
+           ("<M-SPC>" . polybrain-switch))
+    :config 
+    (require 'polybrain))
+
+    (use-package deflayer
+      :straight (deflayer :type git :host github :repo "dustinlacewell/deflayer.el")
+      :config
+      (require 'map)
+      (require 'deflayer))
+
+    (deflayer sr-brain org-brain
+      ((org-brain-path "~/my_org/brain/")))
+
+    (deflayer episteme org-brain
+      ((org-brain-path "~/my_projects/episteme/brain/")))
 
 (use-package org-web-tools
 :defer 5
@@ -382,7 +541,10 @@ Inserted by installing 'org-mode' or when a release is made."
   (require 'org-download)
   )
 
-
+(use-package nov
+:straight t
+:config
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 
 (use-package treemacs
   :ensure t
@@ -576,7 +738,7 @@ Inserted by installing 'org-mode' or when a release is made."
 	'ivy--regex-ignore-order)
   :bind
   (("M-x" . counsel-M-x)
-   ("C-x b" . ivy-switch-buffer)
+   ("C-x b" . counsel-switch-buffer)
    ("C-x C-f" . counsel-find-file)
    ("C-x l" . counsel-locate)
    ("C-h f" . counsel-describe-function)
@@ -1155,7 +1317,7 @@ default name based on the url is suggested."
     (when (file-exists-p path)
       (error "%S already exists" path))
     (make-directory path t)
-    (shell-command-to-string (format "git clone %s \"%s\"" urlg path))
+    (shell-command-to-string (format "git clone %s \"%s\"" url path))
     (dired path)))
 
 ;;;###autoload
@@ -1849,11 +2011,12 @@ We use this with C-mouse-1 on a link."
 
 (defhydra nb-hydra (:hint nil :color blue)
   "
-navigation      search              utilities            link
+navigation      search              utilities                link
 --------------------------------------------------------------------------------
-_f_: file       _sa_: search all   _b_: Open in bash      _o_: open other window
-_d_: dir        _ss_: search some  _e_: Open in explorer  _O_: open other frame
-_D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
+_f_: file       _sa_: search all   _b_: Open in bash         _o_: open other window
+_d_: dir        _ss_: search some  _e_: Open in explorer     _O_: open other frame
+_D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
+                                  _g_: clone to new notebook
 "
   ("b" bash "bash")
   ("e" explorer "explorer")
@@ -1861,6 +2024,7 @@ _D_: open root  _sb_: search bufs  _n_: new notebook      _y_: open with sys
   ("d" projectile-find-dir "find dir")
   ("D" projectile-dired "open root in dired")
   ("n" nb-new "new notebook")
+  ("g"  nb-git-clone "clone to new nb")
 
   ("sa" nb-search-all "search all files")
   ("ss" nb-search "search some files")
