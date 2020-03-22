@@ -46,9 +46,27 @@
 
 (require 'cl)
 
+(defun sr/fun/async-tangle-init () 
+  (async-start
+   (lambda ()
+     (org-babel-tangle))
+(message "Tangle async done")))
+
+(defun sr/fun/homedir (foldername)
+"Function to extract the home directory path"
+  (expand-file-name foldername (getenv "HOME")))
+
+(defun sr/fun/project-dir (foldername)
+"Function to prepend the project directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/homedir "my_projects" )))
+
+(defun sr/fun/org-dir (foldername)
+"Function to prepend the org directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/homedir "my_org" )))
+
 (setq auto-save-default t)
 (setq auto-save-timeout 20
-      auto-save-interval 20)
+      auto-save-interval 60)
 
 (defvar emacs-autosave-directory
 (concat user-emacs-directory "autosaves/"))
@@ -168,11 +186,6 @@ Inserted by installing 'org-mode' or when a release is made."
    ("C-c l" . org-store-link)
    ("C-c a" . org-agenda))
 
-(use-package org-bullets
-:after (org)
-:config
-(add-hook 'org-mode-hook 'org-bullets-mode))
-
    (with-eval-after-load 'org
    (add-hook 'org-mode-hook #'org-indent-mode))
 
@@ -223,9 +236,32 @@ Inserted by installing 'org-mode' or when a release is made."
 
 (setq org-datetree-add-timestamp nil)
 
+(defun sr/fun/todo-active ()
+'("* %doct(todo-state) %^{Description}"
+":PROPERTIES:"
+":CREATED: %U"
+":PLANNED: %t"
+":END:"
+"%?"))
+
+(defun sr/fun/todo-passive ()
+'("* %doct(todo-state) %^{Description}"
+":PROPERTIES:"
+":CREATED: %U"
+":END:"
+"%?"))
+
+(defun sr/fun/todo-mail-active ()
+'("* %doct(todo-state) %a"
+":PROPERTIES:"
+":CREATED: %U"
+":PLANNED: %t"
+":END:"
+"%?"))
+
 (setq org-capture-templates
       '(("t" "Task entry")
-        ("tt" "Todo - Fast" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
+        ("tt" "Todo - Fast Now" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
 	 "** TODO %?")
         ("tj" "Todo -Job journal" entry (file+olp+datetree "~/my_org/ds-jobs.org" "Job Search Journal")
 	 "** TODO %?")
@@ -377,16 +413,9 @@ Inserted by installing 'org-mode' or when a release is made."
   ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
   (push (org-projectile-project-todo-entry) org-capture-templates))
 
-(straight-use-package 'helm-ag)
-
-(use-package helm-org-rifle
-  :straight t
-  :config
-  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
-
   (use-package org-brain
-    ;; :straight (org-brain :type git :host github :repo "dustinlacewell/org-brain")
-    :straight t
+    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
+			 :fork (:host github :repo "dustinlacewell/org-brain"))
     :after org
     :bind ("M-s v" . org-brain-visualize)
     :config
@@ -402,7 +431,11 @@ Inserted by installing 'org-mode' or when a release is made."
      org-brain-show-text t
      org-id-track-globally t
      org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
-     org-brain-title-max-length 24))
+     org-brain-title-max-length 24)
+    (push '("b" "Brain" plain (function org-brain-goto-end)
+            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
+          org-capture-templates)
+    (add-hook 'org-brain-refile 'org-id-get-create)))
 
   (defun my/org-brain-visualize-parent ()
     (interactive)
@@ -515,18 +548,6 @@ Inserted by installing 'org-mode' or when a release is made."
     :config 
     (require 'polybrain))
 
-    (use-package deflayer
-      :straight (deflayer :type git :host github :repo "dustinlacewell/deflayer.el")
-      :config
-      (require 'map)
-      (require 'deflayer))
-
-    (deflayer sr-brain org-brain
-      ((org-brain-path "~/my_org/brain/")))
-
-    (deflayer episteme org-brain
-      ((org-brain-path "~/my_projects/episteme/brain/")))
-
 (use-package org-web-tools
 :defer 5
 :ensure nil
@@ -549,6 +570,13 @@ Inserted by installing 'org-mode' or when a release is made."
 :straight t
 :config
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+
+(straight-use-package 'helm-ag)
+
+(use-package helm-org-rifle
+  :straight t
+  :config
+  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
 
 (use-package treemacs
   :ensure t
@@ -702,7 +730,7 @@ Inserted by installing 'org-mode' or when a release is made."
 
 ;; Allow tree-semantics for undo operations.
 (use-package undo-tree
-  :diminish                       ;; Don't show an icon in the modeline
+  :diminish t                      ;; Don't show an icon in the modeline
   :config
     ;; Always have it on
     (global-undo-tree-mode)
@@ -967,20 +995,23 @@ Inserted by installing 'org-mode' or when a release is made."
 ;; Attempt to solve the problem of forwarding emails especailly with attachments.
 ;(advice-add '(org-msg-mode) :after #'mu4e-compose-forward))
 
- (use-package org-beautify-theme
- :after (org)
- :config
- (setq org-fontify-whole-heading-line t)
- (setq org-fontify-quote-and-verse-blocks t)
- (setq org-hide-emphasis-markers t))
+(setq custom-safe-themes t)
 
-;; For Linux
-(if (system-type-is-gnu)
-    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
+(use-package poet-theme
+  :straight t
+  :config
+  (set-face-attribute 'default nil :family "Iosevka" :height 130)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka")
+  (set-face-attribute 'variable-pitch nil :family "Baskerville")
+;; Enabling the variable pitch mode
+ (add-hook 'text-mode-hook
+               (lambda ()
+                (variable-pitch-mode 1)))
+ (load-theme 'poet-dark))
 
-;; For Mac OS
-(if (system-type-is-darwin)
-    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
+(use-package olivetti
+:config
+(olivetti-mode 1))
 
 (use-package spaceline
   :demand t
@@ -1187,8 +1218,6 @@ Inserted by installing 'org-mode' or when a release is made."
 ;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
 ;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
 ;;; It would also be nice ot have a clear method to take care of the path expansion
-
-(call-process "/bin/bash" nil t nil "-c" "ln -s ~/.emacs.d/straight/repos/ob-ipython/client.py ~/.emacs.d/straight/build/ob-ipython/")
 
 (straight-use-package 'beacon)
 (use-package scimax-org-babel-python

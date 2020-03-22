@@ -1,5 +1,8 @@
+# Local variables:
+# eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) t t)
+# end:
 #+PROPERTY: header-args :tangle yes
-#+TITLE: shrysr's Dotemacs
+#+TITLE: shrysr's Dotemacs config
 
 * Introduction
 
@@ -10,6 +13,7 @@ contribute to the reliability and modularity of Scimax.
 ** TODO Inspirations
 
 - [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
+- [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
 - Many others to be added soon.
 
 * Tasks
@@ -49,7 +53,7 @@ This part of the config has to be tangled to init.el so that straight and use-pa
 A reasonable explanation of the importance of lexical binding is available [[info:elisp#Lexical%20Binding][in the elisp manual]]. This is essentially similar to the quoted or unquoted variables in R.
 
 #+BEGIN_QUOTE
-A lexically-bound variable has “lexical scope”, meaning that any
+A lexically-bound variable has lexical scope, meaning that any
 reference to the variable must be located textually within the binding
 construct.
 #+END_QUOTE
@@ -146,19 +150,7 @@ Since I switch between a Linux machine and a Mac frequently, it is useful to def
 
 There are a number of repositories of configurations and packages that I would like to directly use. One prime example is scimax. There are of course others, and they have to be added to the load-path for the funtions to be accessible.
 
-** Org babel load
-:PROPERTIES:
-:ID:       DDDC0DB7-8E9B-4509-B315-73BEB30F6D29
-:END:
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package org)
-(org-babel-load-file
- (expand-file-name "config.org"
-                   user-emacs-directory))
-#+END_SRC
-
-** Lexical let
+** Lexical let from Common Lisp 
 
 #+BEGIN_SRC emacs-lisp
 (require 'cl)
@@ -166,6 +158,66 @@ There are a number of repositories of configurations and packages that I would l
 
 #+RESULTS:
 : cl
+
+** Tangle on save 
+
+At the moment, I have the following in my init.org file to tangle on save. I
+would like to experiment with an async tangle through a custom function and
+atleast a message once it is complete. Perhaps that can also include some tests
+down the line.
+
+#+BEGIN_EXAMPLE
+# Local variables:
+# eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) t t)
+# end:
+#+END_EXAMPLE
+
+** TODO Async function to tangle org file on save.
+This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchronous_tangle_and_compile_of_configorg/][Asynchronous tangle and compile of config.org
+(question/issue) : emacs]] on reddit. Since I am using straight.el, the byte
+compilation of packages is not necessary (or already taken care of).
+
+(sr/fun/async-tangle-init)
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/async-tangle-init () 
+  (async-start
+   (lambda ()
+     (org-babel-tangle))
+(message "Tangle async done")))
+
+#+END_SRC
+
+#+RESULTS:
+: sr/fun/async-tangle-init
+
+
+
+** Directory setups
+*** Function to create directories based on home path 
+
+- [ ] Test whether this is really OS independent.
+
+The idea is that a home directory is constructed, and then various folders are just appended to the home directory path. 
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/homedir (foldername)
+"Function to extract the home directory path"
+  (expand-file-name foldername (getenv "HOME")))
+#+END_SRC
+
+*** Various directories
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/project-dir (foldername)
+"Function to prepend the project directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/homedir "my_projects" )))
+
+(defun sr/fun/org-dir (foldername)
+"Function to prepend the org directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/homedir "my_org" )))
+
+#+END_SRC
 
 * Auto-save setup
 
@@ -177,7 +229,8 @@ moment. Here is a summary:
   - The directory will be created if not available, and will be ignored for
     git.
 - Use the autosave directory for backups as well. 
-- [ ] Save every 20 seconds (experiment with the time frame)
+- [ ] Save every +20+ 60 seconds (experiment with the time frame)
+  - This causes too much lag and has been disabled. 
 - [ ] Backup on each save.
   - [ ] This uses a package. I am not sure whether this is necessary.
 - Backup files even if version controlled
@@ -189,7 +242,7 @@ moment. Here is a summary:
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-default t)
 (setq auto-save-timeout 20
-      auto-save-interval 20)
+      auto-save-interval 60)
 
 (defvar emacs-autosave-directory
 (concat user-emacs-directory "autosaves/"))
@@ -215,7 +268,6 @@ kept-old-verisons 0
 delete-old-versions t)
 
 #+END_SRC
-
 
 * OS Level variables
 :PROPERTIES:
@@ -354,7 +406,6 @@ I have modified it to my own file names.
   :ensure t)
 #+END_SRC
 
-* TODO Snippets
 * Org-mode related
 
 These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
@@ -415,7 +466,7 @@ Inserted by installing 'org-mode' or when a release is made."
 :ID:       0A9A08EC-7693-43CF-85B3-85CAC5129AE1
 :END:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package org-bullets
 :after (org)
 :config
@@ -618,6 +669,78 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 
 #+RESULTS:
 
+*** Capture templates using the doct package
+
+[[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At
+the moment, I am interested in adding hooks to specific functions and improving
+the entire capture process.
+
+Defining some template functions 
+
+#+BEGIN_SRC emacs-lisp 
+(defun sr/fun/todo-active ()
+'("* %doct(todo-state) %^{Description}"
+":PROPERTIES:"
+":CREATED: %U"
+":PLANNED: %t"
+":END:"
+"%?"))
+
+(defun sr/fun/todo-passive ()
+'("* %doct(todo-state) %^{Description}"
+":PROPERTIES:"
+":CREATED: %U"
+":END:"
+"%?"))
+
+(defun sr/fun/todo-mail-active ()
+'("* %doct(todo-state) %a"
+":PROPERTIES:"
+":CREATED: %U"
+":PLANNED: %t"
+":END:"
+"%?"))
+
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-capture-templates
+      (doct '(("Tasks" :keys "t"
+               :file "~/my_org/todo-global.org"
+               :prepend t
+	       :children (("Fast TODO"  
+			   :keys "t"
+			   :type entry	                           
+			   :headline   "@Inbox"
+			   :todo-state "TODO"
+			   :template (lambda () (sr/fun/todo-active)))
+                          ("Emacs TODO" :keys "e"
+                           :headline   "@Emacs notes and tasks"
+                           :todo-state "TODO"
+			   :template (lambda () (sr/fun/todo-passive)))
+                          ("DS TODO"  :keys "d"
+			         :file "~/my_org/datascience.org"
+                           :headline   "@Datascience @Inbox"
+                           :todo-state "TODO"
+			   :template (lambda () (sr/fun/todo-passive)))
+                          ("Mail TODO"  :keys "m"
+			         :file "~/my_org/todo-global.org"
+                           :headline   "@Mail"
+                           :todo-state "TODO"
+			   :template (lambda () (sr/fun/todo-mail-active))))
+	      ("Notes" :keys "n"
+               :file "~/my_org/notes.org"
+               :prepend t
+               :template :template (lambda () (sr/fun/todo-passive))
+               :children (("Fast note"  
+			   :keys "n"
+			   :type entry	                           
+			   :headline   "One"
+			   :todo-state "TODO" )))))))
+#+END_SRC
+
+
 *** Capture templates
     :PROPERTIES:
     :ID:       50f2b318-d9e6-4403-af24-875c662d888d
@@ -626,7 +749,7 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       '(("t" "Task entry")
-        ("tt" "Todo - Fast" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
+        ("tt" "Todo - Fast Now" entry (file+headline "~/my_org/todo-global.org" "@Inbox")
 	 "** TODO %?")
         ("tj" "Todo -Job journal" entry (file+olp+datetree "~/my_org/ds-jobs.org" "Job Search Journal")
 	 "** TODO %?")
@@ -672,14 +795,14 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+end_src
 
 #+RESULTS:
-| t  | Task entry        |       |                                                                |                  |
+| t  | Task entry        |       |                                                                 |                  |
 | tt | Todo - Fast       | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO %?       |
 | tj | Todo -Job journal | entry | (file+olp+datetree ~/my_org/ds-jobs.org Job Search Journal)     | ** TODO %?       |
 | te | Todo - Emacs      | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | ** TODO %?       |
 | td | Datascience inbox | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | ** TODO %?       |
 | tm | Mail Link Todo    | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO Mail: %a |
-| l  | Link/Snippet      | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)     | ** %? %a         |
-| e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)     | *** %a,            |
+| l  | Link/Snippet      | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | ** %? %a         |
+| e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | *** %a,            |
 
 *** TEST Closing org-capture frame on abort
     :PROPERTIES:
@@ -942,30 +1065,13 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+RESULTS:
 : org-capture
 
-* Helm packages and functions
-
-** helm-ag
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'helm-ag)
-#+END_SRC
-
-** helm-org-rifle 
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-org-rifle
-  :straight t
-  :config
-  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
-#+END_SRC
-
 * Knowledge management
 ** org-brain
 
-#+begin_src emacs-lisp :noweb t
+#+begin_src emacs-lisp :tangle yes
   (use-package org-brain
-    ;; :straight (org-brain :type git :host github :repo "dustinlacewell/org-brain")
-    :straight t
+    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
+			 :fork (:host github :repo "dustinlacewell/org-brain"))
     :after org
     :bind ("M-s v" . org-brain-visualize)
     :config
@@ -981,7 +1087,11 @@ Starting off with the basic configuration posted in org-projectile github repo.
      org-brain-show-text t
      org-id-track-globally t
      org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
-     org-brain-title-max-length 24))
+     org-brain-title-max-length 24)
+    (push '("b" "Brain" plain (function org-brain-goto-end)
+            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
+          org-capture-templates)
+    (add-hook 'org-brain-refile 'org-id-get-create)))
 #+end_src
 
 #+RESULTS:
@@ -1114,22 +1224,25 @@ Starting off with the basic configuration posted in org-projectile github repo.
 
 ** deflayer
 
-This will help with different settings for different brains. Eventually, I hope
-I can use the same settings. 
+This will help with different settings for different brains. Eventually, it can
+also be used for different settings for say the org agenda or other
+components. 
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 
-    (use-package deflayer
-      :straight (deflayer :type git :host github :repo "dustinlacewell/deflayer.el")
-      :config
-      (require 'map)
-      (require 'deflayer))
+  (use-package deflayer
+    :straight (deflayer :type git :host github :repo "dustinlacewell/deflayer.el")
+    :config
+    ;; for some reason map seems to be required first. 
+    (require 'map)
+    (require 'deflayer))
 
-    (deflayer sr-brain org-brain
-      ((org-brain-path "~/my_org/brain/")))
+  (deflayer sr-brain org-brain
+    ((org-brain-path (sr/fun/org-dir "brain"))))
 
-    (deflayer episteme org-brain
-      ((org-brain-path "~/my_projects/episteme/brain/")))
+
+  (deflayer episteme org-brain
+    ((org-brain-path (sr/fun/project-dir "episteme/brain/"))))
 
 #+END_SRC
 
@@ -1177,6 +1290,22 @@ This package contains a bunch of useful tools which can cut down a lot of work
 :straight t
 :config
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+#+END_SRC
+* Helm packages and functions
+
+** helm-ag
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'helm-ag)
+#+END_SRC
+
+** helm-org-rifle 
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-org-rifle
+  :straight t
+  :config
+  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
 #+END_SRC
 
 * TEST Treemacs [0/3]
@@ -1433,7 +1562,7 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+BEGIN_SRC emacs-lisp
 ;; Allow tree-semantics for undo operations.
 (use-package undo-tree
-  :diminish                       ;; Don't show an icon in the modeline
+  :diminish t                      ;; Don't show an icon in the modeline
   :config
     ;; Always have it on
     (global-undo-tree-mode)
@@ -1832,45 +1961,72 @@ This configuration is picked up from scimax.
 #+RESULTS:
 
 * Aesthetics
-** Theme : org-beautify
-:PROPERTIES:
-:ID:       C93143D4-EEC8-4D14-A008-1E74BF447D63
-:END:
+** Setting custom themes to be safe
 
-Found this theme thanks to Dustin. It feels therapeutic, though Leuven and Zenburn are great themes in their own right. Maybe I'll consider using zenburn as my dark theme and org-beautify as the light version. It may even be worth creating a darker version of teh org-beautify theme.
+#+BEGIN_SRC emacs-lisp
+(setq custom-safe-themes t)
+#+END_SRC
 
- #+BEGIN_SRC emacs-lisp
- (use-package org-beautify-theme
- :after (org)
- :config
- (setq org-fontify-whole-heading-line t)
- (setq org-fontify-quote-and-verse-blocks t)
- (setq org-hide-emphasis-markers t))
+** Theme : Poet
+- Note taken on [2020-03-22 Sun 12:41] \\
+  Apparently, with a high gloss screen, it makes no difference whether the theme
+  is light or dark. The distracting reflkection still exists. Interestingly
+  enough, the macbook pro screen does not reflect much under the same conditions
+  and position with respect to light source.
 
- #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(use-package poet-theme
+  :straight t
+  :config
+  (set-face-attribute 'default nil :family "Iosevka" :height 130)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka")
+  (set-face-attribute 'variable-pitch nil :family "Baskerville")
+;; Enabling the variable pitch mode
+ (add-hook 'text-mode-hook
+               (lambda ()
+                (variable-pitch-mode 1)))
+ (load-theme 'poet-dark))
+#+END_SRC
 
- #+RESULTS:
- : t
+*** TODO Plans on customising this theme [1/10]
 
-** Font Customisation based on OS
-   :PROPERTIES:
-   :ID:       9e3c92e5-1049-4582-b165-0cd3ba7e2d95
-   :END:
+Things I would like to customise with this theme
 
-The same font is named differently in Antergos (Linux) and in the Mac OS.
+- [ ] Source block colors for main languages. This should be a very subtle
+  shade that works both on terminal as well as GUI emacs.
+- [X] Set the variable pitch, fixed pitch and other options to clearly
+  distinguish code blocks from the text and the same formatting should be
+  followed for major modes.
+  - So far this seems to be working as expected in the theme. I am not sure
+    whether it is a good idea to use variable width in terms of the delays in
+    rendering the buffer. 
+- [ ] Highlighting for the poet-dark theme should be a light red that is
+  visible on a high gloss screen. THis highlighting should not interfere with
+  the background color of code blocks. Perhaps an inverse could be specified
+  only for the code blocks
+- [ ] Headlines should not be in monospaced font. Text in monospaced font
+  should be clearly distinguished from the monospaced code blocks.
+- [ ] Further customisation of the modeline to make it closer to spacemacs style.
+- [ ] Parenthesis should be made dull and fading into the backgrond
+- [ ] Rainbow mode should be implemented.
+- [ ] Appropriate electric pair mode that does not interfere with yasnippet.
+  - [ ] Perhaps this could be made to not pair arrow brackets < >.
+- [ ] Headline levels should of different sizes and easily distinguishable
+- [ ] Change the font family from baskerville to something more palatable, but
+  with the serif type. Using a serif type will make it easily distnguishable
+  from the code as well. 
 
-#+begin_src emacs-lisp
-;; For Linux
-(if (system-type-is-gnu)
-    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
+** Olivetti mode
 
-;; For Mac OS
-(if (system-type-is-darwin)
-    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
-#+end_src
+This package is useful in centering the text in a buffer, and is particularly
+helpful with wide screens.
 
-#+RESULTS:
+#+BEGIN_SRC emacs-lisp
+(use-package olivetti
+:config
+(olivetti-mode 1))
 
+#+END_SRC
 ** TEST Spaceline : modeline configuration
    :PROPERTIES:
    :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
@@ -2159,7 +2315,7 @@ packages being used by scimax-org are :
 #+END_SRC
 
 #+RESULTS:
-: ivy-insert-org-entity
+: t
 *** scimax literate programming
 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -2197,6 +2353,7 @@ packages being used by scimax-org are :
 #+END_SRC
 
 #+RESULTS:
+: scimax-journal/body
 
 *** scimax-yas
 :PROPERTIES:
@@ -2263,12 +2420,14 @@ Summary of scimax's ipython customisations:
 ;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
 ;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
 ;;; It would also be nice ot have a clear method to take care of the path expansion
-
-(call-process "/bin/bash" nil t nil "-c" "ln -s ~/.emacs.d/straight/repos/ob-ipython/client.py ~/.emacs.d/straight/build/ob-ipython/")
  #+end_SRC
 
  #+RESULTS:
- : python3
+ : 1
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(call-process "/bin/bash" nil t nil "-c" "ln -s ~/.emacs.d/straight/repos/ob-ipython/client.py ~/.emacs.d/straight/build/ob-ipython/")
+#+END_SRC
 
 *** scimax-python enhancements
 This requires the beacon package and is a requirement for scimax-org as well.
@@ -3630,13 +3789,22 @@ In addition, I would like an org id to be created every time the capture is used
 :PROPERTIES:
 :header-args: :tangle no
 :END:
-** helm-ag functions
-*** Episteme search
+** Doct for org capture templates
 
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'doct)
+#+END_SRC
+
+** Custom search functions
+This section contains sections to search in specific directories, with
+customised options. 
+
+*** Episteme search
+Borrowed from ldlework
 #+BEGIN_SRC emacs-lisp
 (defun episteme-search ()
   (interactive)
-  (helm-do-ag (my/project-directory "episteme/brain"))
+  (helm-do-ag (sr/fun/project-dir "episteme/brain"))
   (let* ((p (point))
          (f (org-brain-first-headline-position))
          (adjusted-point (max 0 (- p f))))
@@ -3646,6 +3814,15 @@ In addition, I would like an org id to be created every time the capture is used
         (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
 #+END_SRC
 
+*** Projects search
+- [ ] Exclude git files and csv files
+- [ ] decide between helm-ag and counsel-ag and the method to jump between files. 
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/proj-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "")))
+#+END_SRC
 
 ** Modeline adjustments
 
@@ -3760,6 +3937,29 @@ nil 'make-it-local))))
    | (lambda nil (add-hook (quote before-save-hook) (quote org-mode--ensure-one-blank-line) nil (quote make-it-local))) | org-bullets-mode | org-indent-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-block-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
 
 ** TEST Perspective and persp-projectile
+** Theme : org-beautify
+:PROPERTIES:
+:ID:       C93143D4-EEC8-4D14-A008-1E74BF447D63
+:END:
+- Note taken on [2020-03-22 Sun 08:59] \\
+  The poet theme seems a better candidate for hacking, primarily from the point
+  of view of a better base to begin from, and also that there are light and
+  dark themes available out of the box. 
+
+Found this theme thanks to Dustin. It feels therapeutic, though Leuven and Zenburn are great themes in their own right. Maybe I'll consider using zenburn as my dark theme and org-beautify as the light version. It may even be worth creating a darker version of teh org-beautify theme.
+
+ #+BEGIN_SRC emacs-lisp :tangle no
+ (use-package org-beautify-theme
+ :after (org)
+ :config
+ (setq org-fontify-whole-heading-line t)
+ (setq org-fontify-quote-and-verse-blocks t)
+ (setq org-hide-emphasis-markers t))
+
+ #+END_SRC
+
+ #+RESULTS:
+ : t
 ** TODO Theme : Zenburn
 For a long period, I was using the zenburn theme and had started customising it for my needs. However, I think leuven with a greyish background is really quite suitable. Even so, it's nice to have a dark theme available when required. I'm keeping this around for tinkering down the line.
 
@@ -3876,6 +4076,43 @@ Source: https://github.com/m-parashar/emax64/issues/5
 :END:
 
 These are packages and snippets that disabled from tangling and execution. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
+** Font Customisation based on OS
+   :PROPERTIES:
+   :ID:       9e3c92e5-1049-4582-b165-0cd3ba7e2d95
+   :END:
+
+   - Note taken on [2020-03-22 Sun 12:35] \\
+     Disabling this temporarily to work on customising a theme.
+
+The same font is named differently in Antergos (Linux) and in the Mac OS.
+
+#+begin_src emacs-lisp :tangle no
+;; For Linux
+(if (system-type-is-gnu)
+    (set-face-attribute 'default nil :family "ttf-iosevka" :height 130 ))
+
+;; For Mac OS
+(if (system-type-is-darwin)
+    (set-face-attribute 'default nil :family "Iosevka Type" :height 160 ))
+#+end_src
+
+#+RESULTS:
+
+** Org babel load
+:PROPERTIES:
+:ID:       DDDC0DB7-8E9B-4509-B315-73BEB30F6D29
+:END:
+- Note taken on [2020-03-22 Sun 11:15] \\
+  This is not required. The overhead of tangling during the loading of Emacs is
+  too high and unnecessary. It seems a lot more efficient to tangle upon saving the org file, and
+  that process can be automated as well, even with an async.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package org)
+(org-babel-load-file
+ (expand-file-name "config.org"
+                   user-emacs-directory))
+#+END_SRC
 
 ** org-brain
 :PROPERTIES:
