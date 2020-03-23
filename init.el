@@ -2178,6 +2178,21 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
 :straight t
 :hook (python-mode . blacken-mode))
 
+(defun episteme-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "episteme/brain"))
+  (let* ((p (point))
+         (f (org-brain-first-headline-position))
+         (adjusted-point (max 0 (- p f))))
+    (org-brain-visualize (file-name-sans-extension (buffer-name)))
+    (with-current-buffer "*org-brain*"
+      (let ((minmax (polybrain--get-point-min-max)))
+        (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
+
+(defun sr/fun/proj-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "")))
+
   ;; (require 'org-id)
   ;; (setq org-id-link-to-org-use-id t)
   ;; (org-link-set-parameters "id" :store #'org-id-store-link)

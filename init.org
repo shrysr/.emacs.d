@@ -3883,7 +3883,7 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 
 The black library will re-format the code on a save. Elpy will automatically use black, as long as the elisp package installed, along with the python black package which can be installed using pip
 
-#+BEGIN_SRC sh :Tangle no
+#+BEGIN_SRC sh :tangle no
 pip3 install black
 #+END_SRC
 
@@ -3893,6 +3893,41 @@ pip3 install black
 :hook (python-mode . blacken-mode))
 #+END_SRC
 
+* TODO Custom search functions [0/1]
+This section contains sections to search in specific directories, with customised options.
+
+- [ ] Incorporate these functions into a hydra.
+  - [ ] Explore ldlework's hera and nougat hydra packages for this. Perhaps include into scimax under the applications menu. 
+
+** Episteme search
+Adapted from ldlework
+
+#+BEGIN_SRC emacs-lisp
+(defun episteme-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "episteme/brain"))
+  (let* ((p (point))
+         (f (org-brain-first-headline-position))
+         (adjusted-point (max 0 (- p f))))
+    (org-brain-visualize (file-name-sans-extension (buffer-name)))
+    (with-current-buffer "*org-brain*"
+      (let ((minmax (polybrain--get-point-min-max)))
+        (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
+#+END_SRC
+
+** Projects search [0/6]
+- [ ] Exclude git files
+- [ ] Exclude csv files
+- [ ] Exclude html and related files 
+- [ ] decide between helm-ag and counsel-ag and the method to jump between files.
+- [ ] Decide about plugging in arguments to activate different kinds of search.
+- [ ] Find if multiple paths can be included or not. 
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/proj-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "")))
+#+END_SRC
 
 * org-id
 :PROPERTIES:
@@ -3924,6 +3959,34 @@ In addition, I would like an org id to be created every time the capture is used
 :PROPERTIES:
 :header-args: :tangle no
 :END:
+** STABLE Pinboard [1/2]
+CLOSED: [2020-01-19 Sun 14:33]
+:PROPERTIES:
+:ID:       B1A6F6F9-0713-456A-826E-DCE6E83E2AFF
+:END:
+
+- Note taken on [2020-03-22 Sun 20:29] \\
+  This will need digestion of the org secrets file.
+
+To get started, visit your password settings page on Pinboard and get the API token that's displayed there.
+
+Then edit ~/.authinfo and add a line like this:
+
+#+BEGIN_SRC sh
+machine api.pinboard.in password foo:8ar8a5w188l3
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package pinboard
+:ensure t
+)
+#+END_SRC
+
+#+RESULTS:
+
+- [X] Figure out the auth file settings from before
+- [ ] Checkout the org mode snippet [[https://gist.github.com/khinsen/7ed357eed9b27f142e4fa6f5c4ad45dd][link]]
 ** Python source block tests
 - Syntax highlighting is taking place
 - 
@@ -3939,39 +4002,10 @@ print(np.array([5,4]))
 :results:
 [5 4]
 :end:
-** Doct for org capture templates
+** TODO Doct for org capture templates
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'doct)
-#+END_SRC
-
-** Custom search functions
-This section contains sections to search in specific directories, with
-customised options. 
-
-*** Episteme search
-Borrowed from ldlework
-#+BEGIN_SRC emacs-lisp
-(defun episteme-search ()
-  (interactive)
-  (helm-do-ag (sr/fun/project-dir "episteme/brain"))
-  (let* ((p (point))
-         (f (org-brain-first-headline-position))
-         (adjusted-point (max 0 (- p f))))
-    (org-brain-visualize (file-name-sans-extension (buffer-name)))
-    (with-current-buffer "*org-brain*"
-      (let ((minmax (polybrain--get-point-min-max)))
-        (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
-#+END_SRC
-
-*** Projects search
-- [ ] Exclude git files and csv files
-- [ ] decide between helm-ag and counsel-ag and the method to jump between files. 
-
-#+BEGIN_SRC emacs-lisp
-(defun sr/fun/proj-search ()
-  (interactive)
-  (helm-do-ag (sr/fun/project-dir "")))
 #+END_SRC
 
 ** Modeline adjustments
