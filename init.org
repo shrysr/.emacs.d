@@ -1,6 +1,3 @@
-# Local variables:
-# eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) t t)
-# end:
 #+PROPERTY: header-args :tangle yes
 #+TITLE: shrysr's Dotemacs config
 
@@ -43,8 +40,6 @@ This is just a general checklist and is by no means comprehensive.
 
 This part of the config has to be tangled to init.el so that straight and use-package can be setup.
 
-- [ ] Solve the issue of having this in the org file, without "require org".
-
 ** Lexical Scope
 :PROPERTIES:
 :ID:       3CBA7F73-C58D-4B9F-9B9E-3E02B52F6890
@@ -53,8 +48,7 @@ This part of the config has to be tangled to init.el so that straight and use-pa
 A reasonable explanation of the importance of lexical binding is available [[info:elisp#Lexical%20Binding][in the elisp manual]]. This is essentially similar to the quoted or unquoted variables in R.
 
 #+BEGIN_QUOTE
-A lexically-bound variable has lexical scope, meaning that any
-reference to the variable must be located textually within the binding
+A lexically-bound variable has lexical scope, meaning that any reference to the variable must be located textually within the binding
 construct.
 #+END_QUOTE
 
@@ -161,10 +155,22 @@ There are a number of repositories of configurations and packages that I would l
 
 ** Tangle on save 
 
-At the moment, I have the following in my init.org file to tangle on save. I
-would like to experiment with an async tangle through a custom function and
-atleast a message once it is complete. Perhaps that can also include some tests
-down the line.
+*** Tangle on save without async
+
+As such the tangling hardly takes any time. [[https://thewanderingcoder.com/2015/02/literate-emacs-configuration/][Literate Emacs Configuration | Sean Miller: The Wandering Coder]] provides an example of setting up a function. This uses the buffer file name to tangle for the emacs config file. A hook is added to the save function to check. 
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/tangle-on-save-init ()
+(when (string= buffer-file-name (file-truename "~/.emacs.d/init.org"))
+(org-babel-tangle)))
+
+(add-hook 'after-save-hook 'sr/fun/tangle-on-save-init)
+
+#+END_SRC
+
+*** Local file variables
+
+One way to do this is via local file variables, adding the following to the init file (or any file). However, it seems that this is not 'activated' by default.
 
 #+BEGIN_EXAMPLE
 # Local variables:
@@ -172,14 +178,13 @@ down the line.
 # end:
 #+END_EXAMPLE
 
-** TODO Async function to tangle org file on save.
-This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchronous_tangle_and_compile_of_configorg/][Asynchronous tangle and compile of config.org
-(question/issue) : emacs]] on reddit. Since I am using straight.el, the byte
-compilation of packages is not necessary (or already taken care of).
+*** TODO Async function to tangle org file on save.
+
+This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchronous_tangle_and_compile_of_configorg/][Asynchronous tangle and compile of config.org(question/issue) : emacs]] on reddit and a work in progress. Since I am using straight.el, the byte compilation of packages is not necessary (or already taken care of). It is probably worth noting that the tangling process is almost instant and maybe this effort is not warranted.
 
 (sr/fun/async-tangle-init)
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun sr/fun/async-tangle-init () 
   (async-start
    (lambda ()
@@ -190,8 +195,6 @@ compilation of packages is not necessary (or already taken care of).
 
 #+RESULTS:
 : sr/fun/async-tangle-init
-
-
 
 ** Directory setups
 *** Function to create directories based on home path 
@@ -1633,7 +1636,7 @@ This configuration is picked up from scimax.
 	'ivy--regex-ignore-order)
   :bind
   (("M-x" . counsel-M-x)
-   ("C-x b" . counsel-switch-buffer)
+   ("C-x b" . ivy-switch-buffer)
    ("C-x C-f" . counsel-find-file)
    ("C-x l" . counsel-locate)
    ("C-h f" . counsel-describe-function)
@@ -1701,7 +1704,7 @@ This configuration is picked up from scimax.
       (setq mac-right-option-modifier 'hyper)))
 #+END_SRC
 
-* Email                                                            :noexport:
+* Email :noexport:
 ** TODO [#A] mu4e
 :PROPERTIES:
 :ID:       87453c9b-3981-4097-84e7-e309f867ee46
@@ -1969,26 +1972,32 @@ This configuration is picked up from scimax.
 
 ** Theme : Poet
 - Note taken on [2020-03-22 Sun 12:41] \\
-  Apparently, with a high gloss screen, it makes no difference whether the theme
-  is light or dark. The distracting reflkection still exists. Interestingly
-  enough, the macbook pro screen does not reflect much under the same conditions
-  and position with respect to light source.
+  Apparently, with a high gloss screen, it makes no difference whether the theme is light or dark. The distracting reflection still exists. Interestingly
+  enough, the macbook pro screen does not reflect much under the same conditions and position with respect to light source.
 
 #+BEGIN_SRC emacs-lisp
 (use-package poet-theme
   :straight t
   :config
-  (set-face-attribute 'default nil :family "Iosevka" :height 130)
-  (set-face-attribute 'fixed-pitch nil :family "Iosevka")
-  (set-face-attribute 'variable-pitch nil :family "Baskerville")
-;; Enabling the variable pitch mode
- (add-hook 'text-mode-hook
-               (lambda ()
-                (variable-pitch-mode 1)))
- (load-theme 'poet-dark))
+  (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
+  (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold))))
+   )
+  ;; Enabling the variable pitch mode
+  (add-hook 'text-mode-hook
+	    (lambda ()
+	      (variable-pitch-mode 1)
+	      (visual-line-mode 1)))
+  (load-theme 'poet-dark))
 #+END_SRC
 
-*** TODO Plans on customising this theme [1/10]
+*** TODO Plans on customising this theme [1/12]
 
 Things I would like to customise with this theme
 
@@ -2004,8 +2013,7 @@ Things I would like to customise with this theme
   visible on a high gloss screen. THis highlighting should not interfere with
   the background color of code blocks. Perhaps an inverse could be specified
   only for the code blocks
-- [ ] Headlines should not be in monospaced font. Text in monospaced font
-  should be clearly distinguished from the monospaced code blocks.
+- [ ] Headlines, comments, source blocks, and code should be clearly distinguished.
 - [ ] Further customisation of the modeline to make it closer to spacemacs style.
 - [ ] Parenthesis should be made dull and fading into the backgrond
 - [ ] Rainbow mode should be implemented.
@@ -2014,7 +2022,9 @@ Things I would like to customise with this theme
 - [ ] Headline levels should of different sizes and easily distinguishable
 - [ ] Change the font family from baskerville to something more palatable, but
   with the serif type. Using a serif type will make it easily distnguishable
-  from the code as well. 
+  from the code as well.
+- [ ] incorporate the customisation functions in [[http://www.howardism.org/Technical/Emacs/orgmode-wordprocessor.html][Org as a Word Processor]].
+- [ ] Further customisation explanations are available in [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][zzamboni.org | Beautifying Org Mode in Emacs]]
 
 ** Olivetti mode
 
@@ -2106,14 +2116,16 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 :END:
 
 #+BEGIN_SRC emacs-lisp
+;; Removing all the bars 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
+;; No start up message and nothing to pollute the scratch buffer
 (setq inhibit-startup-message t initial-scratch-message nil)
 #+END_SRC
 
-** Visual Fill Column at 79
+** Visual Fill Column  
 :PROPERTIES:
 :ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
 :END:
@@ -2122,30 +2134,19 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 (use-package visual-fill-column
 :config (global-visual-fill-column-mode))
 
-(setq-default fill-column 79)
+(setq-default fill-column 70)
 #+END_SRC
 
-** Auto-fill text mode
-:PROPERTIES:
-:ID:       751B3E4C-1BBC-419D-BAD3-8F4A3880FB6D
-:END:
-- Note taken on [2020-03-12 Thu 08:46] \\
-  I need to check whether this interferes with mu4e and general org mode usage.
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
-#+END_SRC
 * Scimax stuff
 
-These packages and customisations are the ones I enjoy using from Scimax.
+These packages and customisations are the ones I enjoy using from Scimax. Note that these have to be customised and patched at the moment and I am working on an optimal solution to port the necessary packages, while maintaining some semblance of compatibility with the upstream.
 
-** Adding scimax to the path and setting the scimax directory
+** Setting the scimax directory
 :PROPERTIES:
 :ID:       977B7B1D-29CA-4096-8413-6ECDDED932C2
 :END:
 - Note taken on [2020-03-11 Wed 17:32] \\
-  Some package here seems to be interfering with tramp. Functions can be loaded selectively using straight.el, and this helps keeps things lighter as well.
+  Some package here seems to be interfering with tramp. Functions can be loaded selectively using straight.el, and this helps keeps things lighter as well. Adding the scimax directory to the path seems to trigger the tramp issue. The scimax directory is being defined, because it is used in the packages. Using straight.el changes the location of the scimax directory.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;;  (add-to-list 'load-path "./scimax")
@@ -2412,10 +2413,6 @@ Summary of scimax's ipython customisations:
     (use-package scimax-ob
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
-
-(setq python-shell-interpreter "python3")
-(setq org-babel-python-command "python3")
-(setq flycheck-python-pycompile-executable "python3")
 
 ;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
 ;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
@@ -3759,6 +3756,144 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
 #+END_SRC
 
+* Programming customisations
+** ESS configuration
+
+#+BEGIN_SRC emacs-lisp
+(use-package ess
+  :ensure t
+  :config
+  (require 'ess)
+  (show-paren-mode)
+  (use-package ess-R-data-view)
+  (use-package polymode)
+  (setq ess-describe-at-point-method nil)
+  (setq ess-switch-to-end-of-proc-buffer t)
+  (setq ess-rutils-keys +1)
+  (setq ess-eval-visibly 'nil)
+  (setq ess-use-flymake "lintr::default_linters()")
+   (setq ess-use-company t)
+  (setq ess-history-file "~/.Rhistory")
+  (setq ess-use-ido t)
+  (setq ess-roxy-hide-show-p t)
+  ;;(speedbar-add-supported-extension ".R")
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
+
+;;setting up eldoc
+(setq ess-use-eldoc t)
+(setq ess-eldoc-show-on-symbol t)
+(setq ess-doc-abbreviation-style 'aggresive)
+  )
+
+;; The following chunk is taken from: https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang/ess/packages.el
+;;; Follow Hadley Wickham's R style guide
+(setq ess-first-continued-statement-offset 2
+      ess-continued-statement-offset 4
+      ess-expression-offset 4
+      ess-nuke-trailing-whitespace-p t
+      ess-default-style 'DEFAULT)
+
+
+;; Adding Poly-R package
+
+(use-package poly-R
+  :ensure t
+  )
+;; The following chunk is taken from antonio's answer from https://stackoverflow.com/questions/16172345/how-can-i-use-emacs-ess-mode-with-r-markdown
+(defun rmd-mode ()
+  "ESS Markdown mode for rmd files."
+  (interactive)
+  (require 'poly-R)
+  (require 'poly-markdown)
+  (poly-markdown+r-mode))
+
+(use-package ess-view
+  :ensure t
+  :config
+  (require 'ess-view)
+  (if (system-type-is-darwin)
+      (setq ess-view--spreadsheet-program
+            "/Applications/Tad.app/Contents/MacOS/Tad"
+            )
+    )
+  (if (system-type-is-gnu)
+      (setq ess-view--spreadsheet-program
+            "tad"
+            )
+    )
+  )
+
+;; This is taken and slightly modified from the ESS manual
+;; The display config is similar to that of Rstudio
+
+(setq display-buffer-alist
+      `(("*R Dired"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.33)
+         (reusable-frames . nil))
+        ("*R"
+         (display-buffer-reuse-window display-buffer-at-bottom)
+         (window-width . 0.35)
+         (reusable-frames . nil))
+        ("*Help"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . 1)
+         (window-width . 0.33)
+         (reusable-frames . nil))))
+
+(message "Loaded ESS configuration")
+#+END_SRC
+
+** flycheck
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'flycheck)
+#+END_SRC
+
+** Python [0/4]
+At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] require pydoc, elpy and jedi, which are already installed. These packages have to be grouped here.
+
+[[https://realpython.com/emacs-the-best-python-editor/][Emacs: The Best Python Editor? – Real Python]] is a good guide towards setting up Emacs and python. [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]] provides a satisfyingly detailed configuration with customisations for python. The latter guide is worth following. 
+
+#+BEGIN_SRC emacs-lisp
+;; Enabling python 3 to be the default interpreter.
+(setq python-shell-interpreter "python3")
+(setq org-babel-python-command "python3")
+(setq flycheck-python-pycompile-executable "python3")
+
+;; Enabling flycheck for elpy mode
+
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+#+END_SRC
+
+- [ ] pyment
+- [ ] isort
+- [ ] pyenv version alias and activating on a per buffer basis
+- [ ] 
+
+*** Blacken
+
+The black library will re-format the code on a save. Elpy will automatically use black, as long as the elisp package installed, along with the python black package which can be installed using pip
+
+#+BEGIN_SRC sh :Tangle no
+pip3 install black
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package blacken
+:straight t
+:hook (python-mode . blacken-mode))
+#+END_SRC
+
+
 * org-id
 :PROPERTIES:
 :ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
@@ -3789,6 +3924,21 @@ In addition, I would like an org id to be created every time the capture is used
 :PROPERTIES:
 :header-args: :tangle no
 :END:
+** Python source block tests
+- Syntax highlighting is taking place
+- 
+
+#+BEGIN_SRC ipython
+# THis is a comment 
+import numpy as np
+print(np.array([5,4]))
+
+#+END_SRC
+
+#+RESULTS:
+:results:
+[5 4]
+:end:
 ** Doct for org capture templates
 
 #+BEGIN_SRC emacs-lisp
@@ -4075,7 +4225,23 @@ Source: https://github.com/m-parashar/emax64/issues/5
 :header-args: :tangle no
 :END:
 
-These are packages and snippets that disabled from tangling and execution. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
+These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
+
+** Auto-fill text mode
+:PROPERTIES:
+:ID:       751B3E4C-1BBC-419D-BAD3-8F4A3880FB6D
+:END:
+- Note taken on [2020-03-22 Sun 15:04] \\
+  This seems to introduce some weird characteristics in terms of line
+  breakage. Switching off for now.
+- Note taken on [2020-03-12 Thu 08:46] \\
+  I need to check whether this interferes with mu4e and general org mode usage.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+#+END_SRC
+
 ** Font Customisation based on OS
    :PROPERTIES:
    :ID:       9e3c92e5-1049-4582-b165-0cd3ba7e2d95

@@ -46,11 +46,11 @@
 
 (require 'cl)
 
-(defun sr/fun/async-tangle-init () 
-  (async-start
-   (lambda ()
-     (org-babel-tangle))
-(message "Tangle async done")))
+(defun sr/fun/tangle-on-save-init ()
+(when (string= buffer-file-name (file-truename "~/.emacs.d/init.org"))
+(org-babel-tangle)))
+
+(add-hook 'after-save-hook 'sr/fun/tangle-on-save-init)
 
 (defun sr/fun/homedir (foldername)
 "Function to extract the home directory path"
@@ -770,7 +770,7 @@ Inserted by installing 'org-mode' or when a release is made."
 	'ivy--regex-ignore-order)
   :bind
   (("M-x" . counsel-M-x)
-   ("C-x b" . counsel-switch-buffer)
+   ("C-x b" . ivy-switch-buffer)
    ("C-x C-f" . counsel-find-file)
    ("C-x l" . counsel-locate)
    ("C-h f" . counsel-describe-function)
@@ -1000,14 +1000,22 @@ Inserted by installing 'org-mode' or when a release is made."
 (use-package poet-theme
   :straight t
   :config
-  (set-face-attribute 'default nil :family "Iosevka" :height 130)
-  (set-face-attribute 'fixed-pitch nil :family "Iosevka")
-  (set-face-attribute 'variable-pitch nil :family "Baskerville")
-;; Enabling the variable pitch mode
- (add-hook 'text-mode-hook
-               (lambda ()
-                (variable-pitch-mode 1)))
- (load-theme 'poet-dark))
+  (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
+  (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold))))
+   )
+  ;; Enabling the variable pitch mode
+  (add-hook 'text-mode-hook
+	    (lambda ()
+	      (variable-pitch-mode 1)
+	      (visual-line-mode 1)))
+  (load-theme 'poet-dark))
 
 (use-package olivetti
 :config
@@ -1053,19 +1061,18 @@ Inserted by installing 'org-mode' or when a release is made."
                            :style released-button)
                     )
 
+;; Removing all the bars 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
+;; No start up message and nothing to pollute the scratch buffer
 (setq inhibit-startup-message t initial-scratch-message nil)
 
 (use-package visual-fill-column
 :config (global-visual-fill-column-mode))
 
-(setq-default fill-column 79)
-
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(setq-default fill-column 70)
 
   ;; (defconst scimax-dir (file-name-directory (or load-file-name (buffer-file-name)))
 
@@ -1210,10 +1217,6 @@ Inserted by installing 'org-mode' or when a release is made."
     (use-package scimax-ob
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
-
-(setq python-shell-interpreter "python3")
-(setq org-babel-python-command "python3")
-(setq flycheck-python-pycompile-executable "python3")
 
 ;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
 ;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
@@ -2069,6 +2072,111 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
 
 (setq nb-notebook-directory "~/my_projects/")
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
+
+(use-package ess
+  :ensure t
+  :config
+  (require 'ess)
+  (show-paren-mode)
+  (use-package ess-R-data-view)
+  (use-package polymode)
+  (setq ess-describe-at-point-method nil)
+  (setq ess-switch-to-end-of-proc-buffer t)
+  (setq ess-rutils-keys +1)
+  (setq ess-eval-visibly 'nil)
+  (setq ess-use-flymake "lintr::default_linters()")
+   (setq ess-use-company t)
+  (setq ess-history-file "~/.Rhistory")
+  (setq ess-use-ido t)
+  (setq ess-roxy-hide-show-p t)
+  ;;(speedbar-add-supported-extension ".R")
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
+
+;;setting up eldoc
+(setq ess-use-eldoc t)
+(setq ess-eldoc-show-on-symbol t)
+(setq ess-doc-abbreviation-style 'aggresive)
+  )
+
+;; The following chunk is taken from: https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang/ess/packages.el
+;;; Follow Hadley Wickham's R style guide
+(setq ess-first-continued-statement-offset 2
+      ess-continued-statement-offset 4
+      ess-expression-offset 4
+      ess-nuke-trailing-whitespace-p t
+      ess-default-style 'DEFAULT)
+
+
+;; Adding Poly-R package
+
+(use-package poly-R
+  :ensure t
+  )
+;; The following chunk is taken from antonio's answer from https://stackoverflow.com/questions/16172345/how-can-i-use-emacs-ess-mode-with-r-markdown
+(defun rmd-mode ()
+  "ESS Markdown mode for rmd files."
+  (interactive)
+  (require 'poly-R)
+  (require 'poly-markdown)
+  (poly-markdown+r-mode))
+
+(use-package ess-view
+  :ensure t
+  :config
+  (require 'ess-view)
+  (if (system-type-is-darwin)
+      (setq ess-view--spreadsheet-program
+            "/Applications/Tad.app/Contents/MacOS/Tad"
+            )
+    )
+  (if (system-type-is-gnu)
+      (setq ess-view--spreadsheet-program
+            "tad"
+            )
+    )
+  )
+
+;; This is taken and slightly modified from the ESS manual
+;; The display config is similar to that of Rstudio
+
+(setq display-buffer-alist
+      `(("*R Dired"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.33)
+         (reusable-frames . nil))
+        ("*R"
+         (display-buffer-reuse-window display-buffer-at-bottom)
+         (window-width . 0.35)
+         (reusable-frames . nil))
+        ("*Help"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . 1)
+         (window-width . 0.33)
+         (reusable-frames . nil))))
+
+(message "Loaded ESS configuration")
+
+(straight-use-package 'flycheck)
+
+;; Enabling python 3 to be the default interpreter.
+(setq python-shell-interpreter "python3")
+(setq org-babel-python-command "python3")
+(setq flycheck-python-pycompile-executable "python3")
+
+;; Enabling flycheck for elpy mode
+
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+(use-package blacken
+:straight t
+:hook (python-mode . blacken-mode))
 
   ;; (require 'org-id)
   ;; (setq org-id-link-to-org-use-id t)
