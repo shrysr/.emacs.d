@@ -3929,6 +3929,14 @@ Adapted from ldlework
   (helm-do-ag (sr/fun/project-dir "")))
 #+END_SRC
 
+** Org files search
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/org-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/org-dir "")))
+#+END_SRC
+
 * org-id
 :PROPERTIES:
 :ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c

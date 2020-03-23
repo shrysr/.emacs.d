@@ -2193,6 +2193,10 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
   (interactive)
   (helm-do-ag (sr/fun/project-dir "")))
 
+(defun sr/fun/org-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/org-dir "")))
+
   ;; (require 'org-id)
   ;; (setq org-id-link-to-org-use-id t)
   ;; (org-link-set-parameters "id" :store #'org-id-store-link)
