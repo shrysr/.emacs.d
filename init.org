@@ -153,8 +153,7 @@ There are a number of repositories of configurations and packages that I would l
 #+RESULTS:
 : cl
 
-** Tangle on save 
-
+** Tangle Emacs init on save 
 *** Tangle on save without async
 
 As such the tangling hardly takes any time. [[https://thewanderingcoder.com/2015/02/literate-emacs-configuration/][Literate Emacs Configuration | Sean Miller: The Wandering Coder]] provides an example of setting up a function. This uses the buffer file name to tangle for the emacs config file. A hook is added to the save function to check. 
@@ -1417,57 +1416,6 @@ As such most of these
 
 #+RESULTS:
 
-* TODO org-babel
-:PROPERTIES:
-:header-args: tangle no
-:END
-Since I work a lot with org babel for my mixed code notebooks, this gets it's own section. I would like to incorporate useful scimax customisations for this as well.
-- [ ] Incorporate Scimax's customisations in general
-- [ ] Particularly incorporate ipython block customisation
-
-** Languages to load
-:PROPERTIES:
-:ID:       2FEFFC39-99A5-4C72-A814-008D82B49492
-:END:
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((clojure . t)
-     (scheme . t)
-     (sqlite . t)
-     (R . t)
-     (lisp . t)
-     (sql .  t)
-     (shell . t)
-     ;; (ipython . t)
-  ;;   (jupyter . t)
-  ;;   (ein . t)
-     )
-   )
-#+end_src
-
-** TODO Default Header arguments and other options
-:PROPERTIES:
-:ID:       EC40BAAB-3EC9-4E5C-B90C-806AEDAB83DE
-:END:
-#+BEGIN_SRC emacs-lisp
-
-(with-eval-after-load 'org
-(setq org-babel-default-header-args
-'((:session . "none")
-(:results . "silent")
-(:exports . "code")
-(:cache . "no")
-(:noweb . "no")
-(:hlines . "no")
-(:tangle . "no"))))
-
-(with-eval-after-load 'org
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-confirm-shell-link-function nil)
-  (setq org-confirm-elisp-link-function nil))
-#+END_SRC
-
 * Code
 
 ** lispy
@@ -1997,23 +1945,19 @@ This configuration is picked up from scimax.
   (load-theme 'poet-dark))
 #+END_SRC
 
-*** TODO Plans on customising this theme [1/12]
+*** TODO Plans on customising this theme [1/13]
 
 Things I would like to customise with this theme
 
 - [ ] Source block colors for main languages. This should be a very subtle
   shade that works both on terminal as well as GUI emacs.
 - [X] Set the variable pitch, fixed pitch and other options to clearly
-  distinguish code blocks from the text and the same formatting should be
-  followed for major modes.
+  distinguish code blocks from the text and the same formatting should be followed for major modes.
   - So far this seems to be working as expected in the theme. I am not sure
-    whether it is a good idea to use variable width in terms of the delays in
-    rendering the buffer. 
-- [ ] Highlighting for the poet-dark theme should be a light red that is
-  visible on a high gloss screen. THis highlighting should not interfere with
-  the background color of code blocks. Perhaps an inverse could be specified
-  only for the code blocks
+    whether it is a good idea to use variable width in terms of the delays in rendering the buffer.
+- [ ] Highlighting for the poet-dark theme should be a light red that is visible on a high gloss screen. THis highlighting should not interfere with the background color of code blocks. Perhaps an inverse could be specified only for the code blocks
 - [ ] Headlines, comments, source blocks, and code should be clearly distinguished.
+- [ ] Headline levels should have different colors to enable quick distinguishing.
 - [ ] Further customisation of the modeline to make it closer to spacemacs style.
 - [ ] Parenthesis should be made dull and fading into the backgrond
 - [ ] Rainbow mode should be implemented.
@@ -2021,8 +1965,7 @@ Things I would like to customise with this theme
   - [ ] Perhaps this could be made to not pair arrow brackets < >.
 - [ ] Headline levels should of different sizes and easily distinguishable
 - [ ] Change the font family from baskerville to something more palatable, but
-  with the serif type. Using a serif type will make it easily distnguishable
-  from the code as well.
+  with the serif type. Using a serif type will make it easily distnguishable from the code as well.
 - [ ] incorporate the customisation functions in [[http://www.howardism.org/Technical/Emacs/orgmode-wordprocessor.html][Org as a Word Processor]].
 - [ ] Further customisation explanations are available in [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][zzamboni.org | Beautifying Org Mode in Emacs]]
 
@@ -3967,6 +3910,7 @@ In addition, I would like an org id to be created every time the capture is used
 :PROPERTIES:
 :header-args: :tangle no
 :END:
+
 ** STABLE Pinboard [1/2]
 CLOSED: [2020-01-19 Sun 14:33]
 :PROPERTIES:
@@ -4261,6 +4205,57 @@ Source: https://github.com/m-parashar/emax64/issues/5
 #+end_src
 
 #+RESULTS:
+
+** TODO org-babel
+:PROPERTIES:
+:header-args: tangle no
+:END
+Since I work a lot with org babel for my mixed code notebooks, this gets it's own section. I would like to incorporate useful scimax customisations for this as well.
+- [ ] Incorporate Scimax's customisations in general
+- [ ] Particularly incorporate ipython block customisation
+
+*** Languages to load
+:PROPERTIES:
+:ID:       2FEFFC39-99A5-4C72-A814-008D82B49492
+:END:
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((clojure . t)
+     (scheme . t)
+     (sqlite . t)
+     (R . t)
+     (lisp . t)
+     (sql .  t)
+     (shell . t)
+     ;; (ipython . t)
+  ;;   (jupyter . t)
+  ;;   (ein . t)
+     )
+   )
+#+end_src
+
+*** TODO Default Header arguments and other options
+:PROPERTIES:
+:ID:       EC40BAAB-3EC9-4E5C-B90C-806AEDAB83DE
+:END:
+#+BEGIN_SRC emacs-lisp
+
+(with-eval-after-load 'org
+(setq org-babel-default-header-args
+'((:session . "none")
+(:results . "silent")
+(:exports . "code")
+(:cache . "no")
+(:noweb . "no")
+(:hlines . "no")
+(:tangle . "no"))))
+
+(with-eval-after-load 'org
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-confirm-shell-link-function nil)
+  (setq org-confirm-elisp-link-function nil))
+#+END_SRC
 
 * Disabled
 :PROPERTIES:

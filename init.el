@@ -662,36 +662,6 @@ Inserted by installing 'org-mode' or when a release is made."
   :after treemacs magit
   :ensure t)
 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((clojure . t)
-     (scheme . t)
-     (sqlite . t)
-     (R . t)
-     (lisp . t)
-     (sql .  t)
-     (shell . t)
-     ;; (ipython . t)
-  ;;   (jupyter . t)
-  ;;   (ein . t)
-     )
-   )
-
-(with-eval-after-load 'org
-(setq org-babel-default-header-args
-'((:session . "none")
-(:results . "silent")
-(:exports . "code")
-(:cache . "no")
-(:noweb . "no")
-(:hlines . "no")
-(:tangle . "no"))))
-
-(with-eval-after-load 'org
-  (setq org-confirm-babel-evaluate nil)
-  (setq org-confirm-shell-link-function nil)
-  (setq org-confirm-elisp-link-function nil))
-
 ;; Superior lisp editing
 (use-package lispy
   :config
