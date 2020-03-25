@@ -673,11 +673,20 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 
 #+RESULTS:
 
-*** Capture templates using the doct package
+*** TODO Doct for org capture templates
 
-[[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At
-the moment, I am interested in adding hooks to specific functions and improving
-the entire capture process.
+**** Install doct
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'doct)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+**** Capture templates using the doct package
+
+[[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At the moment, I am interested in adding hooks to specific functions and improving the entire capture process.
 
 Defining some template functions 
 
@@ -705,8 +714,17 @@ Defining some template functions
 ":END:"
 "%?"))
 
+(defun sr/fun/note-passive ()
+'("* %^{Description}"
+":PROPERTIES:"
+":CREATED: %U"
+":END:"
+"%?"))
+
 #+END_SRC
 
+#+RESULTS:
+: sr/fun/note-passive
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-capture-templates
@@ -732,18 +750,27 @@ Defining some template functions
 			         :file "~/my_org/todo-global.org"
                            :headline   "@Mail"
                            :todo-state "TODO"
-			   :template (lambda () (sr/fun/todo-mail-active))))
+			   :template (lambda () (sr/fun/todo-mail-active)))))
 	      ("Notes" :keys "n"
                :file "~/my_org/notes.org"
                :prepend t
-               :template :template (lambda () (sr/fun/todo-passive))
+               :template (lambda () (sr/fun/note-passive))
                :children (("Fast note"  
 			   :keys "n"
-			   :type entry	                           
-			   :headline   "One"
-			   :todo-state "TODO" )))))))
+			   :type entry	                       
+			   :headline   "@Note"
+			    ))))))
+
 #+END_SRC
 
+#+RESULTS:
+| t  | Tasks      |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                             |
+| tt | Fast TODO  | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast TODO :keys t :type entry :headline @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-active)) :inherited-keys tt :file ~/my_org/todo-global.org :prepend t :doct-custom (:todo-state TODO))       |
+| te | Emacs TODO | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | #'doct--fill-template | :prepend | t | :doct | (:doct-name Emacs TODO :keys e :headline @Emacs notes and tasks :todo-state TODO :template (lambda nil (sr/fun/todo-passive)) :inherited-keys te :file ~/my_org/todo-global.org :prepend t :doct-custom (:todo-state TODO)) |
+| td | DS TODO    | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | #'doct--fill-template | :prepend | t | :doct | (:doct-name DS TODO :keys d :file ~/my_org/datascience.org :headline @Datascience @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-passive)) :inherited-keys td :prepend t :doct-custom (:todo-state TODO))       |
+| tm | Mail TODO  | entry | (file+headline ~/my_org/todo-global.org @Mail)                  | #'doct--fill-template | :prepend | t | :doct | (:doct-name Mail TODO :keys m :file ~/my_org/todo-global.org :headline @Mail :todo-state TODO :template (lambda nil (sr/fun/todo-mail-active)) :inherited-keys tm :prepend t :doct-custom (:todo-state TODO))               |
+| n  | Notes      |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                             |
+| nn | Fast note  | entry | (file+headline ~/my_org/notes.org @Note)                        | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast note :keys n :type entry :headline @Note :inherited-keys nn :file ~/my_org/notes.org :prepend t :template (lambda nil (sr/fun/note-passive)))                                                              |
 
 *** Capture templates
     :PROPERTIES:
@@ -3343,12 +3370,6 @@ pipx inject numpy jupyter
 #+END_SRC
 
 #+RESULTS:
-
-** TODO Doct for org capture templates
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'doct)
-#+END_SRC
 
 ** Modeline adjustments
 
