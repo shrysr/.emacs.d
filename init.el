@@ -246,6 +246,8 @@ Inserted by installing 'org-mode' or when a release is made."
 
 (setq org-datetree-add-timestamp nil)
 
+(straight-use-package 'doct)
+
 (defun sr/fun/todo-active ()
 '("* %doct(todo-state) %^{Description}"
 ":PROPERTIES:"
@@ -266,6 +268,13 @@ Inserted by installing 'org-mode' or when a release is made."
 ":PROPERTIES:"
 ":CREATED: %U"
 ":PLANNED: %t"
+":END:"
+"%?"))
+
+(defun sr/fun/note-passive ()
+'("* %^{Description}"
+":PROPERTIES:"
+":CREATED: %U"
 ":END:"
 "%?"))
 
@@ -986,7 +995,7 @@ Inserted by installing 'org-mode' or when a release is made."
 (straight-use-package 'modus-vivendi-theme)
 
 ;; Load the modus theme
-(load-theme 'modus-vivendi)
+(load-theme 'modus-operandi)
 
 ;; My customisations
 (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
@@ -1005,8 +1014,8 @@ Inserted by installing 'org-mode' or when a release is made."
 (olivetti-mode 1))
 
 (use-package spaceline
-:straight t
-:init
+  :straight t
+  :init
   (setq powerline-default-separator 'arrow-fade)
   :config
   (disable-theme 'smart-mode-line-light)
@@ -1014,7 +1023,7 @@ Inserted by installing 'org-mode' or when a release is made."
   (spaceline-spacemacs-theme)
   (spaceline-toggle-buffer-position-off)
   (spaceline-toggle-hud-off)
-  (spaceline-python-pyvenv-on)
+  (setq spaceline-python-pyvenv-on 1)
   (spaceline-toggle-minor-modes-off))
 
 (setq org-fontify-done-headline t)
