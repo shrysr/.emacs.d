@@ -1959,6 +1959,7 @@ This configuration is picked up from scimax.
 #+END_SRC
 
 ** Theme : modus
+Theme Installation:
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'modus-operandi-theme)
@@ -1972,7 +1973,7 @@ This configuration is picked up from scimax.
 
 #+BEGIN_SRC emacs-lisp
 ;; Load the modus theme
-(load-theme 'modus-vivendi)
+(load-theme 'modus-operandi)
 
 ;; My customisations
 (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
