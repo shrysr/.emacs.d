@@ -2011,8 +2011,8 @@ helpful with wide screens.
 
 #+BEGIN_SRC emacs-lisp
 (use-package spaceline
-:straight t
-:init
+  :straight t
+  :init
   (setq powerline-default-separator 'arrow-fade)
   :config
   (disable-theme 'smart-mode-line-light)
@@ -2020,10 +2020,9 @@ helpful with wide screens.
   (spaceline-spacemacs-theme)
   (spaceline-toggle-buffer-position-off)
   (spaceline-toggle-hud-off)
-  (spaceline-python-pyvenv-on)
+  (setq spaceline-python-pyvenv-on 1)
   (spaceline-toggle-minor-modes-off))
-  
-#+END_SRC
+  #+END_SRC
 
 #+RESULTS:
 : t
