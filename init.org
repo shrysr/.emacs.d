@@ -143,8 +143,10 @@ Since I switch between a Linux machine and a Mac frequently, it is useful to def
 There are a number of repositories of configurations and packages that I would like to directly use. One prime example is scimax. There are of course others, and they have to be added to the load-path for the funtions to be accessible.
 
 ** Lexical let from Common Lisp 
+- Note taken on [2020-03-24 Tue 17:05] \\
+  This appears to be deprecated in Emacs 27.0.9. Untangling for the time being.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'cl)
 #+END_SRC
 
@@ -1054,9 +1056,9 @@ Starting off with the basic configuration posted in org-projectile github repo.
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-projectile
-  :ensure t
-  :after org projectile
-  :bind (("C-c n p" . org-projectile-project-todo-completing-read)
+:straight t
+:after org projectile
+:bind (("C-c n p" . org-projectile-project-todo-completing-read)
          ("C-c c" . org-capture))
   :config
   (setq org-projectile-projects-file
@@ -1073,8 +1075,9 @@ Starting off with the basic configuration posted in org-projectile github repo.
 
 #+begin_src emacs-lisp :tangle yes
   (use-package org-brain
-    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
-			 :fork (:host github :repo "dustinlacewell/org-brain"))
+    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain")
+    ;; :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
+    ;; 			 :fork (:host github :repo "dustinlacewell/org-brain"))
     :after org
     :bind ("M-s v" . org-brain-visualize)
     :config
@@ -1093,12 +1096,13 @@ Starting off with the basic configuration posted in org-projectile github repo.
      org-brain-title-max-length 24)
     (push '("b" "Brain" plain (function org-brain-goto-end)
             "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
-          org-capture-templates)
-    (add-hook 'org-brain-refile 'org-id-get-create)))
+          org-capture-templates)))
+    ;; (add-hook 'org-brain-refile 'org-id-get-create)))
 #+end_src
 
 #+RESULTS:
 : org-brain-visualize
+
 
 *** Navigation Helpers
 
@@ -1927,59 +1931,36 @@ This configuration is picked up from scimax.
 (setq custom-safe-themes t)
 #+END_SRC
 
-** Theme : Poet
-- Note taken on [2020-03-22 Sun 12:41] \\
-  Apparently, with a high gloss screen, it makes no difference whether the theme is light or dark. The distracting reflection still exists. Interestingly
-  enough, the macbook pro screen does not reflect much under the same conditions and position with respect to light source.
+** Theme : modus
 
 #+BEGIN_SRC emacs-lisp
-(use-package poet-theme
-  :straight t
-  :config
-  (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
-  (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
-  (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
-  (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
-   '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold))))
-   )
-  ;; Enabling the variable pitch mode
-  (add-hook 'text-mode-hook
-	    (lambda ()
-	      (variable-pitch-mode 1)
-	      (visual-line-mode 1)))
-  (load-theme 'poet-dark))
+(straight-use-package 'modus-operandi-theme)
+(straight-use-package 'modus-vivendi-theme)
 #+END_SRC
 
 #+RESULTS:
 : t
 
-*** TODO Plans on customising this theme [1/13]
+** Font and other aesthetics
 
-Things I would like to customise with this theme
+#+BEGIN_SRC emacs-lisp
+;; Load the modus theme
+(load-theme 'modus-vivendi)
 
-- [ ] Source block colors for main languages. This should be a very subtle
-  shade that works both on terminal as well as GUI emacs.
-- [X] Set the variable pitch, fixed pitch and other options to clearly
-  distinguish code blocks from the text and the same formatting should be followed for major modes.
-  - So far this seems to be working as expected in the theme. I am not sure
-    whether it is a good idea to use variable width in terms of the delays in rendering the buffer.
-- [ ] Highlighting for the poet-dark theme should be a light red that is visible on a high gloss screen. THis highlighting should not interfere with the background color of code blocks. Perhaps an inverse could be specified only for the code blocks
-- [ ] Headlines, comments, source blocks, and code should be clearly distinguished.
-- [ ] Headline levels should have different colors to enable quick distinguishing.
-- [ ] Further customisation of the modeline to make it closer to spacemacs style.
-- [ ] Parenthesis should be made dull and fading into the backgrond
-- [ ] Rainbow mode should be implemented.
-- [ ] Appropriate electric pair mode that does not interfere with yasnippet.
-  - [ ] Perhaps this could be made to not pair arrow brackets < >.
-- [ ] Headline levels should of different sizes and easily distinguishable
-- [ ] Change the font family from baskerville to something more palatable, but
-  with the serif type. Using a serif type will make it easily distnguishable from the code as well.
-- [ ] incorporate the customisation functions in [[http://www.howardism.org/Technical/Emacs/orgmode-wordprocessor.html][Org as a Word Processor]].
-- [ ] Further customisation explanations are available in [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][zzamboni.org | Beautifying Org Mode in Emacs]]
+;; My customisations
+(set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Iosevka term")
+(set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold)))))
+#+END_SRC
+
+#+RESULTS:
 
 ** Olivetti mode
 
@@ -1996,19 +1977,24 @@ helpful with wide screens.
    :PROPERTIES:
    :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
    :END:
-Source: http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/
+- [X] [[http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/][Get that spacemacs look without spacemacs | Pragmatic Emacs]] - this provides a bare bones setup
+- [ ] [[http://amitp.blogspot.com/2017/01/emacs-spaceline-mode-line.html][Amit's Thoughts: Emacs spaceline mode line]] : This is an excellent guide covering a lot of possibilities to customise so many aspects of the modeline and make it look great.
+- [ ] It seems that spaceline adds a few extra seconds to the init time. I wonder if there are lighter packages that achieve the same effect.
 
 #+BEGIN_SRC emacs-lisp
 (use-package spaceline
-  :demand t
-  :init
+:straight t
+:init
   (setq powerline-default-separator 'arrow-fade)
   :config
   (disable-theme 'smart-mode-line-light)
   (require 'spaceline-config)
-  (spaceline-emacs-theme)
+  (spaceline-spacemacs-theme)
   (spaceline-toggle-buffer-position-off)
-)
+  (spaceline-toggle-hud-off)
+  (spaceline-python-pyvenv-on)
+  (spaceline-toggle-minor-modes-off))
+  
 #+END_SRC
 
 #+RESULTS:
@@ -2034,7 +2020,7 @@ source: Sacha Chua
 
 #+RESULTS:
 
-** Formatting keywords as boxes with inverted colors
+** keywords as boxes with inverted colors
 :PROPERTIES:
 :ID:       62dcdc53-ee2f-4db2-afda-6b68a05cbeda
 :END:
@@ -2103,67 +2089,66 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 ** Temporary package list
 
 #+BEGIN_SRC emacs-lisp
-    (use-package helm-bibtex)
+      (use-package helm-bibtex)
 
-    (use-package helm-projectile)
+      (use-package helm-projectile)
 
-    ;; Functions for working with hash tables
-    (use-package ht)
+      ;; Functions for working with hash tables
+      (use-package ht)
 
-    (use-package htmlize)
+      (use-package htmlize)
 
-    (use-package hy-mode)
+      (use-package hy-mode)
 
-    (use-package hydra
-      :init
-      (setq hydra-is-helpful t)
+      (use-package hydra
+        :init
+        (setq hydra-is-helpful t)
 
-      :config
-      (require 'hydra-ox))
+        :config
+        (require 'hydra-ox))
 
-    (use-package ivy-hydra)
+      (use-package ivy-hydra)
 
-    (use-package jedi)
+      (use-package jedi)
 
-    (use-package jedi-direx)
+      (use-package jedi-direx)
 
-    (use-package diminish)
+      (use-package diminish)
 
-    ;; (use-package avy)
+      ;; (use-package avy)
 
-  (use-package pydoc)
+    (use-package pydoc)
 
-  (use-package pyvenv
-  :config
-  (require 'pyvenv))
-
-  (use-package rainbow-mode)
-
-  (use-package elpy
+    (use-package pyvenv
     :config
-    (elpy-enable))
+    (require 'pyvenv))
 
-  (use-package esup)
+    (use-package rainbow-mode)
 
-  ;; Provides functions for working with files
-  (use-package f)
+    (use-package elpy
+      :config
+      (elpy-enable))
 
-  (straight-use-package 'dash)
-  (straight-use-package 'dash-functional)
-  (straight-use-package 'cl)
-  (straight-use-package 'ov)
-(straight-use-package 'flx)
+    (use-package esup)
 
-  (use-package auto-complete
-    :diminish auto-complete-mode
-    :config (ac-config-default))
+    ;; Provides functions for working with files
+    (use-package f)
 
-(use-package google-this
-  :config
-  (google-this-mode 1))
+    (straight-use-package 'dash)
+    (straight-use-package 'dash-functional)
+    (straight-use-package 'ov)
+  (straight-use-package 'flx)
 
-(straight-use-package 'ggtags)
-(straight-use-package 'ibuffer-projectile)
+    (use-package auto-complete
+      :diminish auto-complete-mode
+      :config (ac-config-default))
+
+  (use-package google-this
+    :config
+    (google-this-mode 1))
+
+  (straight-use-package 'ggtags)
+  (straight-use-package 'ibuffer-projectile)
 #+END_SRC
 
 #+RESULTS:
@@ -3266,18 +3251,21 @@ Perhaps this package can extended as some tool belt of org utilities. Some ideas
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-spacer
-  :straight (org-spacer :type git :host github :repo "dustinlacewell/org-spacer.el")
+  :straight (org-spacer :type git :host github :repo "dustinlacewell/org-spacer.el"))
 :config
-;; As a before save hook
-(add-hook 'org-mode-hook
-          (lambda () (add-hook 'before-save-hook
-                          'org-spacer-enforce nil 'make-it-local)))
+;; ;; As a before save hook
+;; (add-hook 'org-mode-hook
+;;           (lambda () (add-hook 'before-save-hook
+;;                           'org-spacer-enforce nil 'make-it-local)))
 ;; Blank spaces directly after headlines
-(setq '(org-spacer-headline-blanks 1)
-;; Number of spaces after non-headline elements
-      (org-spacer-non-headline-blanks 1))
-
+(setq org-spacer-element-blanks
+  '((0 headline)
+    (1 paragraph src-block table property-drawer)))
 #+END_SRC
+
+#+RESULTS:
+| 0 | headline  |           |       |                 |
+| 1 | paragraph | src-block | table | property-drawer |
 
 ** STABLE Pinboard [1/2]
 CLOSED: [2020-01-19 Sun 14:33]
@@ -3666,6 +3654,34 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
 
 These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
+** Theme : Poet
+- Note taken on [2020-03-22 Sun 12:41] \\
+  Apparently, with a high gloss screen, it makes no difference whether the theme is light or dark. The distracting reflection still exists. Interestingly enough, the macbook pro screen does not reflect much under the same conditions and position with respect to light source.
+
+#+BEGIN_SRC emacs-lisp
+(use-package poet-theme
+  :straight t
+  :config
+  (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+  (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
+  (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+  (custom-set-faces
+   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+   '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
+   '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
+   '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold))))
+   )
+  ;; Enabling the variable pitch mode
+  (add-hook 'text-mode-hook
+	    (lambda ()
+	      (variable-pitch-mode 1)
+	      (visual-line-mode 1)))
+  (load-theme 'poet-dark))
+#+END_SRC
+
+#+RESULTS:
+: t
 ** Org bullets
 :PROPERTIES:
 :ID:       0A9A08EC-7693-43CF-85B3-85CAC5129AE1
@@ -4852,7 +4868,6 @@ These packages and customisations are the ones I enjoy using from Scimax. Note t
 
   (straight-use-package 'dash)
   (straight-use-package 'dash-functional)
-  (straight-use-package 'cl)
   (straight-use-package 'ov)
 (straight-use-package 'flx)
 

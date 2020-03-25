@@ -44,8 +44,6 @@
   )
 (message "Completed OS Level variables load")
 
-(require 'cl)
-
 (defun sr/fun/tangle-on-save-init ()
 (when (string= buffer-file-name (file-truename "~/.emacs.d/init.org"))
 (org-babel-tangle)))
@@ -416,9 +414,9 @@ Inserted by installing 'org-mode' or when a release is made."
   (projectile-global-mode))
 
 (use-package org-projectile
-  :ensure t
-  :after org projectile
-  :bind (("C-c n p" . org-projectile-project-todo-completing-read)
+:straight t
+:after org projectile
+:bind (("C-c n p" . org-projectile-project-todo-completing-read)
          ("C-c c" . org-capture))
   :config
   (setq org-projectile-projects-file
@@ -427,8 +425,9 @@ Inserted by installing 'org-mode' or when a release is made."
   (push (org-projectile-project-todo-entry) org-capture-templates))
 
   (use-package org-brain
-    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
-			 :fork (:host github :repo "dustinlacewell/org-brain"))
+    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain")
+    ;; :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
+    ;; 			 :fork (:host github :repo "dustinlacewell/org-brain"))
     :after org
     :bind ("M-s v" . org-brain-visualize)
     :config
@@ -447,8 +446,8 @@ Inserted by installing 'org-mode' or when a release is made."
      org-brain-title-max-length 24)
     (push '("b" "Brain" plain (function org-brain-goto-end)
             "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
-          org-capture-templates)
-    (add-hook 'org-brain-refile 'org-id-get-create)))
+          org-capture-templates)))
+    ;; (add-hook 'org-brain-refile 'org-id-get-create)))
 
   (defun my/org-brain-visualize-parent ()
     (interactive)
@@ -983,40 +982,40 @@ Inserted by installing 'org-mode' or when a release is made."
 
 (setq custom-safe-themes t)
 
-(use-package poet-theme
-  :straight t
-  :config
-  (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
-  (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
-  (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
-  (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
-   '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold))))
-   )
-  ;; Enabling the variable pitch mode
-  (add-hook 'text-mode-hook
-	    (lambda ()
-	      (variable-pitch-mode 1)
-	      (visual-line-mode 1)))
-  (load-theme 'poet-dark))
+(straight-use-package 'modus-operandi-theme)
+(straight-use-package 'modus-vivendi-theme)
+
+;; Load the modus theme
+(load-theme 'modus-vivendi)
+
+;; My customisations
+(set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Iosevka term")
+(set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold)))))
 
 (use-package olivetti
 :config
 (olivetti-mode 1))
 
 (use-package spaceline
-  :demand t
-  :init
+:straight t
+:init
   (setq powerline-default-separator 'arrow-fade)
   :config
   (disable-theme 'smart-mode-line-light)
   (require 'spaceline-config)
-  (spaceline-emacs-theme)
+  (spaceline-spacemacs-theme)
   (spaceline-toggle-buffer-position-off)
-)
+  (spaceline-toggle-hud-off)
+  (spaceline-python-pyvenv-on)
+  (spaceline-toggle-minor-modes-off))
 
 (setq org-fontify-done-headline t)
 (custom-set-faces
@@ -1063,67 +1062,66 @@ Inserted by installing 'org-mode' or when a release is made."
 ;; (add-to-list 'load-path (sr/fun/scimax-ref-dir "scimax-stuff"))
 ;; (defvar scimax-dir (sr/fun/scimax-ref-dir "scimax-stuff"))
 
-    (use-package helm-bibtex)
+      (use-package helm-bibtex)
 
-    (use-package helm-projectile)
+      (use-package helm-projectile)
 
-    ;; Functions for working with hash tables
-    (use-package ht)
+      ;; Functions for working with hash tables
+      (use-package ht)
 
-    (use-package htmlize)
+      (use-package htmlize)
 
-    (use-package hy-mode)
+      (use-package hy-mode)
 
-    (use-package hydra
-      :init
-      (setq hydra-is-helpful t)
+      (use-package hydra
+        :init
+        (setq hydra-is-helpful t)
 
-      :config
-      (require 'hydra-ox))
+        :config
+        (require 'hydra-ox))
 
-    (use-package ivy-hydra)
+      (use-package ivy-hydra)
 
-    (use-package jedi)
+      (use-package jedi)
 
-    (use-package jedi-direx)
+      (use-package jedi-direx)
 
-    (use-package diminish)
+      (use-package diminish)
 
-    ;; (use-package avy)
+      ;; (use-package avy)
 
-  (use-package pydoc)
+    (use-package pydoc)
 
-  (use-package pyvenv
-  :config
-  (require 'pyvenv))
-
-  (use-package rainbow-mode)
-
-  (use-package elpy
+    (use-package pyvenv
     :config
-    (elpy-enable))
+    (require 'pyvenv))
 
-  (use-package esup)
+    (use-package rainbow-mode)
 
-  ;; Provides functions for working with files
-  (use-package f)
+    (use-package elpy
+      :config
+      (elpy-enable))
 
-  (straight-use-package 'dash)
-  (straight-use-package 'dash-functional)
-  (straight-use-package 'cl)
-  (straight-use-package 'ov)
-(straight-use-package 'flx)
+    (use-package esup)
 
-  (use-package auto-complete
-    :diminish auto-complete-mode
-    :config (ac-config-default))
+    ;; Provides functions for working with files
+    (use-package f)
 
-(use-package google-this
-  :config
-  (google-this-mode 1))
+    (straight-use-package 'dash)
+    (straight-use-package 'dash-functional)
+    (straight-use-package 'ov)
+  (straight-use-package 'flx)
 
-(straight-use-package 'ggtags)
-(straight-use-package 'ibuffer-projectile)
+    (use-package auto-complete
+      :diminish auto-complete-mode
+      :config (ac-config-default))
+
+  (use-package google-this
+    :config
+    (google-this-mode 1))
+
+  (straight-use-package 'ggtags)
+  (straight-use-package 'ibuffer-projectile)
 
   (use-package org-ref
     :straight (org-ref :host github :repo "jkitchin/org-ref")
