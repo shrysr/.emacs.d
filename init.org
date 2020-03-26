@@ -3530,6 +3530,16 @@ In addition, I would like an org id to be created every time the capture is used
 
 #+RESULTS:
 | org-id-get-create |
+* Loading secret config
+
+#+BEGIN_SRC emacs-lisp
+;; Loading secret config containing personal information
+(org-babel-load-file (sr/fun/emacs-dir "sr-secrets.org.gpg"))
+#+END_SRC
+
+#+RESULTS:
+: Loaded /Users/shrysr/.emacs.d/sr-secrets.org.el
+
 * Testing Area
 :PROPERTIES:
 :header-args: :tangle no
