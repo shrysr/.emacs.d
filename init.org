@@ -11,29 +11,6 @@ I've been using my own configuration over that of Scimax for the past many years
 - [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
 - Many others to be added soon.
 
-* Tasks
-This is just a general checklist and is by no means comprehensive.
-
-[[index: * scimax][Scimax Headings]]
-
-- [X] nb-new
-- [X] org speed commands
-- [X] New headline or list entry on RET
-- [ ] Spellcheck
-- [X] flycheck
-- [X] PDF tools
-- [X] scimax hydras
-- [X] org-ref
-- [ ] Delayed loading for org-ref ? Irrelevant with straight.el ? 
-- [ ] hotspots
-- [X] General org mode optimisations
-- [ ] Scimax ipython functionality replication with necessary modifications for using straight.el
-- [ ] Remove all the Org ID's to enable regeneration. There should be an automated method for this.
-- [X] Scimax journal or org-journal
-- [X] Setup the hyper key
-- [ ] Properly setup the diminish mode as default for lisp and other
-  modes. This is set for org, possible because of scimax-org.
- 
 * Init setup
 
 This part of the config has to be tangled to init.el so that straight and use-package can be setup.
