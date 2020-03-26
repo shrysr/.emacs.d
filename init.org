@@ -173,7 +173,7 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 : sr/fun/async-tangle-init
 
 ** Directory setups
-*** Function to create directories based on home path 
+*** Create directories based on home path 
 
 - [ ] Test whether this is really OS independent.
 
@@ -3439,7 +3439,7 @@ Entrypoint Hydra
 ("c" (org-capture) "capture")
 ("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
 ("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
-("m" (hera-push 'hydra-mark/body) "mark")
+("m" (hera-push 'hydra-mu4e/body) "mail")
 ("w" (hera-push 'hydra-window/body) "windows")
 ("z" (hera-push 'hydra-zoom/body) "zoom")
 ("R" (hera-push 'hydra-registers/body) "registers")
@@ -3457,9 +3457,20 @@ Entrypoint Hydra
 ** straight-hydra
 
 #+BEGIN_SRC emacs-lisp
+(defun sr/fun/straight-pull-rebuild-combo (&optional package)
+  "Function to select a package, and then -> pull and rebuild using straight."
+  (interactive)
+  (let ((package (or package
+                     (straight--select-package "Pull & Rebuild package" 'for-build 'installed))))
+    (message package)
+    (straight-pull-package package)
+    (straight-rebuild-package package)))
+
+
 (nougat-hydra hydra-straight (:color red)
-("Straight" (("p" (call-interactively 'straight-pull-package) "Pull one")
-	     ("P" (straight-pull-all) "Pull ALL")
+("Straight" (("P" (call-interactively 'straight-pull-package) "Pull one")
+	     ("p" (call-interactively sr/fun/straight-pull-rebuild-combo) "Pull and Rebuild one package" :column "Pull")
+	     ("C-a" (straight-pull-all) "Pull ALL")
 	     ("f" (call-interactively 'straight-fetch-package) "Fetch one")
 	     ("F" (straight-fetch-all) "Fetch ALL")
 	     ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
@@ -3468,7 +3479,15 @@ Entrypoint Hydra
 #+END_SRC
 
 #+RESULTS:
+** mu4e-hydra
 
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-mu4e (:color blue)
+("mu4e" (("m" (mu4e) "mail")
+	     ("u" (mu4e-update-mail-and-index) "Update mail and index"))))
+#+END_SRC
+
+#+RESULTS:
 
 * github gists
 Gists posted right from emacs. 
