@@ -5080,20 +5080,6 @@ Facing trouble enabling flyspell in the mac. This seems to be a solution, as out
 
 #+RESULTS:
 : /usr/local/Cellar/aspell/0.60.6.1_1/bin/aspell
-** To use John's old ob-ipython fork
-
-#+BEGIN_SRC emacs-lisp
-;;;* For reference : to use John's old ob-ipython fork. The require may not be necessary here
-(use-package ob-ipython
-  :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
-  :config
-  (require 'ob-ipython))
-
-;;; * The customisations pertaining to the old ob-ipython fork are: 
-(use-package scimax-org-babel-ipython
-  :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
-
-#+END_SRC
 ** Old Scimax stuff
 
 These packages and customisations are the ones I enjoy using from Scimax. Note that these have to be customised and patched at the moment and I am working on an optimal solution to port the necessary packages, while maintaining some semblance of compatibility with the upstream.
@@ -6725,3 +6711,17 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
 (global-set-key (kbd "M-s n") 'nb-hydra/body)
 #+END_SRC
 
+*** To use John's old ob-ipython fork
+
+#+BEGIN_SRC emacs-lisp
+;;;* For reference : to use John's old ob-ipython fork. The require may not be necessary here
+(use-package ob-ipython
+  :straight (ob-ipython :host github :repo "jkitchin/ob-ipython")
+  :config
+  (require 'ob-ipython))
+
+;;; * The customisations pertaining to the old ob-ipython fork are: 
+(use-package scimax-org-babel-ipython
+  :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
+
+#+END_SRC
