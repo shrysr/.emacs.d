@@ -3444,6 +3444,7 @@ Entrypoint Hydra
 ("z" (hera-push 'hydra-zoom/body) "zoom")
 ("R" (hera-push 'hydra-registers/body) "registers")
 ("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
+("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
 ("l" (progn (setq this-command 'sutysisku-search-helm)
@@ -3453,6 +3454,22 @@ Entrypoint Hydra
 
 #+RESULTS:
 : hydra-default/body
+** straight-hydra
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-straight (:color red)
+("Straight" (("p" (call-interactively 'straight-pull-package) "Pull one")
+	     ("P" (straight-pull-all) "Pull ALL")
+	     ("f" (call-interactively 'straight-fetch-package) "Fetch one")
+	     ("F" (straight-fetch-all) "Fetch ALL")
+	     ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
+	     ("g" (call-interactively 'straight-get-recipe) "Get recipe")
+	     )))
+#+END_SRC
+
+#+RESULTS:
+
+
 * github gists
 Gists posted right from emacs. 
 

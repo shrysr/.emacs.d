@@ -965,7 +965,6 @@ Inserted by installing 'org-mode' or when a release is made."
       ))
 
 (use-package org-msg
- ;; :disabled nil
   :ensure t
   :defer 5
   :config
@@ -980,7 +979,8 @@ Inserted by installing 'org-mode' or when a release is made."
  Regards,
 
  #+begin_signature
- -- *Shreyas Ragavan* \\\\
+ -- \\\\
+ *Shreyas Ragavan* \\\\
  E: shreyas@fastmail.com \\\\
  W: https://shreyas.ragavan.co \\\\
  M: +1 647-671-1851 \\\\
@@ -988,6 +988,100 @@ Inserted by installing 'org-mode' or when a release is made."
   (org-msg-mode))
 ;; Attempt to solve the problem of forwarding emails especailly with attachments.
 ;(advice-add '(org-msg-mode) :after #'mu4e-compose-forward))
+
+(defconst sr/org-msg-style
+  (let* ((font-family '(font-family . "\"Calibri\""))
+	 (font-size '(font-size . "12pt"))
+	 (font `(,font-family ,font-size))
+	 (line-height '(line-height . "1.5em"))
+	 (bold '(font-weight . "bold"))
+	 (theme-color "#0071c5")
+	 (color `(color . ,theme-color))
+	 (table `(,@font (margin-top . "0px")))
+	 (ftl-number `(,@font ,color ,bold (text-align . "left")))
+	 (inline-modes '(asl c c++ conf cpp csv diff ditaa emacs-lisp
+			     fundamental ini json makefile man org plantuml
+			     python sh xml R))
+	 (inline-src `((color . ,(face-foreground 'default))
+		       (background-color . ,(face-background 'default))))
+	 (code-src
+	  (mapcar (lambda (mode)
+		    `(code ,(intern (concat "src src-" (symbol-name mode)))
+			   ,inline-src))
+		  inline-modes)))
+  `((del nil (,@font (color . "grey") (border-left . "none")
+	      (text-decoration . "line-through") (margin-bottom . "0px")
+	      (margin-top . "10px") (line-height . "11pt")))
+    (a nil (,color))
+    (a reply-header ((color . "black") (text-decoration . "none")))
+    (div reply-header ((padding . "3.0pt 0in 0in 0in")
+		       (border-top . "solid #e1e1e1 1.0pt")
+		       (margin-bottom . "20px")))
+    (span underline ((text-decoration . "underline")))
+    (li nil (,@font ,line-height (margin-bottom . "0px")
+	     (margin-top . "2px")))
+    (nil org-ul ((list-style-type . "square")))
+    (nil org-ol (,@font ,line-height (margin-bottom . "0px")
+		 (margin-top . "0px") (margin-left . "30px")
+		 (padding-top . "0px") (padding-left . "5px")))
+    (nil signature (,@font (margin-bottom . "20px")))
+    (blockquote nil ((padding-left . "5px") (margin-left . "10px")
+		     (margin-top . "20px") (margin-bottom . "0")
+		     (border-left . "3px solid #ccc") (font-style . "italic")
+		     (background . "#f9f9f9")))
+    (code nil (,font-size (font-family . "monospace") (background . "#f9f9f9")))
+    ,@code-src
+    (nil linenr ((padding-right . "1em")
+		 (color . "black")
+		 (background-color . "#aaaaaa")))
+    (pre nil ((line-height . "12pt")
+	      ,@inline-src
+	      (margin . "0px")
+	      (font-size . "9pt")
+	      (font-family . "monospace")))
+    (div org-src-container ((margin-top . "10px")))
+    (nil figure-number ,ftl-number)
+    (nil table-number)
+    (caption nil ((text-align . "left")
+		  (background . ,theme-color)
+		  (color . "white")
+		  ,bold))
+    (nil t-above ((caption-side . "top")))
+    (nil t-bottom ((caption-side . "bottom")))
+    (nil listing-number ,ftl-number)
+    (nil figure ,ftl-number)
+    (nil org-src-name ,ftl-number)
+
+    (table nil (,@table ,line-height (border-collapse . "collapse")))
+    (th nil ((border . "1px solid white")
+	     (background-color . ,theme-color)
+	     (color . "white")
+	     (padding-left . "10px") (padding-right . "10px")))
+    (td nil (,@table (padding-left . "10px") (padding-right . "10px")
+		     (background-color . "#f9f9f9") (border . "1px solid white")))
+    (td org-left ((text-align . "left")))
+    (td org-right ((text-align . "right")))
+    (td org-center ((text-align . "center")))
+
+    (div outline-text-4 ((margin-left . "15px")))
+    (div outline-4 ((margin-left . "10px")))
+    (h4 nil ((margin-bottom . "0px") (font-size . "11pt")
+	     ,font-family))
+    (h3 nil ((margin-bottom . "0px") (text-decoration . "underline")
+	     ,color (font-size . "12pt")
+	     ,font-family))
+    (h2 nil ((margin-top . "20px") (margin-bottom . "20px")
+	     (font-style . "italic") ,color (font-size . "13pt")
+	     ,font-family))
+    (h1 nil ((margin-top . "20px")
+	     (margin-bottom . "0px") ,color (font-size . "12pt")
+	     ,font-family))
+    (p nil ((text-decoration . "none") (margin-bottom . "0px")
+	    (margin-top . "10px") (line-height . "11pt") ,font-size
+	    ,font-family (max-width . "100ch")))
+    (div nil (,@font (line-height . "11pt"))))))
+
+(setq org-msg-enforce-css 'sr/org-msg-style)
 
 (setq custom-safe-themes t)
 
@@ -2061,10 +2155,20 @@ Entrypoint Hydra
 ("z" (hera-push 'hydra-zoom/body) "zoom")
 ("R" (hera-push 'hydra-registers/body) "registers")
 ("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
+("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
 ("l" (progn (setq this-command 'sutysisku-search-helm)
 (call-interactively 'sutysisku-search-helm)) "lojban"))
+
+(nougat-hydra hydra-straight (:color red)
+("Straight" (("p" (call-interactively 'straight-pull-package) "Pull one")
+	     ("P" (straight-pull-all) "Pull ALL")
+	     ("f" (call-interactively 'straight-fetch-package) "Fetch one")
+	     ("F" (straight-fetch-all) "Fetch ALL")
+	     ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
+	     ("g" (call-interactively 'straight-get-recipe) "Get recipe")
+	     )))
 
 (use-package gist
 :straight (gist :type git :host github :repo "defunkt/gist.el"))
