@@ -2150,7 +2150,7 @@ Entrypoint Hydra
 ("c" (org-capture) "capture")
 ("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
 ("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
-("m" (hera-push 'hydra-mark/body) "mark")
+("m" (hera-push 'hydra-mu4e/body) "mail")
 ("w" (hera-push 'hydra-window/body) "windows")
 ("z" (hera-push 'hydra-zoom/body) "zoom")
 ("R" (hera-push 'hydra-registers/body) "registers")
@@ -2161,14 +2161,29 @@ Entrypoint Hydra
 ("l" (progn (setq this-command 'sutysisku-search-helm)
 (call-interactively 'sutysisku-search-helm)) "lojban"))
 
+(defun sr/fun/straight-pull-rebuild-combo (&optional package)
+  "Function to select a package, and then -> pull and rebuild using straight."
+  (interactive)
+  (let ((package (or package
+                     (straight--select-package "Pull & Rebuild package" 'for-build 'installed))))
+    (message package)
+    (straight-pull-package package)
+    (straight-rebuild-package package)))
+
+
 (nougat-hydra hydra-straight (:color red)
-("Straight" (("p" (call-interactively 'straight-pull-package) "Pull one")
-	     ("P" (straight-pull-all) "Pull ALL")
+("Straight" (("P" (call-interactively 'straight-pull-package) "Pull one")
+	     ("p" (call-interactively sr/fun/straight-pull-rebuild-combo) "Pull and Rebuild one package" :column "Pull")
+	     ("C-a" (straight-pull-all) "Pull ALL")
 	     ("f" (call-interactively 'straight-fetch-package) "Fetch one")
 	     ("F" (straight-fetch-all) "Fetch ALL")
 	     ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
 	     ("g" (call-interactively 'straight-get-recipe) "Get recipe")
 	     )))
+
+(nougat-hydra hydra-mu4e (:color blue)
+("mu4e" (("m" (mu4e) "mail")
+	     ("u" (mu4e-update-mail-and-index) "Update mail and index"))))
 
 (use-package gist
 :straight (gist :type git :host github :repo "defunkt/gist.el"))
@@ -2191,3 +2206,6 @@ Entrypoint Hydra
   ;; (setq org-id-track-globally t)
   (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
   ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+
+;; Loading secret config containing personal information
+(org-babel-load-file (sr/fun/emacs-dir "sr-secrets.org.gpg"))
