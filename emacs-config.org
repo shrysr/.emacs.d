@@ -739,7 +739,7 @@ Defining some template functions
                :children (("Fast note"  
 			   :keys "n"
 			   :type entry	                       
-			   :headline   "@Note"
+			   :headline   "@Notes"
 			    ))))))
 
 #+END_SRC
@@ -751,7 +751,7 @@ Defining some template functions
 | td | DS TODO    | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | #'doct--fill-template | :prepend | t | :doct | (:doct-name DS TODO :keys d :file ~/my_org/datascience.org :headline @Datascience @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-passive)) :inherited-keys td :prepend t :doct-custom (:todo-state TODO))       |
 | tm | Mail TODO  | entry | (file+headline ~/my_org/todo-global.org @Mail)                  | #'doct--fill-template | :prepend | t | :doct | (:doct-name Mail TODO :keys m :file ~/my_org/todo-global.org :headline @Mail :todo-state TODO :template (lambda nil (sr/fun/todo-mail-active)) :inherited-keys tm :prepend t :doct-custom (:todo-state TODO))               |
 | n  | Notes      |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                             |
-| nn | Fast note  | entry | (file+headline ~/my_org/notes.org @Note)                        | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast note :keys n :type entry :headline @Note :inherited-keys nn :file ~/my_org/notes.org :prepend t :template (lambda nil (sr/fun/note-passive)))                                                              |
+| nn | Fast note  | entry | (file+headline ~/my_org/notes.org @Notes)                       | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast note :keys n :type entry :headline @Notes :inherited-keys nn :file ~/my_org/notes.org :prepend t :template (lambda nil (sr/fun/note-passive)))                                                             |
 
 *** Capture templates
     :PROPERTIES:
@@ -808,13 +808,13 @@ Defining some template functions
 
 #+RESULTS:
 | t  | Task entry        |       |                                                                 |                  |
-| tt | Todo - Fast       | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO %?       |
+| tt | Todo - Fast Now   | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO %?       |
 | tj | Todo -Job journal | entry | (file+olp+datetree ~/my_org/ds-jobs.org Job Search Journal)     | ** TODO %?       |
 | te | Todo - Emacs      | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | ** TODO %?       |
 | td | Datascience inbox | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | ** TODO %?       |
 | tm | Mail Link Todo    | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | ** TODO Mail: %a |
 | l  | Link/Snippet      | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | ** %? %a         |
-| e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | *** %a,            |
+| e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | *** %a,          |
 
 *** TEST Closing org-capture frame on abort
     :PROPERTIES:
