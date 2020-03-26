@@ -1964,6 +1964,117 @@ Use a prefix arg to get regular RET. "
   (interactive)
   (helm-do-ag (sr/fun/org-dir "")))
 
+(use-package hera
+:demand t
+:straight (hera :type git :host github :repo "dustinlacewell/hera"))
+
+(defun nougat--inject-hint (symbol hint)
+(-let* ((name (symbol-name symbol))
+(hint-symbol (intern (format "%s/hint" name)))
+(format-form (eval hint-symbol))
+(string-cdr (nthcdr 1 format-form))
+(format-string (string-trim (car string-cdr)))
+(amended-string (format "%s\n\n%s" format-string hint)))
+(setcar string-cdr amended-string)))
+
+(defun nougat--make-head-hint (head default-color)
+(-let (((key _ hint . rest) head))
+(when key
+(-let* (((&plist :color color) rest)
+(color (or color default-color))
+(face (intern (format "hydra-face-%s" color)))
+(propertized-key (propertize key 'face face)))
+(format " [%s]: %s" propertized-key hint)))))
+
+(defun nougat--make-hint (heads default-color)
+(string-join
+(cl-loop for head in heads
+for hint = (nougat--make-head-hint head default-color)
+do (pp hint)
+collect hint) "\n"))
+
+(defun nougat--clear-hint (head)
+(-let* (((key form _ . rest) head))
+`(,key ,form nil ,@rest)))
+
+(defun nougat--add-exit-head (heads)
+(let ((exit-head '("SPC" (hera-pop) "to exit" :color blue)))
+(append heads `(,exit-head))))
+
+(defun nougat--add-heads (columns extra-heads)
+(let* ((cell (nthcdr 1 columns))
+(heads (car cell))
+(extra-heads (mapcar 'nougat--clear-hint extra-heads)))
+(setcar cell (append heads extra-heads))))
+
+(defmacro nougat-hydra (name body columns &optional extra-heads)
+(declare (indent defun))
+(-let* (((&plist :color default-color :major-mode mode) body)
+(extra-heads (nougat--add-exit-head extra-heads))
+(extra-hint (nougat--make-hint extra-heads default-color))
+(body (plist-put body :hint nil))
+(body-name (format "%s/body" (symbol-name name)))
+(body-symbol (intern body-name))
+(mode-support
+`(when ',mode
+(setq major-mode-hydra--body-cache
+(a-assoc major-mode-hydra--body-cache ',mode ',body-symbol)))))
+(nougat--add-heads columns extra-heads)
+(when mode
+(remf body :major-mode))
+`(progn
+(pretty-hydra-define ,name ,body ,columns)
+(nougat--inject-hint ',name ,extra-hint)
+,mode-support)))
+
+;; (nougat-hydra hydra-test (:color red :major-mode fundamental-mode)
+;; ("First"
+;; (("a" (message "first - a") "msg a" :color blue)
+;; ("b" (message "first - b") "msg b"))
+;; "Second"
+;; (("c" (message "second - c") "msg c" :color blue)
+;; ("d" (message "second - d") "msg d"))))
+
+(defun my/hydra-dwim ()
+(interactive)
+(-let (((&alist major-mode mode) major-mode-hydra--body-cache))
+(if mode (major-mode-hydra)
+(hera-start 'hydra-default/body))))
+
+(setq kbd-hera-pop "<f12>")
+(global-set-key (kbd "M-s p") 'my/hydra-dwim)
+(global-set-key (kbd "M-s p") (lambda () (interactive) (hera-start 'hydra-default/body)))
+
+(defhydra hydra-default (:color blue :hint nil)
+"
+
+Entrypoint Hydra
+
+"
+("a" (org-agenda nil "a") "agenda" :column "Open")
+("p" (hera-push 'hydra-projectile/body) "projectile")
+("c" (org-capture) "capture")
+("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
+("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
+("m" (hera-push 'hydra-mark/body) "mark")
+("w" (hera-push 'hydra-window/body) "windows")
+("z" (hera-push 'hydra-zoom/body) "zoom")
+("R" (hera-push 'hydra-registers/body) "registers")
+("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
+("s" (call-interactively 'helm-imenu) "semantic")
+("g" (hera-push 'hydra-gist/body) "gist")
+("l" (progn (setq this-command 'sutysisku-search-helm)
+(call-interactively 'sutysisku-search-helm)) "lojban"))
+
+(use-package gist
+:straight (gist :type git :host github :repo "defunkt/gist.el"))
+
+
+(nougat-hydra hydra-gist (:color blue)
+("Gist" (("p" (gist-region-or-buffer) "public")
+("P" (gist-region-or-buffer-private) "private")
+("b" (browse-url "https://gist.github.com/shrysr") "browse"))))
+
   ;; (require 'org-id)
   ;; (setq org-id-link-to-org-use-id t)
   ;; (org-link-set-parameters "id" :store #'org-id-store-link)
