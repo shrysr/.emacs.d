@@ -3,7 +3,7 @@
 
 * Introduction
 
-I've been using my own configuration on top Scimax for the past many years. This is a reboot to reverse the bias, and create my very own emacs configuration. It obviously includes massive snippets of code from scimax, as wlel as other configurations I come across, not to mention the excellent advice often received from #emacs and other geniuses lurking in irc channels, not to mention the vast internet. In the process I hope to contribute to the reliability and modularity of Scimax as well.
+I've been using my own configuration on top of the excellent Scimax for the past many years. This is a reboot to reverse the bias, and create my very own emacs configuration. It obviously includes massive snippets of code from scimax, as well as other configurations I come across, not to mention the excellent advice often received from #emacs and other geniuses lurking in irc channels, not to mention the vast internet. In the process I hope to contribute to the reliability and modularity of Scimax as well.
 
 #+BEGIN_QUOTE
 Note that this config is still under a great deal of flux at the moment and will be for the foreseeable future. I am learning elisp every (other) day and am rather obsessed like most Emacsers to optimise the entire behavior. This is an an opinionated setup.
@@ -20,7 +20,9 @@ The init.el file is included in the git commit as it will (eventually) enable st
 
 Due to the above - it is important to be careful with using header arguments for source blocks. As per current Org mode features, specifying the header arguments, even a ~:tangle yes~, will over-ride the file settings specified elsewhere and thus parts of the config will never get inserted into the el files that are loaded during init. 
 
-The better method to not tangle specific blocks would be to comment out Org headings altogether which will avoid them getting tangled.
+The better method to not tangle specific blocks would be to comment out Org headings which will avoid them from being tangled. It may also be possible to have a setup wherein headings with specific tags are not tangled, similar to the noexport tag option with typical org exports.
+
+As a note for posterity: I was initially having a single init.org file that tangled to an init.el file. This kind of setup makes it hard to make meaningful commits, especially if the init.el is also a part of the visible commits. After all one caveat here is still that ~some external library is necessary to tangle these org files into elisp files for loading emacs. 
 
 ** TODO Inspirations
 
@@ -113,6 +115,28 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 
 #+BEGIN_SRC emacs-lisp
 (load (sr/fun/emacs-dir "dotemacs.el"))
+#+END_SRC
+
+* .gitignore 
+- Note taken on [2020-03-26 Thu 11:38] \\
+  In this process, I realised that as long as there is a .gitignore file present (and not in a commit) and the specified files have never been in a commit - git automatically ignores these files. i.e there is no need to commit a .gitignore file.
+
+#+BEGIN_SRC txt :tangle ./.gitignore
+auto-save-list
+autosaves
+elpa
+eshell
+recentf
+smex-items
+sr-secrets.org.el
+projectile-bookmarks.eld
+bookmarks
+ac-comphist.dat
+.mc-lists.el
+transient
+elpy
+tramp
+url
 #+END_SRC
 
 * TODO Load External libraries
@@ -3524,6 +3548,7 @@ In addition, I would like an org id to be created every time the capture is used
 :END:
 
 This section will be the place where all new packages and their settings make an entrance. In short the test will be that they are not activated by default and if I seek out the package, that would mean I find it useful to include in my main configuration.
+
 ** Org spacer
 
 #+BEGIN_QUOTE
