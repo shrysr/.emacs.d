@@ -1,9 +1,26 @@
-#+PROPERTY: header-args :tangle yes
+#+PROPERTY: header-args :tangle ./dotemacs.el
 #+TITLE: shrysr's Dotemacs config
 
 * Introduction
 
-I've been using my own configuration over that of Scimax for the past many years. This is a reboot to reverse the bias, and in the process try to contribute to the reliability and modularity of Scimax.
+I've been using my own configuration on top Scimax for the past many years. This is a reboot to reverse the bias, and create my very own emacs configuration. It obviously includes massive snippets of code from scimax, as wlel as other configurations I come across, not to mention the excellent advice often received from #emacs and other geniuses lurking in irc channels, not to mention the vast internet. In the process I hope to contribute to the reliability and modularity of Scimax as well.
+
+#+BEGIN_QUOTE
+Note that this config is still under a great deal of flux at the moment and will be for the foreseeable future. I am learning elisp every (other) day and am rather obsessed like most Emacsers to optimise the entire behavior. This is an an opinionated setup.
+
+I would recommend studying the setup and using bits and pieces of it as you require, because one primary power of Emacs is being able to customise your tool to your needs. However, the eventual goal will also be to enable using this configuration as a whole for anybody interested.
+
+#+END_QUOTE
+
+** Overall setup
+
+This file is ~emacs-config.org~. This is the source of truth for the entire config. It is tangled into 2 files, an init.el and a dotemacs.el. 
+
+The init.el file is included in the git commit as it will (eventually) enable starting up emacs with basic libraries, and loading this config if one is starting from scratch on a new machine. 
+
+Due to the above - it is important to be careful with using header arguments for source blocks. As per current Org mode features, specifying the header arguments, even a ~:tangle yes~, will over-ride the file settings specified elsewhere and thus parts of the config will never get inserted into the el files that are loaded during init. 
+
+The better method to not tangle specific blocks would be to comment out Org headings altogether which will avoid them getting tangled.
 
 ** TODO Inspirations
 
@@ -11,9 +28,14 @@ I've been using my own configuration over that of Scimax for the past many years
 - [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
 - Many others to be added soon.
 
-* Init setup
+In general, effort has been made to add references to the source where I obtained code snippets along with the text.
 
-This part of the config has to be tangled to init.el so that straight and use-package can be setup.
+* Init setup
+:PROPERTIES:
+:header-args: :tangle ./init.el
+:END:
+
+This part of the config has to be tangled to init.el so that straight and use-package can be setup. This is a separate init file as it is expected to remain stable and will be the only .el file that is in git commit.
 
 ** Lexical Scope
 :PROPERTIES:
@@ -73,78 +95,50 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 
  #+RESULTS:
 
-*** OS Level variables
-:PROPERTIES:
-:ID:       A47A0D22-142F-4EEC-BB03-529896E22256
-:END:
-Since I switch between a Linux machine and a Mac frequently, it is useful to define some variables that can be used as conditionals to set other variables depending on the OS.
+** Some basic directory definitions 
 
 #+BEGIN_SRC emacs-lisp
-;; Get current system's name
-(defun insert-system-name()
-  (interactive)
-  "Get current system's name"
-  (insert (format "%s" system-name))
-  )
+;; Base function to create the home directory
+(defun sr/fun/homedir (foldername)
+"Function to extract the home directory path"
+  (expand-file-name foldername (getenv "HOME")))
 
-;; Get current system type
-(defun insert-system-type()
-  (interactive)
-  "Get current system type"
-  (insert (format "%s" system-type))
-  )
-
-;; Check if system is Darwin/Mac OS X
-(defun system-type-is-darwin ()
-  (interactive)
-  "Return true if system is darwin-based (Mac OS X)"
-  (string-equal system-type "darwin")
-  )
-
-;; Check if system is GNU/Linux
-(defun system-type-is-gnu ()
-  (interactive)
-  "Return true if system is GNU/Linux-based"
-  (string-equal system-type "gnu/linux")
-  )
-(message "Completed OS Level variables load")
+;; Emacs directory defauling to .emacs.d
+(defun sr/fun/emacs-dir (foldername)
+"Function to prepend the project directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/homedir ".emacs.d" )))
 #+END_SRC
 
-#+RESULTS:
-: Completed OS Level variables load
+** Load main config
 
+#+BEGIN_SRC emacs-lisp
+(load (sr/fun/emacs-dir "dotemacs.el"))
 #+END_SRC
 
-*** Adding External libraries to the load path
+* TODO Load External libraries
 
 There are a number of repositories of configurations and packages that I would like to directly use. One prime example is scimax. There are of course others, and they have to be added to the load-path for the funtions to be accessible.
 
-** Lexical let from Common Lisp 
-- Note taken on [2020-03-24 Tue 17:05] \\
-  This appears to be deprecated in Emacs 27.0.9. Untangling for the time being.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'cl)
-#+END_SRC
-
-#+RESULTS:
-: cl
-
-** Tangle Emacs init on save 
-*** Tangle on save without async
+* Tangle Emacs config on save 
+** TODO Tangle on save without async
 
 As such the tangling hardly takes any time. [[https://thewanderingcoder.com/2015/02/literate-emacs-configuration/][Literate Emacs Configuration | Sean Miller: The Wandering Coder]] provides an example of setting up a function. This uses the buffer file name to tangle for the emacs config file. A hook is added to the save function to check. 
 
+- [ ] Add a force tangle option if files do not exist. This is because, if for troubleshooting purposes, the el files are deleted, and there is no change in the org file, then the tangling does not take place at all. In general, it may be better to ensure the el files are deleted and tangled again.
+
 #+BEGIN_SRC emacs-lisp
 (defun sr/fun/tangle-on-save-init ()
-(when (string= buffer-file-name (file-truename "~/.emacs.d/init.org"))
+(when (string= buffer-file-name (file-truename "~/.emacs.d/emacs-config.org"))
 (org-babel-tangle)))
 
 (add-hook 'after-save-hook 'sr/fun/tangle-on-save-init)
 
 #+END_SRC
 
-*** Local file variables
+#+RESULTS:
+| rmail-after-save-hook | backup-each-save | sr/fun/tangle-on-save-init |
+
+** Local file variables
 
 One way to do this is via local file variables, adding the following to the init file (or any file). However, it seems that this is not 'activated' by default.
 
@@ -154,7 +148,7 @@ One way to do this is via local file variables, adding the following to the init
 # end:
 #+END_EXAMPLE
 
-*** TODO Async function to tangle org file on save.
+** TODO Async function to tangle org file on save.
 
 This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchronous_tangle_and_compile_of_configorg/][Asynchronous tangle and compile of config.org(question/issue) : emacs]] on reddit and a work in progress. Since I am using straight.el, the byte compilation of packages is not necessary (or already taken care of). It is probably worth noting that the tangling process is almost instant and maybe this effort is not warranted.
 
@@ -172,22 +166,11 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 #+RESULTS:
 : sr/fun/async-tangle-init
 
-** Directory setups
-*** Create directories based on home path 
-
-- [ ] Test whether this is really OS independent.
-
-The idea is that a home directory is constructed, and then various folders are just appended to the home directory path. 
+* Various directories
 
 #+BEGIN_SRC emacs-lisp
-(defun sr/fun/homedir (foldername)
-"Function to extract the home directory path"
-  (expand-file-name foldername (getenv "HOME")))
-#+END_SRC
 
-*** Various directories
 
-#+BEGIN_SRC emacs-lisp
 (defun sr/fun/project-dir (foldername)
 "Function to prepend the project directory path to any folder. Starts from the home directory."
   (expand-file-name foldername (sr/fun/homedir "my_projects" )))
@@ -196,15 +179,12 @@ The idea is that a home directory is constructed, and then various folders are j
 "Function to prepend the org directory path to any folder. Starts from the home directory."
   (expand-file-name foldername (sr/fun/homedir "my_org" )))
 
-(defun sr/fun/emacs-dir (foldername)
-"Function to prepend the project directory path to any folder. Starts from the home directory."
-  (expand-file-name foldername (sr/fun/homedir ".emacs.d" )))
 #+END_SRC
 
 #+RESULTS:
 : sr/fun/emacs-dir
 
-* Auto-save setup
+* Auto-save
 
 Copied from ldleworth's config. I think this makes sense for me at the
 moment. Here is a summary: 
@@ -256,7 +236,6 @@ delete-old-versions t)
 
 * OS Level variables
 :PROPERTIES:
-:header-args: :tangle yes
 :ID:       BE6ABB97-4B9A-4E2F-9D74-83F6AECF8A4D
 :END:
 
@@ -1077,7 +1056,7 @@ Starting off with the basic configuration posted in org-projectile github repo.
 * Knowledge management
 ** org-brain
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp 
   (use-package org-brain
     :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain")
     ;; :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
@@ -1240,7 +1219,7 @@ This will help with different settings for different brains. Eventually, it can
 also be used for different settings for say the org agenda or other
 components. 
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp 
 
   (use-package deflayer
     :straight (deflayer :type git :host github :repo "dustinlacewell/deflayer.el")
@@ -1669,7 +1648,7 @@ This configuration is picked up from scimax.
       (setq mac-right-option-modifier 'hyper)))
 #+END_SRC
 
-* Email :noexport:
+* Email
 ** TODO [#A] mu4e
 :PROPERTIES:
 :ID:       87453c9b-3981-4097-84e7-e309f867ee46
@@ -2041,7 +2020,6 @@ This configuration is picked up from scimax.
 
 #+RESULTS:
 : sr/org-msg-style
-
 
 * Aesthetics
 ** Setting custom themes to be safe
@@ -3513,7 +3491,7 @@ Using the org-id for reference to headings ensures that even if the heading chan
 
 In addition, I would like an org id to be created every time the capture is used. This facilitates using packages like org-brain which rely extensively on org-id's.
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
   ;; (require 'org-id)
   ;; (setq org-id-link-to-org-use-id t)
   ;; (org-link-set-parameters "id" :store #'org-id-store-link)
