@@ -53,7 +53,8 @@ construct.
 
 
    #+BEGIN_SRC emacs-lisp
-   ;;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t -*-
+(setq-default lexical-binding t)
    #+END_SRC
 
 ** Package management

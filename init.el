@@ -1,4 +1,5 @@
-   ;;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t -*-
+(setq-default lexical-binding t)
 
  (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
  (bootstrap-version 3))
