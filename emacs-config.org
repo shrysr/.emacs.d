@@ -1005,6 +1005,65 @@ package provides a more functional interface.
 :bind ("C-x C-b" . bufler-list))
 #+END_SRC
 
+** Visual Fill Column and global visual line   
+:PROPERTIES:
+:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
+:END:
+I think it makes sense to have the global visual fill column mode active and then have the visual line mode to 
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'visual-fill-column)
+
+;; Putting this into a function because I want these settings called again when a frame is created.
+(defun sr/fun/visual-fill-line()
+(interactive)
+(setq-default fill-column 70)
+(global-visual-line-mode 1)
+;; (visual-fill-column-mode)
+(add-hook 'visual-line-mode-hook #'visual-fill-column-mode))
+;; (add-hook 'visual-fill-column-mode-hook #'visual-line-mode))
+
+;; Placing this function here so that if emacs is run as an bapp - the settings will still be in effect.
+(sr/fun/visual-fill-line)
+#+END_SRC
+
+#+RESULTS:
+| visual-line-mode | visual-fill-column-mode-set-explicitly |
+
+** Frame settings
+
+I'm often running emacsclient with a daemon and have found that specific settings need to be set for each frame that is created, like the window size, and the visual fill column and line settings.
+
+1. [ ] Full screen and windows on Mac OS
+2. [X] Enable global visual line mode and visual fill column mode.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(fullscreen . fullboth)) 
+#+END_SRC
+
+#+RESULTS:
+| (lambda nil (sr/fun/visual-fill-line)) | eyebrowse-init | select-frame |
+
+** crux
+
+Crux has a handle re-open and root function that will open a file as root if the permissions are set so. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package crux
+  :straight t
+  :defer 10
+  :bind (("C-c C-s" . crux-sudo-edit)
+         ("C-c C-r" . crux-eval-and-replace)
+         ("C-c o" . crux-open-with))
+  :config
+  (progn
+    (crux-reopen-as-root-mode)))
+
+#+END_SRC
+
+#+RESULTS:
+: crux-open-with
+
 * Emacs information
 ** which key
 :PROPERTIES:
