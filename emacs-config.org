@@ -6,9 +6,16 @@
 I've been using my own configuration on top of the excellent Scimax for the past many years. This is a reboot to reverse the bias, and create my very own emacs configuration. It obviously includes massive snippets of code from scimax, as well as other configurations I come across, not to mention the excellent advice often received from #emacs and other geniuses lurking in irc channels, not to mention the vast internet. In the process I hope to contribute to the reliability and modularity of Scimax as well.
 
 #+BEGIN_QUOTE
-Note that this config is still under a great deal of flux at the moment and will be for the foreseeable future. I am learning elisp every (other) day and am rather obsessed like most Emacsers to optimise the entire behavior. This is an an opinionated setup.
+Note that this config is still under a great deal of flux at the
+moment and will be for the foreseeable future. I am learning elisp
+every (other) day and am rather obsessed like most Emacsers to
+optimise the entire behavior. This is an an opinionated setup.
 
-I would recommend studying the setup and using bits and pieces of it as you require, because one primary power of Emacs is being able to customise your tool to your needs. However, the eventual goal will also be to enable using this configuration as a whole for anybody interested.
+I would recommend studying the setup and using bits and pieces of it
+as you require, because one primary power of Emacs is being able to
+customise your tool to your needs. However, the eventual goal will
+also be to enable using this configuration as a whole for anybody
+interested.
 
 #+END_QUOTE
 
