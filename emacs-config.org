@@ -1517,6 +1517,11 @@ As such most of these
 #+END_SRC
 
 * Selection, bookmarks and jumps
+** smex
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'smex)
+#+END_SRC
+
 ** Expand region package
    :PROPERTIES:
    :ID:       046c8e8c-a6c0-451e-9e7e-61de54ab0945
@@ -1730,6 +1735,9 @@ This configuration is picked up from scimax.
     (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
     (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
 #+END_SRC
+
+#+RESULTS:
+: counsel-pt
 
 ** Super and Hyper key setting
 
