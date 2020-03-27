@@ -3495,8 +3495,7 @@ Entrypoint Hydra
 ("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
-("l" (progn (setq this-command 'sutysisku-search-helm)
-(call-interactively 'sutysisku-search-helm)) "lojban"))
+("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python"))
 
 #+END_SRC
 
@@ -3516,14 +3515,20 @@ Entrypoint Hydra
 
 
 (nougat-hydra hydra-straight (:color red)
-("Straight" (("P" (call-interactively 'straight-pull-package) "Pull one")
-	     ("p" (call-interactively sr/fun/straight-pull-rebuild-combo) "Pull and Rebuild one package" :column "Pull")
-	     ("C-a" (straight-pull-all) "Pull ALL")
-	     ("f" (call-interactively 'straight-fetch-package) "Fetch one")
-	     ("F" (straight-fetch-all) "Fetch ALL")
-	     ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
-	     ("g" (call-interactively 'straight-get-recipe) "Get recipe")
-	     )))
+  ("Straight" (("P" (call-interactively 'straight-pull-package)
+		"Pull one")
+	       ("p" (call-interactively 'sr/fun/straight-pull-rebuild-combo)
+		"Pull and Rebuild one package" :column "Pull")
+	       ("C-a" (straight-pull-all) "Pull ALL")
+	       ("f" (call-interactively 'straight-fetch-package)
+		"Fetch one")
+	       ("F" (straight-fetch-all) "Fetch ALL")
+	       ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
+	       ("g" (call-interactively 'straight-get-recipe)
+		"Get recipe")
+	     ("r" (call-interactively 'straight-rebuild-package)
+		"rebuild package")
+	       )))
 #+END_SRC
 
 #+RESULTS:
@@ -3533,6 +3538,21 @@ Entrypoint Hydra
 (nougat-hydra hydra-mu4e (:color blue)
 ("mu4e" (("m" (mu4e) "mail")
 	     ("u" (mu4e-update-mail-and-index) "Update mail and index"))))
+#+END_SRC
+
+#+RESULTS:
+** pyvenv-hydra
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-pyvenv (:color red)
+  ("pyvenv - virtualenv" (("c" (call-interactively 'pyvenv-create)
+		"create")
+	       ("w" (call-interactively 'pyvenv-workon) "work on")
+	       ("a" (call-interactively 'pyvenv-activate)	"activate")
+	       ("d" (call-interactively 'pyvenv-deactivate) "deactivate")
+	       ("t" (call-interactively 'pyvenv-tracking-mode) "tracking mode")
+	       ("r" (call-interactively 'pyvenv-restart-python) "restart python") 
+	       )))
 #+END_SRC
 
 #+RESULTS:
