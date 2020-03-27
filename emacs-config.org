@@ -28,6 +28,7 @@ As a note for posterity: I was initially having a single init.org file that tang
 
 - [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
 - [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
+- [[https://github.com/IvanMalison/dotfiles][GitHub - IvanMalison/dotfiles: Configuration files for XMonad, Emacs, NixOS, Taffybar and more.]]
 - Many others to be added soon.
 
 In general, effort has been made to add references to the source where I obtained code snippets along with the text.
@@ -39,7 +40,7 @@ In general, effort has been made to add references to the source where I obtaine
 
 This part of the config has to be tangled to init.el so that straight and use-package can be setup. This is a separate init file as it is expected to remain stable and will be the only .el file that is in git commit.
 
-** Lexical Scope
+** Lexical Scope and binding
 :PROPERTIES:
 :ID:       3CBA7F73-C58D-4B9F-9B9E-3E02B52F6890
 :END:
@@ -918,7 +919,7 @@ Org-noter's purpose is to let you create notes that are kept in sync when you sc
 
 #+RESULTS:
 
-* Window and Frame management
+* Window, frame and buffer management
 ** winum
 :PROPERTIES:
 :ID:       80A2FA09-6120-44C4-A1B4-3FB3645C269A
@@ -1124,7 +1125,6 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+BEGIN_SRC emacs-lisp
 (use-package org-projectile
 :straight t
-:after org projectile
 :bind (("C-c n p" . org-projectile-project-todo-completing-read)
          ("C-c c" . org-capture))
   :config
@@ -1132,6 +1132,7 @@ Starting off with the basic configuration posted in org-projectile github repo.
         "~/my_org/project-tasks.org")
   ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
   (push (org-projectile-project-todo-entry) org-capture-templates))
+
 #+end_src
 
 #+RESULTS:
@@ -1888,19 +1889,15 @@ This configuration is picked up from scimax.
 #+RESULTS:
 : /Users/shrysr/my_mail/fmail/Queue/cur
 
+** TODO Mu4e and use-package
 
-*** TEST New attempt at use package
-:PROPERTIES:
-:ID:       A5FDAF12-9A01-4C70-81DB-D52ABAB38F90
-:END:
+-  [ ] Transfer all the settings for mu4e into a use-package layout with hooks.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package mu4e
 :ensure nil
-:load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
-
 :hook
- ((mu4e-view-mode . visual-line-mode)
+ ((mu4e-view-mode . visual-fill-column-mode)
    (mu4e-compose-mode . (lambda ()
                           (visual-line-mode)
                           (use-hard-newlines -1)
@@ -1916,17 +1913,6 @@ This configuration is picked up from scimax.
                                   (:from . 22)
                                   (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
                                   (:size . 7))))))
-(use-package mu4e-alert
-  :config
-  (when (executable-find "notify-send")
-    (mu4e-alert-set-default-style 'libnotify))
-  (when (executable-find "terminal-notifier")
-    (mu4e-alert-set-default-style 'notifier))
-  :hook
-  ((after-init . mu4e-alert-enable-notifications)
-   (after-init . mu4e-alert-enable-mode-line-display)))
-
-;;:custom
 )
 
 
@@ -1934,14 +1920,13 @@ This configuration is picked up from scimax.
 #+END_SRC
 
 #+RESULTS:
-| (lambda nil (interactive) (setq mu4e-headers-fields (` ((:human-date . 25) (:flags . 6) (:from . 22) (:thread-subject , (- (window-body-width) 70)) (:size . 7))))) | (lambda nil (interactive) (setq mu4e-headers-fields (cons (quote (:human-date . 25)) (cons (quote (:flags . 6)) (cons (quote (:from . 22)) (cons (cons (quote :thread-subject) (- (window-body-width) 70)) (quote ((:size . 7))))))))) | my/mu4e-change-headers | #[0 \301\300!\210\302\211\207 [bookmark-make-record-function make-local-variable mu4e-view-bookmark-make-record] 2] |
 
-*** CANCEL mu4e alerts
+** COMMENT mu4e alerts
 :PROPERTIES:
 :ID:       C488CFF8-F77B-4AF6-98ED-9CF5BDC792F2
 :END:
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package mu4e-alert
   :config
   (when (executable-find "notify-send")
@@ -1953,9 +1938,6 @@ This configuration is picked up from scimax.
   ((after-init . mu4e-alert-enable-notifications)
    (after-init . mu4e-alert-enable-mode-line-display)))
 #+END_SRC
-
-#+RESULTS:
-| mu4e-alert-enable-mode-line-display | mu4e-alert-enable-notifications | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | table--make-cell-map |
 
 ** TEST org-msg
 :PROPERTIES:
@@ -2245,18 +2227,6 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 
 ;; No start up message and nothing to pollute the scratch buffer
 (setq inhibit-startup-message t initial-scratch-message nil)
-#+END_SRC
-
-** Visual Fill Column  
-:PROPERTIES:
-:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(use-package visual-fill-column
-:config (global-visual-fill-column-mode))
-
-(setq-default fill-column 70)
 #+END_SRC
 
 * New Scimax port
