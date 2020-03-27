@@ -411,7 +411,6 @@ I have modified it to my own file names.
 
 These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
 
-
 ** Installing org and org plus contrib via straight
 :PROPERTIES:
 :ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
@@ -1042,15 +1041,12 @@ I think it makes sense to have the global visual fill column mode active and the
 
 I'm often running emacsclient with a daemon and have found that specific settings need to be set for each frame that is created, like the window size, and the visual fill column and line settings.
 
-1. [ ] Full screen and windows on Mac OS
-2. [X] Enable global visual line mode and visual fill column mode.
+1. [X] Full screen and windows on Mac OS
+2. [X] Enable global visual line mode and visual fill column mode. Apparently this was fixed without frame settings. 
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'default-frame-alist '(fullscreen . fullboth)) 
 #+END_SRC
-
-#+RESULTS:
-| (lambda nil (sr/fun/visual-fill-line)) | eyebrowse-init | select-frame |
 
 ** crux
 
@@ -1663,10 +1659,15 @@ This is an indispensable tool. The additional options of showing the timestamp a
 
 This configuration is picked up from scimax.
 
+- [ ] Figure out which of these functions benefit from helm.
+
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
+  :straight t
+  :after smex
   :init
   (require 'ivy)
+  (require 'smex)
   (setq projectile-completion-system 'ivy)
   (setq ivy-use-virtual-buffers t)
   (define-prefix-command 'counsel-prefix-map)
@@ -5223,11 +5224,11 @@ These packages and customisations are the ones I enjoy using from Scimax. Note t
   :ensure nil
   :load-path (lambda () (expand-file-name "org-mime" scimax-dir))
   :init (setq org-mime-up-subtree-heading 'org-back-to-heading
-	      org-mime-export-options '(:section-numbers nil
-							 :with-author nil
-							 :with-toc nil
-							 :with-latex dvipng)))
-(straight-use-package 'smex)
+	      org-mime-export-options '
+(:section-numbers nil
+		  :with-author nil
+		  :with-toc nil
+		  :with-latex dvipng)))
 
 (straight-use-package 'auctex)
 
