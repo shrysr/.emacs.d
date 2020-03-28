@@ -1380,11 +1380,14 @@ This package contains a bunch of useful tools which can cut down a lot of work
 
 These are settings dervied from the configuration of [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon]]. Also adapted from a [[http://pragmaticemacs.com/emacs/tree-style-directory-views-in-dired-with-dired-subtree/][pragmatic emacs article]].
 
+Note that =C-x C-q= for =dired-toggle-read= only.
+
 #+BEGIN_SRC emacs-lisp
 (use-package dired-subtree
-  :config
-  (bind-keys :map dired-mode-map
-             ("i" . dired-subtree-insert)
+:straight t
+:config
+(bind-keys :map dired-mode-map
+           ("i" . dired-subtree-insert)
              (";" . dired-subtree-toggle)))
 
 ;; Show directories first
