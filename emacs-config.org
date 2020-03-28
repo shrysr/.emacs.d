@@ -3798,6 +3798,100 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 (set-face-attribute 'elfeed-search-feed-face nil :height '0.8)
 #+END_SRC
 
+* EWW
+*** Default browser to be eww and basic settings
+:PROPERTIES:
+:ID:       F40C0E4A-8725-4909-A78E-576BE4E0216D
+:END:
+#+BEGIN_SRC emacs-lisp
+(setq browse-url-browser-function 'eww-browse-url)
+#+END_SRC
+
+#+RESULTS:
+: eww-browse-url
+
+*** Keyboard map for default external browser
+:PROPERTIES:
+:ID:       F8EAC318-91A3-4DB1-B637-032783187E6F
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;; Open the current URL in the default external browser
+(eval-after-load 'eww
+  '(progn
+     (define-key eww-mode-map "o" 'eww-browse-with-external-browser)
+     ))
+#+END_SRC
+
+#+RESULTS:
+: eww-browse-with-external-browser
+
+*** Wikipedia search
+:PROPERTIES:
+:ID:       141bec25-35ea-45b0-b22b-5f0d4b3aff09
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun wikipedia-search (search-term)
+  "Search for SEARCH-TERM on wikipedia"
+  (interactive
+   (let ((term (if mark-active
+                   (buffer-substring (region-beginning) (region-end))
+                 (word-at-point))))
+     (list
+      (read-string
+       (format "Wikipedia (%s):" term) nil nil term)))
+   )
+  (browse-url
+   (concat
+    "http://en.m.wikipedia.org/w/index.php?search="
+    search-term
+    ))
+  )
+#+end_src
+
+#+RESULTS:
+: wikipedia-search
+
+*** Access Hacker News
+:PROPERTIES:
+:ID:       ac674a80-7194-4b50-a78f-bd36cd92e122
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun hn ()
+  (interactive)
+  (browse-url "http://news.ycombinator.com"))
+#+end_src
+
+#+RESULTS:
+: hn
+
+*** TODO Open specific browser depending on the URL
+:PROPERTIES:
+:CREATED:  <2019-03-07 Thu 11:58>
+:ID:       64CBC9B3-AEB0-420D-811F-4B74EF064846
+:END:
+- Note taken on [2019-03-07 Thu 11:59] \\
+  This is worth setting up. It would be convenient for frequently visited websites like reddit and others, to open in the external browser, especially as they do not render well within w3m.
+
+Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; use browser depending on url
+(setq
+ browse-url-browser-function
+ '(
+  ("wikipedia\\.org" . eww-browse-url)
+  ("github" . eww-browse-url)
+  ("thefreedictionary\\.com" . eww-browse-url)
+  ("." . browse-url-default-browser)
+  ))
+#+END_SRC
+
+#+RESULTS:
+: ((wikipedia\.org . eww-browse-url) (github . eww-browse-url) (thefreedictionary\.com . eww-browse-url) (. . browse-url-default-browser))
+
 * Loading secret config
 
 #+BEGIN_SRC emacs-lisp
