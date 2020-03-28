@@ -1414,7 +1414,6 @@ Note that =C-x C-q= for =dired-toggle-read= only.
 
 #+RESULTS:
 : always
-* 
 * Helm packages and functions
 
 ** helm-ag
@@ -3168,7 +3167,7 @@ Use a prefix arg to get regular RET. "
 
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-utils
-    :straight (scimax-utils :local-repo "scimax-subset" :files ("scimax-utils.el" )))
+    :straight (scimax-utils :local-repo "scimax-subset" :files ("scimax-utils.el")))
 (require 'scimax-utils)
 #+END_SRC
 
@@ -3207,6 +3206,14 @@ scimax-ipython upstream
 
 #+RESULTS:
 : scimax-ob
+** scimax-elfeed 
+
+#+BEGIN_SRC emacs-lisp
+(use-package scimax-elfeed
+  :straight (scimax-elfeed :local-repo "scimax-subset" :files ("scimax-elfeed.el")))
+#+END_SRC
+
+#+RESULTS:
 
 * Programming customisations
 ** ESS configuration
@@ -3643,6 +3650,154 @@ In addition, I would like an org id to be created every time the capture is used
 
 #+RESULTS:
 | org-id-get-create |
+* Elfeed 
+- Note taken on [2019-09-25 Wed 14:09] \\
+  Scimax's elfeed is enabled, along with elfeed-org and elfeeed-goodies
+- Note taken on [2019-07-08 Mon 08:10] \\
+  Disabling elfeed for now.
+
+** Scimax + Elfeed-org and elfeed-goodies setup [/]
+:PROPERTIES:
+:ID:       8302d89f-756b-4a47-87aa-3f3df5a39a3f
+:END:
+Using an org source is the easiest way to organise my RSS feeds for reading with Elfeed.
+
+#+BEGIN_SRC emacs-lisp
+(require 'scimax-elfeed)
+
+;; use an org file to organise feeds
+(use-package elfeed-org
+  :ensure t
+  :config
+  (setq rmh-elfeed-org-files (list "~/my_org/elfeed.org"))
+  )
+
+(use-package elfeed-goodies
+  :ensure t
+  :init
+  (elfeed-goodies/setup)
+  )
+
+#+end_src
+
+#+RESULTS:
+
+** COMMENT Elfeed Basic + Customisations
+- Note taken on [2020-03-28 Sat 15:50] \\
+  This was my earlier configuration. However, there are issues with the save db feature and I am anyway not really syncing across computers anymore. I read feeds on my VPS. Scimax's elfeed customisations provide me the functions that I need as I can easily email an article to instapaper or anywhere else. However, these remain here for reference, as there are some useful functions here.
+
+Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][Note taking 3: Notes from elfeed entries - Heikki @ home]] 
+
+#+BEGIN_SRC emacs-lisp
+;; Elfeed configuration source :
+(use-package elfeed
+  :bind (:map elfeed-search-mode-map
+              ("A" . bjm/elfeed-show-all)
+              ("E" . bjm/elfeed-show-emacs)
+              ("D" . bjm/elfeed-show-daily)
+              ("q" . bjm/elfeed-save-db-and-bury))
+  :init
+  (setq my/default-elfeed-search-filter "@1-month-ago +unread !sport ")
+  (setq-default elfeed-search-filter my/default-elfeed-search-filter)
+  (setq elfeed-db-direcory "~/scimax/user/elfeeddb")
+  :config
+  (elfeed-org)
+  (elfeed-goodies/setup)
+  (setq elfeed-use-curl t)
+
+  ;;
+  ;; linking and capturing
+  ;;
+
+  (defun elfeed-link-title (entry)
+    "Copy the entry title and URL as org link to the clipboard."
+    (interactive)
+    (let* ((link (elfeed-entry-link entry))
+           (title (elfeed-entry-title entry))
+           (titlelink (concat "[[" link "][" title "]]")))
+      (when titlelink
+        (kill-new titlelink)
+        (x-set-selection 'PRIMARY titlelink)
+        (message "Yanked: %s" titlelink))))
+
+  ;; show mode
+
+  (defun elfeed-show-link-title ()
+    "Copy the current entry title and URL as org link to the clipboard."
+    (interactive)
+    (elfeed-link-title elfeed-show-entry))
+
+  (defun elfeed-show-quick-url-note ()
+    "Fastest way to capture entry link to org agenda from elfeed show mode"
+    (interactive)
+    (elfeed-link-title elfeed-show-entry)
+    (org-capture nil "n")
+    (yank)
+    (org-capture-finalize))
+
+  (bind-keys :map elfeed-show-mode-map
+             ("l" . elfeed-show-link-title)
+             ("v" . elfeed-show-quick-url-note))
+
+  ;; search mode
+
+  (defun elfeed-search-link-title ()
+    "Copy the current entry title and URL as org link to the clipboard."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+               when (elfeed-entry-link entry)
+               do (elfeed-link-title entry))))
+
+  (defun elfeed-search-quick-url-note ()
+    "In search mode, capture the title and link for the selected
+     entry or entries in org aganda."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+               do (elfeed-untag entry 'unread)
+               when (elfeed-entry-link entry)
+               do (elfeed-link-title entry)
+               do (org-capture nil "n")
+               do (yank)
+               do (org-capture-finalize)
+               (mapc #'elfeed-search-update-entry entries))
+      (unless (use-region-p) (forward-line))))
+
+  (bind-keys :map elfeed-search-mode-map
+             ("l" . elfeed-search-link-title)
+             ("v" . elfeed-search-quick-url-note))
+
+   ;;functions to support syncing .elfeed between machines
+  ;;makes sure elfeed reads index from disk before launching
+  (defun bjm/elfeed-load-db-and-open ()
+    "Wrapper to load the elfeed db from disk before opening"
+    (interactive)
+    (elfeed-db-load)
+    (elfeed)
+    (elfeed-search-update--force))
+
+  ;;write to disk when quiting
+  (defun bjm/elfeed-save-db-and-bury ()
+    "Wrapper to save the elfeed db to disk before burying buffer"
+    (interactive)
+    (elfeed-db-save)
+    (quit-window))
+  )
+#+END_SRC
+
+#+RESULTS:
+: bjm/elfeed-save-db-and-bury
+
+** COMMENT TEST Removing Scimax's default colors
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(set-face-attribute 'python-elfeed-entry nil :background nil :weight 'normal)
+(set-face-attribute 'emacs-elfeed-entry nil :background nil :weight 'normal)
+(set-face-attribute 'elfeed-search-unread-title-face nil  :weight 'normal)
+(set-face-attribute 'elfeed-search-feed-face nil :height '0.8)
+#+END_SRC
+
 * Loading secret config
 
 #+BEGIN_SRC emacs-lisp
@@ -4922,161 +5077,6 @@ Source:  Sacha Chua : http://sachachua.com/blog/2008/09/emacs-and-w3m-making-tab
 #+end_src
 
 #+RESULTS:
-
-** Elfeed customisation
-- Note taken on [2019-09-25 Wed 14:09] \\
-  Scimax's elfeed is enabled, along with elfeed-org and elfeeed-goodies
-- Note taken on [2019-07-08 Mon 08:10] \\
-  Disabling elfeed for now.
-
-*** Elfeed Basic + Customisations
-Source: http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/
-
-#+BEGIN_SRC emacs-lisp
-;; Elfeed configuration source :
-(use-package elfeed
-  :bind (:map elfeed-search-mode-map
-              ("A" . bjm/elfeed-show-all)
-              ("E" . bjm/elfeed-show-emacs)
-              ("D" . bjm/elfeed-show-daily)
-              ("q" . bjm/elfeed-save-db-and-bury))
-  :init
-  (setq my/default-elfeed-search-filter "@1-month-ago +unread !sport ")
-  (setq-default elfeed-search-filter my/default-elfeed-search-filter)
-  (setq elfeed-db-direcory "~/scimax/user/elfeeddb")
-  :config
-  (elfeed-org)
-  (elfeed-goodies/setup)
-  (setq elfeed-use-curl t)
-
-  ;;
-  ;; linking and capturing
-  ;;
-
-  (defun elfeed-link-title (entry)
-    "Copy the entry title and URL as org link to the clipboard."
-    (interactive)
-    (let* ((link (elfeed-entry-link entry))
-           (title (elfeed-entry-title entry))
-           (titlelink (concat "[[" link "][" title "]]")))
-      (when titlelink
-        (kill-new titlelink)
-        (x-set-selection 'PRIMARY titlelink)
-        (message "Yanked: %s" titlelink))))
-
-  ;; show mode
-
-  (defun elfeed-show-link-title ()
-    "Copy the current entry title and URL as org link to the clipboard."
-    (interactive)
-    (elfeed-link-title elfeed-show-entry))
-
-  (defun elfeed-show-quick-url-note ()
-    "Fastest way to capture entry link to org agenda from elfeed show mode"
-    (interactive)
-    (elfeed-link-title elfeed-show-entry)
-    (org-capture nil "n")
-    (yank)
-    (org-capture-finalize))
-
-  (bind-keys :map elfeed-show-mode-map
-             ("l" . elfeed-show-link-title)
-             ("v" . elfeed-show-quick-url-note))
-
-  ;; search mode
-
-  (defun elfeed-search-link-title ()
-    "Copy the current entry title and URL as org link to the clipboard."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (cl-loop for entry in entries
-               when (elfeed-entry-link entry)
-               do (elfeed-link-title entry))))
-
-  (defun elfeed-search-quick-url-note ()
-    "In search mode, capture the title and link for the selected
-     entry or entries in org aganda."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (cl-loop for entry in entries
-               do (elfeed-untag entry 'unread)
-               when (elfeed-entry-link entry)
-               do (elfeed-link-title entry)
-               do (org-capture nil "n")
-               do (yank)
-               do (org-capture-finalize)
-               (mapc #'elfeed-search-update-entry entries))
-      (unless (use-region-p) (forward-line))))
-
-  (bind-keys :map elfeed-search-mode-map
-             ("l" . elfeed-search-link-title)
-             ("v" . elfeed-search-quick-url-note))
-
-   ;;functions to support syncing .elfeed between machines
-  ;;makes sure elfeed reads index from disk before launching
-  (defun bjm/elfeed-load-db-and-open ()
-    "Wrapper to load the elfeed db from disk before opening"
-    (interactive)
-    (elfeed-db-load)
-    (elfeed)
-    (elfeed-search-update--force))
-
-  ;;write to disk when quiting
-  (defun bjm/elfeed-save-db-and-bury ()
-    "Wrapper to save the elfeed db to disk before burying buffer"
-    (interactive)
-    (elfeed-db-save)
-    (quit-window))
-  )
-#+END_SRC
-
-#+RESULTS:
-: bjm/elfeed-save-db-and-bury
-
-*** Scimax + Elfeed-org and elfeed-goodies setup [/]
-:PROPERTIES:
-:ID:       8302d89f-756b-4a47-87aa-3f3df5a39a3f
-:END:
-Using an org source is the easiest way to organise my RSS feeds for reading with Elfeed.
-
-#+BEGIN_SRC emacs-lisp
-(require 'scimax-elfeed)
-
-;; use an org file to organise feeds
-(use-package elfeed-org
-  :ensure t
-  :config
-  (setq rmh-elfeed-org-files (list "~/my_org/elfeed.org"))
-  )
-
-(use-package elfeed-goodies
-  :ensure t
-  :init
-  (elfeed-goodies/setup)
-  )
-
-#+end_src
-
-#+RESULTS:
-
-*** TEST Removing Scimax's default colors
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(set-face-attribute 'python-elfeed-entry nil :background nil :weight 'normal)
-(set-face-attribute 'emacs-elfeed-entry nil :background nil :weight 'normal)
-(set-face-attribute 'elfeed-search-unread-title-face nil  :weight 'normal)
-(set-face-attribute 'elfeed-search-feed-face nil :height '0.8)
-#+END_SRC
-
-*** TODO Consider storing the Feed sources here in org format
-- Note taken on [2019-02-17 Sun 18:11] \\
-  This will need an export to a source org file per the settings.
-
-*** Loading completed
-
-#+BEGIN_SRC emacs-lisp
-(message "Loaded Elfeed customisations")
-#+END_SRC
 
 ** ediff
   :PROPERTIES:
