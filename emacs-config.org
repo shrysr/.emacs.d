@@ -1,5 +1,5 @@
 #+PROPERTY: header-args :tangle ./dotemacs.el
-#+TITLE: shrysr's Dotemacs config
+#+TITLE: shrysr's Dotemacs
 
 * Introduction
 
@@ -1370,6 +1370,48 @@ This package contains a bunch of useful tools which can cut down a lot of work
 :config
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
 #+END_SRC
+* Dired
+:PROPERTIES:
+:ID:       62B42FB8-61E2-4EFB-A51A-D6BA13E31EB2
+:END:
+
+- Note taken on [2020-03-28 Sat 15:10] \\
+  Apparently, dired is not available in to be installed via MELPA.
+
+These are settings dervied from the configuration of [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Angry Bacon]]. Also adapted from a [[http://pragmaticemacs.com/emacs/tree-style-directory-views-in-dired-with-dired-subtree/][pragmatic emacs article]].
+
+#+BEGIN_SRC emacs-lisp
+(use-package dired-subtree
+  :config
+  (bind-keys :map dired-mode-map
+             ("i" . dired-subtree-insert)
+             (";" . dired-subtree-toggle)))
+
+;; Show directories first
+ (defun me/dired-directories-first ()
+    "Sort dired listings with directories first before adding marks."
+    (save-excursion
+      (let (buffer-read-only)
+        (forward-line 2)
+        (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+      (set-buffer-modified-p nil)))
+
+(advice-add 'dired-readin :after #'me/dired-directories-first)
+
+(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode)))
+
+(setq dired-auto-revert-buffer t
+   dired-dwim-target t
+   dired-hide-details-hide-symlink-targets nil
+   dired-listing-switches "-alh"
+   dired-ls-F-marks-symlinks nil
+   dired-recursive-copies 'always)
+
+#+END_SRC
+
+#+RESULTS:
+: always
+* 
 * Helm packages and functions
 
 ** helm-ag
