@@ -1142,7 +1142,7 @@ Starting off with the basic configuration posted in org-projectile github repo.
 : org-capture
 
 * Knowledge management
-** org-brain
+** COMMENT org-brain
 
 #+begin_src emacs-lisp 
   (use-package org-brain
@@ -1249,7 +1249,7 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+RESULTS:
 : my/avy-brain-jump-sibling
 
-** polybrain
+** COMMENT polybrain
 
 #+name: polybrain
 #+begin_src emacs-lisp :noweb t
@@ -1301,7 +1301,7 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+RESULTS: polybrain
 : polybrain-switch
 
-** deflayer
+** COMMENT deflayer
 
 This will help with different settings for different brains. Eventually, it can
 also be used for different settings for say the org agenda or other
@@ -1401,7 +1401,8 @@ Note that =C-x C-q= for =dired-toggle-read= only.
 
 (advice-add 'dired-readin :after #'me/dired-directories-first)
 
-(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode)))
+(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode) 
+			     (setq visual-fill-column-mode 'nil)))
 
 (setq dired-auto-revert-buffer t
    dired-dwim-target t
@@ -1963,9 +1964,10 @@ This is an indispensable tool. The additional options of showing the timestamp a
 
 #+BEGIN_SRC emacs-lisp
 (use-package mu4e
-:ensure nil
-:hook
- ((mu4e-view-mode . visual-fill-column-mode)
+  :ensure nil
+  :hook
+  (mu4e-headers-mode . (lambda () (setq visual-fill-column nil)))
+  ((mu4e-view-mode . visual-line-mode)
    (mu4e-compose-mode . (lambda ()
                           (visual-line-mode)
                           (use-hard-newlines -1)
@@ -1981,13 +1983,15 @@ This is an indispensable tool. The additional options of showing the timestamp a
                                   (:from . 22)
                                   (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
                                   (:size . 7))))))
-)
+  )
+
 
 
 
 #+END_SRC
 
 #+RESULTS:
+| visual-fill-mode | visual-line-mode | visual-fill-line-mode | (lambda nil (local-set-key (kbd <tab>) 'shr-next-link) (local-set-key (kbd <backtab>) 'shr-previous-link)) | visual-fill-column-mode | #[0 \301\300!\210\302\211\207 [bookmark-make-record-function make-local-variable mu4e-view-bookmark-make-record] 2] |
 
 ** COMMENT mu4e alerts
 :PROPERTIES:
@@ -2163,11 +2167,22 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+END_SRC
 
 ** Theme : modus
-Theme Installation:
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'modus-operandi-theme)
-(straight-use-package 'modus-vivendi-theme)
+
+(setq modus-operandi-theme-scale-headings t)
+(setq modus-operandi-theme-proportional-fonts t)
+(setq modus-operandi-theme-slanted-constructs t)
+
+(load-theme 'modus-operandi t)
+
+;; These are placed here for ready reference
+;; (setq modus-operandi-theme-scale-1 1.05)
+;; (setq modus-operandi-theme-scale-2 1.1)
+;; (setq modus-operandi-theme-scale-3 1.15)
+;; (setq modus-operandi-theme-scale-4 1.2)
+
 #+END_SRC
 
 #+RESULTS:
@@ -2226,10 +2241,11 @@ Theme Installation:
 
 #+RESULTS:
 
-** Olivetti mode
+** COMMENT Olivetti mode
+- Note taken on [2020-03-28 Sat 20:04] \\
+  The problem with this mode is that it seems to activate and deactivate constantly, especially when the buffer is saved. However it is certainly very useful with wide screens in general.
 
-This package is useful in centering the text in a buffer, and is particularly
-helpful with wide screens.
+This package is useful in centering the text in a buffer, and is particularly helpful with wide screens.
 
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
@@ -2237,7 +2253,7 @@ helpful with wide screens.
 (olivetti-mode 1))
 
 #+END_SRC
-** TEST Spaceline : modeline configuration
+** Spaceline : modeline configuration
    :PROPERTIES:
    :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
    :END:
@@ -2314,7 +2330,7 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 
 #+RESULTS:
 
-** All the bars and startup messages
+** Remove the bars and startup messages
 :PROPERTIES:
 :ID:       38F9FE46-13E7-4281-8DC0-7C9F9AAB673C
 :END:
@@ -3246,7 +3262,7 @@ scimax-ipython upstream
 
 #+RESULTS:
 : scimax-ob
-** scimax-elfeed 
+** COMMENT scimax-elfeed 
 
 #+BEGIN_SRC emacs-lisp
 (use-package scimax-elfeed
@@ -3738,8 +3754,7 @@ In addition, I would like an org id to be created every time the capture is used
 Using an org source is the easiest way to organise my RSS feeds for reading with Elfeed.
 
 #+BEGIN_SRC emacs-lisp
-(require 'scimax-elfeed)
-
+(straight-use-package 'elfeed)
 ;; use an org file to organise feeds
 (use-package elfeed-org
   :ensure t
@@ -3753,9 +3768,41 @@ Using an org source is the easiest way to organise my RSS feeds for reading with
   (elfeed-goodies/setup)
   )
 
+;; (require 'scimax-elfeed)
+
 #+end_src
 
 #+RESULTS:
+
+** Elfeed get full entry
+
+Source: [[https://punchagan.muse-amuse.in/blog/elfeed-hook-to-fetch-full-content/][Elfeed hook to fetch full content - Noetic Nought]]
+
+#+BEGIN_SRC emacs-lisp
+(defun pc/get-url-content (url)
+  "Fetches the content for a url."
+  (shell-command-to-string (format "~/bin/get_article.py %s" url)))
+
+(defun pc/get-entry-content (entry)
+  "Fetches content for pinboard entries that are not tweets."
+  (interactive
+   (let ((entry elfeed-show-entry))
+     (list entry)))
+
+  (let ((url (elfeed-entry-link entry))
+        (feed-id (elfeed-deref (elfeed-entry-feed-id entry)))
+        (content (elfeed-deref (elfeed-entry-content entry))))
+    (when (and (s-matches? "feeds.pinboard.in/" feed-id)
+               (not (s-matches? "twitter.com/\\|pdf$\\|png$\\|jpg$" url))
+               (string-equal "" content))
+      (setq content (pc/get-url-content url))
+      (setf (elfeed-entry-content entry) (elfeed-ref content)))))
+
+(add-hook 'elfeed-new-entry-hook #'pc/get-entry-content)
+#+END_SRC
+
+#+RESULTS:
+| pc/get-entry-content | elfeed-goodies/html-decode-title | elfeed-org-run-new-entry-hook |
 
 ** COMMENT Elfeed Basic + Customisations
 - Note taken on [2020-03-28 Sat 15:50] \\
@@ -3873,11 +3920,9 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 (set-face-attribute 'elfeed-search-feed-face nil :height '0.8)
 #+END_SRC
 
-* EWW
+* eww
 *** Default browser to be eww and basic settings
-:PROPERTIES:
-:ID:       F40C0E4A-8725-4909-A78E-576BE4E0216D
-:END:
+
 #+BEGIN_SRC emacs-lisp
 (setq browse-url-browser-function 'eww-browse-url)
 #+END_SRC
@@ -3886,9 +3931,6 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 : eww-browse-url
 
 *** Keyboard map for default external browser
-:PROPERTIES:
-:ID:       F8EAC318-91A3-4DB1-B637-032783187E6F
-:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; Open the current URL in the default external browser
@@ -3902,9 +3944,6 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 : eww-browse-with-external-browser
 
 *** Wikipedia search
-:PROPERTIES:
-:ID:       141bec25-35ea-45b0-b22b-5f0d4b3aff09
-:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun wikipedia-search (search-term)
@@ -3929,9 +3968,6 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 : wikipedia-search
 
 *** Access Hacker News
-:PROPERTIES:
-:ID:       ac674a80-7194-4b50-a78f-bd36cd92e122
-:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun hn ()
@@ -3943,10 +3979,7 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 : hn
 
 *** TODO Open specific browser depending on the URL
-:PROPERTIES:
-:CREATED:  <2019-03-07 Thu 11:58>
-:ID:       64CBC9B3-AEB0-420D-811F-4B74EF064846
-:END:
+
 - Note taken on [2019-03-07 Thu 11:59] \\
   This is worth setting up. It would be convenient for frequently visited websites like reddit and others, to open in the external browser, especially as they do not render well within w3m.
 
@@ -4406,16 +4439,28 @@ These are packages and snippets that disabled from tangling and execution and pl
 (use-package poet-theme
   :straight t
   :config
-  (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+  (set-face-attribute 'default nil 
+		      :family "iA Writer Mono V" 
+		      :height 130)
   (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
   (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+
   (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
-   '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold))))
-   )
+   '(org-level-1 ((t (:inherit outline-1 
+			       :height 1.5
+			       :weight bold))))
+   '(org-level-2 ((t (:inherit outline-2 
+			       :height 1.3
+			       :weight bold))))
+   '(org-level-3 ((t (:inherit outline-3 
+			       :height 1.2
+			       :weight bold))))
+   '(org-level-4 ((t (:inherit outline-4
+			       :height 1.1
+			       :weight bold))))
+   '(org-level-5 ((t (:inherit outline-5
+			       :height 1.0
+			       :weight bold)))))
   ;; Enabling the variable pitch mode
   (add-hook 'text-mode-hook
 	    (lambda ()
