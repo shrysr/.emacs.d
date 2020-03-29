@@ -2176,13 +2176,45 @@ Theme Installation:
 ** Font and other aesthetics
 
 #+BEGIN_SRC emacs-lisp
-;; Load the modus theme
-(load-theme 'modus-operandi)
-
 ;; My customisations
 (set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
 (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
 (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
+#+END_SRC
+
+#+RESULTS:
+
+** COMMENT Doom modeline
+
+- [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :straight t
+  :custom
+  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon nil)
+  (doom-modeline-minor-modes nil)
+  :hook
+  (after-init . doom-modeline-mode)
+  :config
+  (line-number-mode 0)
+  (column-number-mode 0)
+  (doom-modeline-def-modeline 'main
+    '(bar window-number matches buffer-info remote-host buffer-position selection-info)
+    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+
+#+END_SRC
+
+#+RESULTS:
+| doom-modeline-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | tramp-register-archive-file-name-handler | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | table--make-cell-map |
+
+** COMMENT Org Aesthetics Headline scales
+- Note taken on [2020-03-28 Sat 19:56] \\
+  These are not required for the modus theme, as inbuilt options exist upto level 4.
+
+#+BEGIN_SRC emacs-lisp  
 
 (custom-set-faces
  '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
