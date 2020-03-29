@@ -1562,6 +1562,102 @@ As such most of these
 (straight-use-package 'smex)
 #+END_SRC
 
+** Counsel
+:PROPERTIES:
+:ID:       4F05CB2A-C98A-433E-AF50-D120F4376192
+:END:
+
+This configuration is picked up from scimax.
+
+- [ ] Figure out which of these functions benefit from helm.
+
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :straight t
+  :after smex
+  :init
+  (require 'ivy)
+  (require 'smex)
+  (setq projectile-completion-system 'ivy)
+  (setq ivy-use-virtual-buffers t)
+  (define-prefix-command 'counsel-prefix-map)
+  (global-set-key (kbd "H-c") 'counsel-prefix-map)
+
+  ;; default pattern ignores order.
+  (setf (cdr (assoc t ivy-re-builders-alist))
+	'ivy--regex-ignore-order)
+  :bind
+  (("M-x" . counsel-M-x)
+   ("C-x b" . ivy-switch-buffer)
+   ("C-x C-f" . counsel-find-file)
+   ("C-x l" . counsel-locate)
+   ("C-h f" . counsel-describe-function)
+   ("C-h v" . counsel-describe-variable)
+   ("C-h i" . counsel-info-lookup-symbol)
+   ("H-c r" . ivy-resume)
+   ("H-c l" . counsel-load-library)
+   ("H-c f" . counsel-git)
+   ("H-c g" . counsel-git-grep)
+   ("H-c a" . counsel-ag)
+   ("H-c p" . counsel-pt))
+  :diminish ""
+  :config
+  (progn
+    (counsel-mode)
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    (define-key ivy-minibuffer-map (kbd "M-<SPC>") 'ivy-dispatching-done)
+
+    ;; C-RET call and go to next
+    (define-key ivy-minibuffer-map (kbd "C-<return>")
+      (lambda ()
+	"Apply action and move to next/previous candidate."
+	(interactive)
+	(ivy-call)
+	(ivy-next-line)))
+
+    ;; M-RET calls action on all candidates to end.
+    (define-key ivy-minibuffer-map (kbd "M-<return>")
+      (lambda ()
+	"Apply default action to all candidates."
+	(interactive)
+	(ivy-beginning-of-buffer)
+	(loop for i from 0 to (- ivy--length 1)
+	      do
+	      (ivy-call)
+	      (ivy-next-line)
+	      (ivy--exhibit))
+	(exit-minibuffer)))
+
+    ;; s-RET to quit
+    (define-key ivy-minibuffer-map (kbd "s-<return>")
+      (lambda ()
+	"Exit with no action."
+	(interactive)
+	(ivy-exit-with-action
+	 (lambda (x) nil))))
+
+    ;; Show keys
+    (define-key ivy-minibuffer-map (kbd "?")
+      (lambda ()
+	(interactive)
+	(describe-keymap ivy-minibuffer-map)))
+
+    (define-key ivy-minibuffer-map (kbd "<left>") 'ivy-backward-delete-char)
+    (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
+    (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
+#+END_SRC
+
+*** Temp
+- Note taken on [2020-03-28 Sat 23:09] \\
+  For some reason, this seems to be required at the moment. 
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'counsel)
+(counsel-mode)
+#+END_SRC
+
+#+RESULTS:
+: t
 ** Expand region package
    :PROPERTIES:
    :ID:       046c8e8c-a6c0-451e-9e7e-61de54ab0945
@@ -1696,94 +1792,6 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+BEGIN_SRC emacs-lisp
 (use-package avy)
 #+END_SRC
-** Counsel
-:PROPERTIES:
-:ID:       4F05CB2A-C98A-433E-AF50-D120F4376192
-:END:
-
-This configuration is picked up from scimax.
-
-- [ ] Figure out which of these functions benefit from helm.
-
-#+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :straight t
-  :after smex
-  :init
-  (require 'ivy)
-  (require 'smex)
-  (setq projectile-completion-system 'ivy)
-  (setq ivy-use-virtual-buffers t)
-  (define-prefix-command 'counsel-prefix-map)
-  (global-set-key (kbd "H-c") 'counsel-prefix-map)
-
-  ;; default pattern ignores order.
-  (setf (cdr (assoc t ivy-re-builders-alist))
-	'ivy--regex-ignore-order)
-  :bind
-  (("M-x" . counsel-M-x)
-   ("C-x b" . ivy-switch-buffer)
-   ("C-x C-f" . counsel-find-file)
-   ("C-x l" . counsel-locate)
-   ("C-h f" . counsel-describe-function)
-   ("C-h v" . counsel-describe-variable)
-   ("C-h i" . counsel-info-lookup-symbol)
-   ("H-c r" . ivy-resume)
-   ("H-c l" . counsel-load-library)
-   ("H-c f" . counsel-git)
-   ("H-c g" . counsel-git-grep)
-   ("H-c a" . counsel-ag)
-   ("H-c p" . counsel-pt))
-  :diminish ""
-  :config
-  (progn
-    (counsel-mode)
-    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-    (define-key ivy-minibuffer-map (kbd "M-<SPC>") 'ivy-dispatching-done)
-
-    ;; C-RET call and go to next
-    (define-key ivy-minibuffer-map (kbd "C-<return>")
-      (lambda ()
-	"Apply action and move to next/previous candidate."
-	(interactive)
-	(ivy-call)
-	(ivy-next-line)))
-
-    ;; M-RET calls action on all candidates to end.
-    (define-key ivy-minibuffer-map (kbd "M-<return>")
-      (lambda ()
-	"Apply default action to all candidates."
-	(interactive)
-	(ivy-beginning-of-buffer)
-	(loop for i from 0 to (- ivy--length 1)
-	      do
-	      (ivy-call)
-	      (ivy-next-line)
-	      (ivy--exhibit))
-	(exit-minibuffer)))
-
-    ;; s-RET to quit
-    (define-key ivy-minibuffer-map (kbd "s-<return>")
-      (lambda ()
-	"Exit with no action."
-	(interactive)
-	(ivy-exit-with-action
-	 (lambda (x) nil))))
-
-    ;; Show keys
-    (define-key ivy-minibuffer-map (kbd "?")
-      (lambda ()
-	(interactive)
-	(describe-keymap ivy-minibuffer-map)))
-
-    (define-key ivy-minibuffer-map (kbd "<left>") 'ivy-backward-delete-char)
-    (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
-    (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
-#+END_SRC
-
-#+RESULTS:
-: counsel-pt
-
 ** Super and Hyper key setting
 
 #+BEGIN_SRC emacs-lisp
