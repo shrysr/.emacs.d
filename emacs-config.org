@@ -1682,13 +1682,18 @@ This is a nifty little package that makes expansion of selection at point more c
 :PROPERTIES:
 :ID:       91183327-CDC5-482B-8A21-303467ED1AE3
 :END:
+- Note taken on [2020-03-30 Mon 18:20] \\
+  This command allows an interactive browsing and insertion from the kill ring. However it does not allow a search. For enabling a search of the kill ring in addition to marking and insertion =helm-king-ring= can be used. However the latter method does not offer a preview of the material being yanked.
+
 #+BEGIN_SRC emacs-lisp
 (use-package browse-kill-ring
+:bind ("M-y" . browse-kill-ring)
   :ensure t
 )
 #+END_SRC
 
 #+RESULTS:
+: browse-kill-ring
 ** Multiple Cursors
 :PROPERTIES:
 :ID:       06039005-b802-43bd-92f5-05439cebc759
