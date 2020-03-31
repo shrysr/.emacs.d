@@ -26,4 +26,6 @@
 "Function to prepend the project directory path to any folder. Starts from the home directory."
   (expand-file-name foldername (sr/fun/homedir ".emacs.d" )))
 
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (load (sr/fun/emacs-dir "dotemacs.el"))
