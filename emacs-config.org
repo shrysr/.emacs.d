@@ -1416,23 +1416,6 @@ Note that =C-x C-q= for =dired-toggle-read= only.
 
 #+RESULTS:
 : always
-* Helm packages and functions
-
-** helm-ag
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'helm-ag)
-#+END_SRC
-
-** helm-org-rifle 
-
-#+BEGIN_SRC emacs-lisp
-(use-package helm-org-rifle
-  :straight t
-  :config
-  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
-#+END_SRC
-
 * TEST Treemacs [0/3]
   :PROPERTIES:
   :ID:       2571745f-97de-4fa9-8d56-0e6599bdc489
@@ -1772,20 +1755,33 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+RESULTS:
 : ivy-yasnippet
 
-** swiper or grep
+** COMMENT ag.el
+- Note taken on [2020-03-30 Mon 18:06] \\
+  Though helm-do-ag is avialable, this appears to be a separate ag implementation that does not required the separate silver searcher program to be installed in the system. This remains to be verified.
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'ag)
+#+END_SRC
+
+** swiper
 :PROPERTIES:
 :ID:       2DEA32C7-F18C-4DC0-B924-450C45F351A6
 :END:
+- Note taken on [2020-03-30 Mon 18:05] \\
+  I had this to counsel-swiper-or-grep. However at times, the grep result would show as a binary file even though the file was clearly not binary. I have switched to using only swiper without counsel.
 
 #+BEGIN_SRC emacs-lisp
 (use-package swiper
   :bind
-  ("C-s" . counsel-grep-or-swiper)
+  ("C-s" . swiper)
   ("H-s" . swiper-all)
   :diminish ivy-mode
   :config
   (ivy-mode))
 #+END_SRC
+
+#+RESULTS:
+: swiper-all
+
 ** avy
 :PROPERTIES:
 :ID:       F9CBA6DB-15F3-45E9-94AB-5E92C3F62AB3
@@ -1802,6 +1798,74 @@ This is an indispensable tool. The additional options of showing the timestamp a
       (setq mac-left-command-modifier 'super)
       (setq mac-right-option-modifier 'hyper)))
 #+END_SRC
+** Helm packages and functions
+
+*** Setting helm for some basic functions
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+:config
+(helm-mode 1)
+(require 'helm-config)
+
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-h f") 'helm-apropos)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-c y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x C-r") 'helm-recentf))
+#+END_SRC
+
+#+RESULTS:
+: helm-find-file
+
+*** Helm bibtex and projectile
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'helm-bibtex)
+
+(straight-use-package 'helm-projectile)
+#+END_SRC
+
+*** helm-ag
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'helm-ag)
+#+END_SRC
+
+*** helm-org-rifle 
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-org-rifle
+  :straight t
+  :config
+  (global-set-key (kbd "C-c C-w") #'helm-org-rifle--refile))
+#+END_SRC
+
+*** Helm swoop
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop
+  :ensure t
+  :bind (("M-i" . helm-swoop)
+         ("M-I" . helm-swoop-back-to-last-point)
+         ("C-c M-i" . helm-multi-swoop))
+  :config
+  ;; When doing isearch, hand the word over to helm-swoop
+  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+  ;; From helm-swoop to helm-multi-swoop-all
+  (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+  ;; Save buffer when helm-multi-swoop-edit complete
+  (setq helm-multi-swoop-edit-save t
+        ;; If this value is t, split window inside the current window
+        helm-swoop-split-with-multiple-windows t
+        ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+        helm-swoop-split-direction 'split-window-vertically
+        ;; If nil, you can slightly boost invoke speed in exchange for text color
+        helm-swoop-speed-or-color nil))
+#+END_SRC
+
+#+RESULTS:
+: helm-multi-swoop
 
 * Email
 ** TODO [#A] mu4e
