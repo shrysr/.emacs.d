@@ -126,7 +126,7 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 (load (sr/fun/emacs-dir "dotemacs.el"))
 #+END_SRC
 
-* .gitignore 
+* COMMENT .gitignore 
 - Note taken on [2020-03-26 Thu 11:38] \\
   In this process, I realised that as long as there is a .gitignore file present (and not in a commit) and the specified files have never been in a commit - git automatically ignores these files. i.e there is no need to commit a .gitignore file.
 
