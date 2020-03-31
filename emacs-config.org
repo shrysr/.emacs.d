@@ -300,6 +300,66 @@ Since I switch between a Linux machine and a Mac frequently, it is better to def
 
 #+END_SRC
 
+* Temporary package list
+- Note taken on [2020-03-30 Mon 07:58] \\
+  A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
+
+#+BEGIN_SRC emacs-lisp
+      ;; (use-package helm-bibtex)
+
+      ;; (use-package helm-projectile)
+
+      ;; Functions for working with hash tables
+      (use-package ht)
+
+      (use-package htmlize)
+
+      (use-package hy-mode)
+
+      (use-package hydra
+        :init
+        (setq hydra-is-helpful t)
+
+        :config
+        (require 'hydra-ox))
+
+      (use-package ivy-hydra)
+
+      (use-package jedi)
+
+      (use-package jedi-direx)
+
+      (use-package diminish)
+
+      ;; (use-package avy)
+
+    (use-package rainbow-mode)
+
+    (use-package esup)
+
+    ;; Provides functions for working with files
+    (use-package f)
+
+    (straight-use-package 'dash)
+    (straight-use-package 'dash-functional)
+    (straight-use-package 'ov)
+  (straight-use-package 'flx)
+
+    (use-package auto-complete
+      :diminish auto-complete-mode
+      :config (ac-config-default))
+
+  (use-package google-this
+    :config
+    (google-this-mode 1))
+
+  (straight-use-package 'ggtags)
+  (straight-use-package 'ibuffer-projectile)
+#+END_SRC
+
+#+RESULTS:
+: t
+
 * Crypto
 
 ** Basic crypto
