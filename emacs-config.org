@@ -148,10 +148,6 @@ tramp
 url
 #+END_SRC
 
-* TODO Load External libraries
-
-There are a number of repositories of configurations and packages that I would like to directly use. One prime example is scimax. There are of course others, and they have to be added to the load-path for the funtions to be accessible.
-
 * Tangle Emacs config on save 
 ** TODO Tangle on save without async
 
@@ -219,8 +215,7 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 
 * Auto-save
 
-Copied from ldleworth's config. I think this makes sense for me at the
-moment. Here is a summary: 
+Copied from ldleworth's config. I think this makes sense for me at the moment. Here is a summary: 
 
 - Setup auto-save for every file that is visited.
 - Set the auto-save directory explicitly to save all the auto-saves in a single location.
@@ -871,6 +866,12 @@ I dislike the way org-capture disrupts my current window, and shows me the captu
 #+END_SRC
 
 #+RESULTS:
+** org-source-window split setup
+
+#+BEGIN_SRC emacs-lisp
+(setq org-src-window-setup 'split-window-right)
+#+END_SRC
+
 * PDF related
 ** STABLE PDF Tools
 CLOSED: [2019-10-23 Wed 09:26]
