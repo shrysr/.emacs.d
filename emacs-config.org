@@ -107,6 +107,9 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
  #+RESULTS:
 
 ** Some basic directory definitions 
+:PROPERTIES:
+:ID:       52D8055A-D99B-463C-8F97-056C068EDACD
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; Base function to create the home directory
@@ -120,7 +123,24 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
   (expand-file-name foldername (sr/fun/homedir ".emacs.d" )))
 #+END_SRC
 
+** Shorten yes or no
+:PROPERTIES:
+:ID:       4A052D85-5CA0-4703-94BD-693A88D89926
+:END:
+
+It is infuriating that this is not a default in emacs. Therefore this minor snippet is included in the init.
+
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+#+RESULTS:
+: y-or-n-p
+
 ** Load main config
+:PROPERTIES:
+:ID:       CEBFC8FA-011A-4836-A815-9B00746EF8AE
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (load (sr/fun/emacs-dir "dotemacs.el"))
@@ -149,7 +169,13 @@ url
 #+END_SRC
 
 * Tangle Emacs config on save 
+:PROPERTIES:
+:ID:       EE52585C-C1D6-4759-94AE-CCECA01E5D41
+:END:
 ** TODO Tangle on save without async
+:PROPERTIES:
+:ID:       47CCBB72-667B-4710-AF6F-32B9DEA32E89
+:END:
 
 As such the tangling hardly takes any time. [[https://thewanderingcoder.com/2015/02/literate-emacs-configuration/][Literate Emacs Configuration | Sean Miller: The Wandering Coder]] provides an example of setting up a function. This uses the buffer file name to tangle for the emacs config file. A hook is added to the save function to check. 
 
@@ -196,6 +222,9 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 : sr/fun/async-tangle-init
 
 * Various directories
+:PROPERTIES:
+:ID:       252B8837-EE16-41C1-96C1-3F6C05D156BF
+:END:
 
 #+BEGIN_SRC emacs-lisp
 
@@ -214,6 +243,9 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 : sr/fun/emacs-dir
 
 * Auto-save
+:PROPERTIES:
+:ID:       6BBBB542-2501-4516-A138-692EC000CBC3
+:END:
 
 Copied from ldleworth's config. I think this makes sense for me at the moment. Here is a summary: 
 
@@ -300,168 +332,6 @@ Since I switch between a Linux machine and a Mac frequently, it is better to def
 
 #+END_SRC
 
-* Temporary package list
-- Note taken on [2020-03-30 Mon 07:58] \\
-  A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
-
-#+BEGIN_SRC emacs-lisp
-      ;; (use-package helm-bibtex)
-
-      ;; (use-package helm-projectile)
-
-      ;; Functions for working with hash tables
-      (use-package ht)
-
-      (use-package htmlize)
-
-      (use-package hy-mode)
-
-      (use-package hydra
-        :init
-        (setq hydra-is-helpful t)
-
-        :config
-        (require 'hydra-ox))
-
-      (use-package ivy-hydra)
-
-      (use-package jedi)
-
-      (use-package jedi-direx)
-
-      (use-package diminish)
-
-      ;; (use-package avy)
-
-    (use-package rainbow-mode)
-
-    (use-package esup)
-
-    ;; Provides functions for working with files
-    (use-package f)
-
-    (straight-use-package 'dash)
-    (straight-use-package 'dash-functional)
-    (straight-use-package 'ov)
-  (straight-use-package 'flx)
-
-    (use-package auto-complete
-      :diminish auto-complete-mode
-      :config (ac-config-default))
-
-  (use-package google-this
-    :config
-    (google-this-mode 1))
-
-  (straight-use-package 'ggtags)
-  (straight-use-package 'ibuffer-projectile)
-#+END_SRC
-
-#+RESULTS:
-: t
-
-* Crypto
-
-** Basic crypto
-:PROPERTIES:
-   :ID:       B4CA6F66-7CD6-4905-A3B0-B4FCB763ADE9
-   :END:
-
-#+BEGIN_SRC emacs-lisp
-(setq epa-file-encrypt-to "shreyas@fastmail.com")
-#+end_src
-
-#+RESULTS:
-: Loaded crypto setup
-
-** TEST org-crypt
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'org-crypt)
-(add-to-list 'org-modules 'org-crypt)
-                                        ; Encrypt all entries before saving
-(org-crypt-use-before-save-magic)
-;;(setq org-tags-exclude-from-inheritance (quote ("crypt")))
-                                        ; GPG key to use for encryption. nil for symmetric encryption
-;;(setq org-crypt-key nil)
-(setq org-crypt-disable-auto-save t)
-;;(setq org-crypt-tag-matcher "locked")
-
-#+END_SRC
-
-** Setting auth sources
-   :PROPERTIES:
-   :ID:       4c87f5e8-70ca-4719-a550-cfcd32076ee0
-   :END:
-
-This was prompted by this discussion https://emacs.stackexchange.com/questions/10207/how-to-get-org2blog-to-use-authinfo-gpg
-
-I have modified it to my own file names.
-
-#+BEGIN_SRC emacs-lisp
-(require 'auth-source)
-(setq auth-sources
-      '((:source "~/.authinfo.gpg"
-		 "~/.bitly-access.token.gpg")))
-
-(setq epa-file-cache-passphrase-for-symmetric-encryption t)
-
-#+END_SRC
-
-#+RESULTS:
-: t
-
-* git related
-** TODO Git gutter
-:PROPERTIES:
-   :ID:       a30f51f4-8c96-4e89-a692-9df36e5278a7
-   :END:
-- Note taken on [2019-02-07 Thu 09:30]  \\
-  Started using this today. It is actually very convenient to quickly view the changes made in the document. There is a function to pop up the changes at that location. I need to learn more about using this tool effectively.
-
-#+begin_src emacs-lisp
-  (use-package git-gutter
-    :ensure t
-    :diminish git-gutter
-    :config
-    (global-git-gutter-mode 't)
-    :diminish git-gutter-mode)
-#+end_src
-
-#+RESULTS:
-: t
-
-** magit settings
-   :PROPERTIES:
-   :ID:       55d1b554-f224-41fa-a4ae-5c2e2c1024be
-   :END:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :init (setq magit-completing-read-function 'ivy-completing-read)
-  :config
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (setq magit-revert-buffers 'silent)
-  (setq magit-process-find-password-functions '(magit-process-password-auth-source)))
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** TODO Time machine for git
-:PROPERTIES:
-:ID:       eeb65d68-8c6d-4896-b9e4-cdf06bd3f81d
-:END:
-- Note taken on [2019-02-08 Fri 13:21] \\
-  Launched by =M-x git-timemachine=, this lets you navigate through the commit history with a single key press! This is especially awesome for tracking changes to a particular snippet of code.
-- Note taken on [2019-02-07 Thu 09:30]  \\
-  Need to evaluate this. The purpose is for stepping through the history of a file recorded in git. This should be very interesting.
-
-#+BEGIN_SRC emacs-lisp
-(use-package git-timemachine
-  :ensure t)
-#+END_SRC
-
 * Org-mode related
 
 These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
@@ -470,6 +340,7 @@ These have packages and settings that are mostly related to org-mode though ther
 :PROPERTIES:
 :ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
 :END:
+*** COMMENT Old
 Reference: [[https://github.crookster.org/switching-to-straight.el-from-emacs-26-builtin-package.el/][Crookster's blog post]]
 
 #+BEGIN_SRC emacs-lisp
@@ -516,7 +387,77 @@ Inserted by installing 'org-mode' or when a release is made."
    ("C-c a" . org-agenda))
 #+END_SRC
 
+*** ldlework's alternative
+- Note taken on [2020-03-30 Mon 20:24] \\
+  The only addition is the installation of org-plus-contrib and setting the shortcuts for the agenda and link.
+**** Fix org-git version
+:PROPERTIES:
+:ID:       9E872705-E3CD-4A1F-98B2-63406665656B
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun fix-org-git-version ()
+"The Git version of org-mode.
+Inserted by installing org-mode or when a release is made."
+(require 'git)
+(let ((git-repo (expand-file-name
+"straight/repos/org/" user-emacs-directory)))
+(string-trim
+(git-run "describe"
+"--match=release\*"
+"--abbrev=6"
+"HEAD"))))
+#+END_SRC
+
+**** Fix org release
+:PROPERTIES:
+:ID:       88C7834B-F216-43C5-A88A-0CA1A82D3365
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun fix-org-release ()
+"The release version of org-mode.
+Inserted by installing org-mode or when a release is made."
+(require 'git)
+(let ((git-repo (expand-file-name
+"straight/repos/org/" user-emacs-directory)))
+(string-trim
+(string-remove-prefix
+"release_"
+(git-run "describe"
+"--match=release\*"
+"--abbrev=0"
+"HEAD")))))
+#+END_SRC
+
+**** Install org
+:PROPERTIES:
+:ID:       44D0A1FB-C1F2-4522-B493-9411297195D5
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org
+:demand t
+:mode ("\\.org\\'" . org-mode)
+:config
+;; these depend on the 'straight.el fixes' above
+(defalias #'org-git-version #'fix-org-git-version)
+(defalias #'org-release #'fix-org-release)
+(require 'org-habit)
+(require 'org-capture)
+(require 'org-tempo))
+
+(use-package org-plus-contrib
+   :mode (("\\.org$" . org-mode))
+   :bind
+   ("C-c l" . org-store-link)
+   ("C-c a" . org-agenda))
+#+END_SRC
+
 ** Collection of hooks for org mode 
+:PROPERTIES:
+:ID:       AA8706FA-0B26-4F0A-B6F8-2E2EDA551375
+:END:
 This is intended to be a collection of hooks loaded after org mode. It may be more convenient to add such hooks in the package configurations since the hooks will not work if the package is not available. 
 
 However, hooks have the potential to slow down search, opening multiple files like in org-agenda, tramp files and so on. Therefore, the idea is to try collect the hooks here and include logic to discard hooks if the mode or package is not installed. 
@@ -538,6 +479,15 @@ List of hooks
 
 (add-hook 'org-mode-hook 'flyspell-mode)
 
+#+END_SRC
+
+** Markdown export
+:PROPERTIES:
+:ID:       A7FBD8B1-5C55-407A-8409-65EB85C8FDD4
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(require 'ox-md)
 #+END_SRC
 
 ** TEST ox-pandoc
@@ -684,6 +634,28 @@ I initially included my journal location to the agenda search. However it is ver
 (setq org-agenda-search-view-always-boolean t)
 #+end_src
 
+*** Hooks for org-agenda
+:PROPERTIES:
+:ID:       821CDF30-9FBA-40AB-99F4-B01A8CCBDE1F
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-agenda-mode-hook
+          '(lambda ()
+             (visual-fill-column-mode -1)
+	     (hl-line-mode 1)))
+#+END_SRC
+
+#+RESULTS:
+| (lambda nil (visual-fill-column-mode -1) (hl-line-mode 1)) | #[0 \302\303	\304\305#\210\303	\306\307#\210\303	\310\311#\210\303	\312\313#\210\303	\314\315#\207 [org-mouse-context-menu-function org-agenda-mode-map org-mouse-agenda-context-menu org-defkey [mouse-3] org-mouse-show-context-menu [down-mouse-3] org-mouse-move-tree-start [C-mouse-4] org-agenda-earlier [C-mouse-5] org-agenda-later [drag-mouse-3] #[257 \300!\211\301\267\202 \302\303!\202 \304\303!\202 \305\207 [org-mouse-get-gesture #s(hash-table size 2 test eq rehash-size 1.5 rehash-threshold 0.8125 purecopy t data (:left 9 :right 15)) org-agenda-earlier 1 org-agenda-later nil] 4 |
+
+
+
+
+
+
+
+
 *** DONE org-habit
 CLOSED: [2019-02-12 Tue 13:21]
 :PROPERTIES:
@@ -719,6 +691,9 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 *** TODO Doct for org capture templates
 
 **** Install doct
+:PROPERTIES:
+:ID:       687BA330-0F53-4335-9609-50925ECA58D0
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'doct)
@@ -731,7 +706,10 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 
 [[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At the moment, I am interested in adding hooks to specific functions and improving the entire capture process.
 
-Defining some template functions 
+***** Defining doct template supporting functions 
+:PROPERTIES:
+:ID:       CC7C84DE-AFEF-4E44-9B5B-056DFA58AF5B
+:END:
 
 #+BEGIN_SRC emacs-lisp 
 (defun sr/fun/todo-active ()
@@ -768,6 +746,8 @@ Defining some template functions
 
 #+RESULTS:
 : sr/fun/note-passive
+
+***** doct templates
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq org-capture-templates
@@ -815,7 +795,7 @@ Defining some template functions
 | n  | Notes      |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                             |
 | nn | Fast note  | entry | (file+headline ~/my_org/notes.org @Notes)                       | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast note :keys n :type entry :headline @Notes :inherited-keys nn :file ~/my_org/notes.org :prepend t :template (lambda nil (sr/fun/note-passive)))                                                             |
 
-*** Capture templates
+**** Capture templates
     :PROPERTIES:
     :ID:       50f2b318-d9e6-4403-af24-875c662d888d
     :END:
@@ -927,9 +907,175 @@ I dislike the way org-capture disrupts my current window, and shows me the captu
 
 #+RESULTS:
 ** org-source-window split setup
+:PROPERTIES:
+:ID:       34171B48-C042-4CB4-959A-75DECE5F4DC2
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-src-window-setup 'split-window-right)
+#+END_SRC
+* Temporary package list
+:PROPERTIES:
+:ID:       491FD99B-040E-41AF-93E3-E35D63FC38A9
+:END:
+- Note taken on [2020-03-30 Mon 07:58] \\
+  A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
+
+#+BEGIN_SRC emacs-lisp
+      ;; (use-package helm-bibtex)
+
+      ;; (use-package helm-projectile)
+
+      ;; Functions for working with hash tables
+      (use-package ht)
+
+      (use-package htmlize)
+
+      (use-package hy-mode)
+
+      (use-package hydra
+        :init
+        (setq hydra-is-helpful t)
+
+        :config
+        (require 'hydra-ox))
+
+      (use-package ivy-hydra)
+
+      (use-package jedi)
+
+      (use-package jedi-direx)
+
+      (use-package diminish)
+
+      ;; (use-package avy)
+
+    (use-package rainbow-mode)
+
+    (use-package esup)
+
+    ;; Provides functions for working with files
+    (use-package f)
+
+    (straight-use-package 'dash)
+    (straight-use-package 'dash-functional)
+    (straight-use-package 'ov)
+  (straight-use-package 'flx)
+
+    (use-package auto-complete
+      :diminish auto-complete-mode
+      :config (ac-config-default))
+
+  (use-package google-this
+    :config
+    (google-this-mode 1))
+
+  (straight-use-package 'ggtags)
+  (straight-use-package 'ibuffer-projectile)
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* Crypto
+
+** Basic crypto
+:PROPERTIES:
+   :ID:       B4CA6F66-7CD6-4905-A3B0-B4FCB763ADE9
+   :END:
+
+#+BEGIN_SRC emacs-lisp
+(setq epa-file-encrypt-to "shreyas@fastmail.com")
+#+end_src
+
+#+RESULTS:
+: Loaded crypto setup
+
+** TEST org-crypt
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(require 'org-crypt)
+(add-to-list 'org-modules 'org-crypt)
+                                        ; Encrypt all entries before saving
+(org-crypt-use-before-save-magic)
+;;(setq org-tags-exclude-from-inheritance (quote ("crypt")))
+                                        ; GPG key to use for encryption. nil for symmetric encryption
+;;(setq org-crypt-key nil)
+(setq org-crypt-disable-auto-save t)
+;;(setq org-crypt-tag-matcher "locked")
+
+#+END_SRC
+
+** Setting auth sources
+   :PROPERTIES:
+   :ID:       4c87f5e8-70ca-4719-a550-cfcd32076ee0
+   :END:
+
+This was prompted by this discussion https://emacs.stackexchange.com/questions/10207/how-to-get-org2blog-to-use-authinfo-gpg
+
+I have modified it to my own file names.
+
+#+BEGIN_SRC emacs-lisp
+(require 'auth-source)
+(setq auth-sources
+      '((:source "~/.authinfo.gpg"
+		 "~/.bitly-access.token.gpg")))
+
+(setq epa-file-cache-passphrase-for-symmetric-encryption t)
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
+* git related
+** TODO Git gutter
+:PROPERTIES:
+   :ID:       a30f51f4-8c96-4e89-a692-9df36e5278a7
+   :END:
+- Note taken on [2019-02-07 Thu 09:30]  \\
+  Started using this today. It is actually very convenient to quickly view the changes made in the document. There is a function to pop up the changes at that location. I need to learn more about using this tool effectively.
+
+#+begin_src emacs-lisp
+  (use-package git-gutter
+    :ensure t
+    :config
+    (global-git-gutter-mode 't)
+    :diminish git-gutter-mode)
+#+end_src
+
+#+RESULTS:
+: t
+
+** magit settings
+   :PROPERTIES:
+   :ID:       55d1b554-f224-41fa-a4ae-5c2e2c1024be
+   :END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :init (setq magit-completing-read-function 'ivy-completing-read)
+  :config
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (setq magit-revert-buffers 'silent)
+  (setq magit-process-find-password-functions '(magit-process-password-auth-source)))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** TODO Time machine for git
+:PROPERTIES:
+:ID:       eeb65d68-8c6d-4896-b9e4-cdf06bd3f81d
+:END:
+- Note taken on [2019-02-08 Fri 13:21] \\
+  Launched by =M-x git-timemachine=, this lets you navigate through the commit history with a single key press! This is especially awesome for tracking changes to a particular snippet of code.
+- Note taken on [2019-02-07 Thu 09:30]  \\
+  Need to evaluate this. The purpose is for stepping through the history of a file recorded in git. This should be very interesting.
+
+#+BEGIN_SRC emacs-lisp
+(use-package git-timemachine
+  :ensure t)
 #+END_SRC
 
 * PDF related
@@ -940,14 +1086,9 @@ CLOSED: [2019-10-23 Wed 09:26]
 :END:
   - Note taken on [2019-10-23 Wed 09:26] \\
     This appears to be setup via scimax already. Disabling for now.
-- Note taken on [2019-02-18 Mon 14:30] \\
-  Install epdfinfo via 'brew install pdf-tools' and then install the
-  pdf-tools elisp via the use-package below. To upgrade the epdfinfo
-  server, use 'brew upgrade pdf-tools' prior to upgrading to newest
-  pdf-tools package using Emacs package system. If things get messed up,
-  just do 'brew uninstall pdf-tools', wipe out the elpa pdf-tools
-  package and reinstall both as at the start.  source:
-  https://emacs.stackexchange.com/questions/13314/install-pdf-tools-on-emacs-macosx
+  - Note taken on [2019-02-18 Mon 14:30] \\
+    [[https://emacs.stackexchange.com/questions/13314/install-pdf-tools-on-emacs-macosx][osx - Install Pdf-Tools on Emacs MacOSX - Emacs Stack Exchange]]
+  
 
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
@@ -1060,6 +1201,9 @@ This has to be combined with desktop.el or some other method to enable persisten
 #+END_SRC
 
 ** TODO Bufler
+:PROPERTIES:
+:ID:       33032A84-CCB0-481A-A622-E30B1B823ED5
+:END:
 
 For the few occassions that I use the buffer-list command, I think the bufler
 package provides a more functional interface. 
@@ -1093,12 +1237,18 @@ I think it makes sense to have the global visual fill column mode active and the
 
 ;; Placing this function here so that if emacs is run as an bapp - the settings will still be in effect.
 (sr/fun/visual-fill-line)
+
+;; ;; No visual fill column for the agenda
+;; (remove-hook 'org-agenda-mode '(lambda () (setq visual-fill-column-mode nil)))
 #+END_SRC
 
 #+RESULTS:
 | visual-line-mode | visual-fill-column-mode-set-explicitly |
 
 ** Frame settings
+:PROPERTIES:
+:ID:       5ACDA41D-D680-46ED-A1AD-28C614E9BBCB
+:END:
 
 I'm often running emacsclient with a daemon and have found that specific settings need to be set for each frame that is created, like the window size, and the visual fill column and line settings.
 
@@ -1109,7 +1259,13 @@ I'm often running emacsclient with a daemon and have found that specific setting
 (add-to-list 'default-frame-alist '(fullscreen . fullboth)) 
 #+END_SRC
 
+#+RESULTS:
+: ((fullscreen . fullboth) (vertical-scroll-bars))
+
 ** crux
+:PROPERTIES:
+:ID:       BF85E4B9-231B-4FC6-BBB1-5C1A686F0E27
+:END:
 
 Crux has a handle re-open and root function that will open a file as root if the permissions are set so. 
 
@@ -1401,11 +1557,10 @@ This package contains a bunch of useful tools which can cut down a lot of work
 :defer 5
 :ensure nil
 :config
-(global-set-key (kbd "H-y") 'org-web-tools-insert-link-for-url)
-)
+(global-set-key (kbd "H-y") 'org-web-tools-insert-link-for-url))
 #+END_SRC
 
-** TEST org-download
+** org-download
 :PROPERTIES:
 :ID:       A61C506A-FE8A-4051-ACCC-A2F28E8FE4EB
 :END:
@@ -1423,7 +1578,7 @@ This package contains a bunch of useful tools which can cut down a lot of work
   )
 #+END_SRC
 
-** Epubs in emacs 
+** COMMENT Epubs in emacs 
 
 #+BEGIN_SRC emacs-lisp
 (use-package nov
@@ -1582,117 +1737,111 @@ As such most of these
 
 #+RESULTS:
 
-* Code
-
-** lispy
-:PROPERTIES:
-:ID:       0D58C0FC-C29D-4BEF-9030-904200CD2F85
-:END:
-
-#+BEGIN_SRC emacs-lisp
-;; Superior lisp editing
-(use-package lispy
-  :config
-  (dolist (hook '(emacs-lisp-mode-hook
-		  hy-mode-hook))
-    (add-hook hook
-	      (lambda ()
-		(lispy-mode)
-		(eldoc-mode)))))
-#+END_SRC
-
 * Selection, bookmarks and jumps
 ** smex
+:PROPERTIES:
+:ID:       09F22945-25AA-4DAE-B1E0-AD309E6FA1DD
+:END:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'smex)
 #+END_SRC
 
-** Counsel
+** Counsel 
 :PROPERTIES:
 :ID:       4F05CB2A-C98A-433E-AF50-D120F4376192
 :END:
+- Note taken on [2020-03-30 Mon 18:08] \\
+  Apparently, swiper, counsel, ivy are contained in the same repository and not as separate packages. Though I would prefer using counsel for everything with the minibuffer style, rather than helm - there are undoubtedly several advantages and built-in features in helm whereas counsel would need these carefully constructed. For example, it appears that the multiple select and action operation has to be separately defined for =counsel-find-file= and =counsel-switch-buffer=. While =counsel-M-x= seems generally more responsive than =helm-M-x=, helm offers a useful partition of the results in general based on recent commands/files and others. =helm-apropos= offers a list of commands and variables 
 
 This configuration is picked up from scimax.
 
-- [ ] Figure out which of these functions benefit from helm.
+- [X] Figure out which of these functions benefit from helm rather than counsel.
+  - [X] helm-switch-buffer
+  - [X] helm-find-file
+  - [X] helm-appropos
 
 #+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :straight t
-  :after smex
-  :init
-  (require 'ivy)
-  (require 'smex)
-  (setq projectile-completion-system 'ivy)
-  (setq ivy-use-virtual-buffers t)
-  (define-prefix-command 'counsel-prefix-map)
-  (global-set-key (kbd "H-c") 'counsel-prefix-map)
+  (use-package counsel
+    :straight t
+    :init
+    (require 'ivy)
+    (require 'smex)
+    (setq projectile-completion-system 'ivy)
+    (setq ivy-use-virtual-buffers t)
+    (define-prefix-command 'counsel-prefix-map)
+    (global-set-key (kbd "H-c") 'counsel-prefix-map)
 
-  ;; default pattern ignores order.
-  (setf (cdr (assoc t ivy-re-builders-alist))
-	'ivy--regex-ignore-order)
-  :bind
-  (("M-x" . counsel-M-x)
-   ("C-x b" . ivy-switch-buffer)
-   ("C-x C-f" . counsel-find-file)
-   ("C-x l" . counsel-locate)
-   ("C-h f" . counsel-describe-function)
-   ("C-h v" . counsel-describe-variable)
-   ("C-h i" . counsel-info-lookup-symbol)
-   ("H-c r" . ivy-resume)
-   ("H-c l" . counsel-load-library)
-   ("H-c f" . counsel-git)
-   ("H-c g" . counsel-git-grep)
-   ("H-c a" . counsel-ag)
-   ("H-c p" . counsel-pt))
-  :diminish ""
-  :config
-  (progn
-    (counsel-mode)
-    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-    (define-key ivy-minibuffer-map (kbd "M-<SPC>") 'ivy-dispatching-done)
+    ;; default pattern ignores order.
+    (setf (cdr (assoc t ivy-re-builders-alist))
+          'ivy--regex-ignore-order)
+    :bind
+    (("M-x" . counsel-M-x)
+     ;; ("C-x b" . ivy-switch-buffer)
+     ;; ("C-x C-f" . counsel-find-file)
+     ("C-x l" . counsel-locate)
+     ;; ("C-h f" . counsel-describe-function)
+     ("C-h v" . counsel-describe-variable)
+     ("C-h i" . counsel-info-lookup-symbol)
+     ("H-c r" . ivy-resume)
+     ("H-c l" . counsel-load-library)
+     ("H-c f" . counsel-git)
+     ("H-c g" . counsel-git-grep)
+     ("H-c a" . counsel-ag)
+     ("H-c p" . counsel-pt))
+    :diminish ""
+    :config
+    (progn
+      (counsel-mode)
+      (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+      (define-key ivy-minibuffer-map (kbd "M-<SPC>") 'ivy-dispatching-done)
 
-    ;; C-RET call and go to next
-    (define-key ivy-minibuffer-map (kbd "C-<return>")
-      (lambda ()
-	"Apply action and move to next/previous candidate."
-	(interactive)
-	(ivy-call)
-	(ivy-next-line)))
+      ;; C-RET call and go to next
+      (define-key ivy-minibuffer-map (kbd "C-<return>")
+        (lambda ()
+          "Apply action and move to next/previous candidate."
+          (interactive)
+          (ivy-call)
+          (ivy-next-line)))
 
-    ;; M-RET calls action on all candidates to end.
-    (define-key ivy-minibuffer-map (kbd "M-<return>")
-      (lambda ()
-	"Apply default action to all candidates."
-	(interactive)
-	(ivy-beginning-of-buffer)
-	(loop for i from 0 to (- ivy--length 1)
-	      do
-	      (ivy-call)
-	      (ivy-next-line)
-	      (ivy--exhibit))
-	(exit-minibuffer)))
+      ;; M-RET calls action on all candidates to end.
+      (define-key ivy-minibuffer-map (kbd "M-<return>")
+        (lambda ()
+          "Apply default action to all candidates."
+          (interactive)
+          (ivy-beginning-of-buffer)
+          (loop for i from 0 to (- ivy--length 1)
+                do
+                (ivy-call)
+                (ivy-next-line)
+                (ivy--exhibit))
+          (exit-minibuffer)))
 
-    ;; s-RET to quit
-    (define-key ivy-minibuffer-map (kbd "s-<return>")
-      (lambda ()
-	"Exit with no action."
-	(interactive)
-	(ivy-exit-with-action
-	 (lambda (x) nil))))
+      ;; s-RET to quit
+      (define-key ivy-minibuffer-map (kbd "s-<return>")
+        (lambda ()
+          "Exit with no action."
+          (interactive)
+          (ivy-exit-with-action
+           (lambda (x) nil))))
 
-    ;; Show keys
-    (define-key ivy-minibuffer-map (kbd "?")
-      (lambda ()
-	(interactive)
-	(describe-keymap ivy-minibuffer-map)))
+      ;; Show keys
+      (define-key ivy-minibuffer-map (kbd "?")
+        (lambda ()
+          (interactive)
+          (describe-keymap ivy-minibuffer-map)))
 
-    (define-key ivy-minibuffer-map (kbd "<left>") 'ivy-backward-delete-char)
-    (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
-    (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
+      (define-key ivy-minibuffer-map (kbd "<left>") 'ivy-backward-delete-char)
+      (define-key ivy-minibuffer-map (kbd "<right>") 'ivy-alt-done)
+      (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-backward-delete-char)))
 #+END_SRC
 
+#+RESULTS:
+: counsel-pt
+
 *** Temp
+:PROPERTIES:
+:ID:       93C8E3B4-8914-47C6-918C-A1F7C638DDD8
+:END:
 - Note taken on [2020-03-28 Sat 23:09] \\
   For some reason, this seems to be required at the moment. 
 
@@ -1856,6 +2005,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 (use-package avy)
 #+END_SRC
 ** Super and Hyper key setting
+:PROPERTIES:
+:ID:       97DFBDF2-BD73-4DAA-9CA0-2A1D39855CF6
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (if (system-type-is-darwin)
@@ -1866,6 +2018,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 ** Helm packages and functions
 
 *** Setting helm for some basic functions
+:PROPERTIES:
+:ID:       BC827A7A-D190-4CC6-95D5-0C80740CB94C
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -1885,6 +2040,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 : helm-find-file
 
 *** Helm bibtex and projectile
+:PROPERTIES:
+:ID:       014BAB93-F5EE-4179-8034-B69165EB2CDD
+:END:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-bibtex)
 
@@ -1892,12 +2050,18 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+END_SRC
 
 *** helm-ag
+:PROPERTIES:
+:ID:       B4E26FDE-BA84-4BDB-AA94-B4706E47C64B
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-ag)
 #+END_SRC
 
 *** helm-org-rifle 
+:PROPERTIES:
+:ID:       510AB91F-1520-487B-9CE3-FF4C69AC09FA
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-org-rifle
@@ -1907,6 +2071,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+END_SRC
 
 *** Helm swoop
+:PROPERTIES:
+:ID:       6539A414-F78C-4926-86D3-12C076D567FF
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
@@ -2089,6 +2256,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 : /Users/shrysr/my_mail/fmail/Queue/cur
 
 ** TODO Mu4e and use-package
+:PROPERTIES:
+:ID:       658B1502-41E1-487A-B0CF-5F1D1A366368
+:END:
 
 -  [ ] Transfer all the settings for mu4e into a use-package layout with hooks.
 
@@ -2147,6 +2317,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 :END:
 
 *** Basic setup
+:PROPERTIES:
+:ID:       03261375-9996-490F-BE46-31D3A93E62A4
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-msg
@@ -2179,6 +2352,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 : t
 
 *** Compose CSS
+:PROPERTIES:
+:ID:       531433C5-5BE0-4377-BBC0-1D6B8EDCA686
+:END:
 
 
 - Note taken on [2020-03-25 Wed 23:33] \\
@@ -2281,6 +2457,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 : sr/org-msg-style
 
 *** Set the css to the above custom function
+:PROPERTIES:
+:ID:       BA4A13BA-632B-4AC9-80DB-64E1CE560F14
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-msg-enforce-css 'sr/org-msg-style)
@@ -2289,267 +2468,894 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+RESULTS:
 : sr/org-msg-style
 
-* Aesthetics
-** Setting custom themes to be safe
-
-#+BEGIN_SRC emacs-lisp
-(setq custom-safe-themes t)
-#+END_SRC
-
-** Theme : modus
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'modus-operandi-theme)
-
-(setq modus-operandi-theme-scale-headings t)
-(setq modus-operandi-theme-proportional-fonts t)
-(setq modus-operandi-theme-slanted-constructs t)
-
-(load-theme 'modus-operandi t)
-
-;; These are placed here for ready reference
-;; (setq modus-operandi-theme-scale-1 1.05)
-;; (setq modus-operandi-theme-scale-2 1.1)
-;; (setq modus-operandi-theme-scale-3 1.15)
-;; (setq modus-operandi-theme-scale-4 1.2)
-
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** Font and other aesthetics
-
-#+BEGIN_SRC emacs-lisp
-;; My customisations
-(set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "Iosevka term")
-(set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
-#+END_SRC
-
-#+RESULTS:
-
-** COMMENT Doom modeline
-
-- [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
-
-#+BEGIN_SRC emacs-lisp
-(use-package doom-modeline
-  :straight t
-  :custom
-  (doom-modeline-buffer-file-name-style 'truncate-with-project)
-  (doom-modeline-icon t)
-  (doom-modeline-major-mode-icon nil)
-  (doom-modeline-minor-modes nil)
-  :hook
-  (after-init . doom-modeline-mode)
-  :config
-  (line-number-mode 0)
-  (column-number-mode 0)
-  (doom-modeline-def-modeline 'main
-    '(bar window-number matches buffer-info remote-host buffer-position selection-info)
-    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
-
-#+END_SRC
-
-#+RESULTS:
-| doom-modeline-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | tramp-register-archive-file-name-handler | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | table--make-cell-map |
-
-** COMMENT Org Aesthetics Headline scales
-- Note taken on [2020-03-28 Sat 19:56] \\
-  These are not required for the modus theme, as inbuilt options exist upto level 4.
-
-#+BEGIN_SRC emacs-lisp  
-
-(custom-set-faces
- '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold)))))
-#+END_SRC
-
-#+RESULTS:
-
-** COMMENT Olivetti mode
-- Note taken on [2020-03-28 Sat 20:04] \\
-  The problem with this mode is that it seems to activate and deactivate constantly, especially when the buffer is saved. However it is certainly very useful with wide screens in general.
-
-This package is useful in centering the text in a buffer, and is particularly helpful with wide screens.
-
-#+BEGIN_SRC emacs-lisp
-(use-package olivetti
-:config
-(olivetti-mode 1))
-
-#+END_SRC
-** Spaceline : modeline configuration
-   :PROPERTIES:
-   :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
-   :END:
-- [X] [[http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/][Get that spacemacs look without spacemacs | Pragmatic Emacs]] - this provides a bare bones setup
-- [ ] [[http://amitp.blogspot.com/2017/01/emacs-spaceline-mode-line.html][Amit's Thoughts: Emacs spaceline mode line]] : This is an excellent guide covering a lot of possibilities to customise so many aspects of the modeline and make it look great.
-- [ ] It seems that spaceline adds a few extra seconds to the init time. I wonder if there are lighter packages that achieve the same effect.
-
-#+BEGIN_SRC emacs-lisp
-(use-package spaceline
-  :straight t
-  :init
-  (setq powerline-default-separator 'arrow-fade)
-  :config
-  (disable-theme 'smart-mode-line-light)
-  (require 'spaceline-config)
-  (spaceline-spacemacs-theme)
-  (spaceline-toggle-buffer-position-off)
-  (spaceline-toggle-hud-off)
-  (setq spaceline-python-pyvenv-on 1)
-  (spaceline-toggle-minor-modes-off))
-  #+END_SRC
-
-#+RESULTS:
-: t
-
-** Striking out Done headlines
+* Programming customisations
+** emmet-mode 
 :PROPERTIES:
-:ID:       3263d812-c3f5-4947-b2de-c75c537d19df
+:ID:       8BB48A4C-E7D2-4167-B210-5B732A0280E9
 :END:
 
-source: Sacha Chua
+#+BEGIN_SRC emacs-lisp
+(use-package emmet-mode
+:straight t
+:config
 
-#+begin_src emacs-lisp
-(setq org-fontify-done-headline t)
-(custom-set-faces
- '(org-done ((t (:foreground "DarkGreen"
-			     :weight normal
-			     :strike-through t))))
- '(org-headline-done
-   ((((class color) (min-colors 16) (background dark))
-     (:foreground "LightSalmon" :strike-through t)))))
+;; Auto-start on any markup modes
+(add-hook 'sgml-mode-hook 'emmet-mode) 
+;; enable Emmet's css abbreviation.
+(add-hook 'css-mode-hook  'emmet-mode) 
+;; enable HTML 
+(add-hook 'html-mode-hook  'emmet-mode)
+;; Enable cursor to be placed within quotes
+(setq emmet-move-cursor-between-quotes t)
+)
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** web-mode 
+:PROPERTIES:
+:ID:       D678D668-F061-42C7-8859-B22E195F57C5
+:END:
+
+#+BEGIN_SRC emacs-lisp :results silent
+(straight-use-package 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+#+END_SRC
+
+Forcing django engine for now
+
+#+BEGIN_SRC emacs-lisp
+(setq web-mode-engines-alist
+      '(("django"    . "\\.html\\'")))
+#+END_SRC
+
+#+RESULTS:
+: ((django . \.html\'))
+
+** ESS configuration
+:PROPERTIES:
+:ID:       867736B8-D21A-4734-9FCD-73D10997E192
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package ess
+  :ensure t
+  :config
+  (require 'ess)
+  (show-paren-mode)
+  (use-package ess-R-data-view)
+  (use-package polymode)
+  (setq ess-describe-at-point-method nil)
+  (setq ess-switch-to-end-of-proc-buffer t)
+  (setq ess-rutils-keys +1)
+  (setq ess-eval-visibly 'nil)
+  (setq ess-use-flymake "lintr::default_linters()")
+   (setq ess-use-company t)
+  (setq ess-history-file "~/.Rhistory")
+  (setq ess-use-ido t)
+  (setq ess-roxy-hide-show-p t)
+  ;;(speedbar-add-supported-extension ".R")
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
+
+;;setting up eldoc
+(setq ess-use-eldoc t)
+(setq ess-eldoc-show-on-symbol t)
+(setq ess-doc-abbreviation-style 'aggresive)
+  )
+
+;; The following chunk is taken from: https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang/ess/packages.el
+;;; Follow Hadley Wickham's R style guide
+(setq ess-first-continued-statement-offset 2
+      ess-continued-statement-offset 4
+      ess-expression-offset 4
+      ess-nuke-trailing-whitespace-p t
+      ess-default-style 'DEFAULT)
+
+
+;; Adding Poly-R package
+
+(use-package poly-R
+  :ensure t
+  )
+;; The following chunk is taken from antonio's answer from https://stackoverflow.com/questions/16172345/how-can-i-use-emacs-ess-mode-with-r-markdown
+(defun rmd-mode ()
+  "ESS Markdown mode for rmd files."
+  (interactive)
+  (require 'poly-R)
+  (require 'poly-markdown)
+  (poly-markdown+r-mode))
+
+(use-package ess-view
+  :ensure t
+  :config
+  (require 'ess-view)
+  (if (system-type-is-darwin)
+      (setq ess-view--spreadsheet-program
+            "/Applications/Tad.app/Contents/MacOS/Tad"
+            )
+    )
+  (if (system-type-is-gnu)
+      (setq ess-view--spreadsheet-program
+            "tad"
+            )
+    )
+  )
+
+;; This is taken and slightly modified from the ESS manual
+;; The display config is similar to that of Rstudio
+
+(setq display-buffer-alist
+      `(("*R Dired"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . -1)
+         (window-width . 0.33)
+         (reusable-frames . nil))
+        ("*R"
+         (display-buffer-reuse-window display-buffer-at-bottom)
+         (window-width . 0.35)
+         (reusable-frames . nil))
+        ("*Help"
+         (display-buffer-reuse-window display-buffer-in-side-window)
+         (side . right)
+         (slot . 1)
+         (window-width . 0.33)
+         (reusable-frames . nil))))
+
+(message "Loaded ESS configuration")
+#+END_SRC
+
+** lispy
+:PROPERTIES:
+:ID:       0D58C0FC-C29D-4BEF-9030-904200CD2F85
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;; Superior lisp editing
+(use-package lispy
+  :config
+  (dolist (hook '(emacs-lisp-mode-hook
+		  hy-mode-hook))
+    (add-hook hook
+	      (lambda ()
+		(lispy-mode)
+		(eldoc-mode)))))
+#+END_SRC
+** flycheck
+:PROPERTIES:
+:ID:       C8BBC1FA-A0D3-4CC6-9053-D7DAD0A28491
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'flycheck)
+#+END_SRC
+
+** TODO Python [0/7]
+- Note taken on [2020-03-23 Mon 18:10] \\
+  For now I will disable this as it appears logical to use pyenv and other packages to set the correct interpreter. However, since shims are being used, one would assume that the correct environment will be used anyway.
+
+At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] require pydoc, elpy and jedi, which are already installed. These packages have to be grouped here.
+
+[[https://realpython.com/emacs-the-best-python-editor/][Emacs: The Best Python Editor? Real Python]] is a good guide towards setting up Emacs and python. [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]] provides a satisfyingly detailed configuration with customisations for python. The latter guide is worth following. 
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; Enabling python 3 to be the default interpreter.
+(setq python-shell-interpreter "python3")
+(setq org-babel-python-command "python3")
+(setq flycheck-python-pycompile-executable "python3")
+
+;; Enabling flycheck for elpy mode
+
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+#+END_SRC
+
+- [ ] pyment
+- [ ] isort
+- [ ] pyenv version alias and activating on a per buffer basis
+- [ ] pyvenv
+- [ ] pydoc
+- [ ] elpy
+- [ ] blacken
+
+*** emacs-lsp
+:PROPERTIES:
+:ID:       6454CCB4-FF06-457B-86A0-62804AEC2641
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-python-ms
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))  ; or lsp-deferred
+#+END_SRC
+
+#+RESULTS:
+| (lambda nil (require 'lsp-python-ms) (lsp)) | er/add-python-mode-expansions | blacken-mode | elpy-mode |
+
+
+*** pyvenv, pydoc and elpy
+:PROPERTIES:
+:ID:       3709F984-8825-485B-8C95-A53315ABB990
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'pyvenv)
+
+(straight-use-package 'pydoc)
+
+(use-package elpy
+  :straight t
+  :config
+  (elpy-enable))
+#+END_SRC
+
+*** COMMENT pyenv
+- Note taken on [2020-03-29 Sun 17:00] \\
+  I am predominantly using pyvenv at the moment with a single pyenv. This will be useful to look into down the line.
+
+Reference: [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package pyenv
+    :straight (:host github :repo "aiguofer/pyenv.el")
+    :config
+    (setq pyenv-use-alias 't)
+    (setq pyenv-modestring-prefix "PyE-")
+    (setq pyenv-modestring-postfix nil)
+    (setq pyenv-set-path nil)(global-pyenv-mode)
+    (defun pyenv-update-on-buffer-switch (prev curr)
+      (if (string-equal "Python" (format-mode-line mode-name nil nil curr))
+          (pyenv-use-corresponding)))
+    (add-hook 'switch-buffer-functions 'pyenv-update-on-buffer-switch))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+*** Blacken
+:PROPERTIES:
+:ID:       C874811C-37CA-4353-9C61-DBC6793AFC82
+:END:
+
+The black library will re-format the code on a save. Elpy will automatically use black, as long as the elisp package installed, along with the python black package which can be installed using pip
+
+#+BEGIN_SRC sh :tangle no
+pip3 install black
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package blacken
+:straight t
+:hook (python-mode . blacken-mode))
+#+END_SRC
+
+* TODO Custom search functions [0/1]
+This section contains sections to search in specific directories, with customised options.
+
+- [ ] Incorporate these functions into a hydra.
+  - [ ] Explore ldlework's hera and nougat hydra packages for this. Perhaps include into scimax under the applications menu. 
+
+** Episteme search
+:PROPERTIES:
+:ID:       001EE8FC-2C5B-4A7C-8BA7-DEAB94A808AA
+:END:
+Adapted from ldlework
+
+#+BEGIN_SRC emacs-lisp
+(defun episteme-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "episteme/brain"))
+  (let* ((p (point))
+         (f (org-brain-first-headline-position))
+         (adjusted-point (max 0 (- p f))))
+    (org-brain-visualize (file-name-sans-extension (buffer-name)))
+    (with-current-buffer "*org-brain*"
+      (let ((minmax (polybrain--get-point-min-max)))
+        (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
+#+END_SRC
+
+** Projects search [0/6]
+:PROPERTIES:
+:ID:       8351BECB-609E-4D19-9DAE-C03728380FCB
+:END:
+- [ ] Exclude git files
+- [ ] Exclude csv files
+- [ ] Exclude html and related files 
+- [ ] decide between helm-ag and counsel-ag and the method to jump between files.
+- [ ] Decide about plugging in arguments to activate different kinds of search.
+- [ ] Find if multiple paths can be included or not. 
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/proj-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/project-dir "")))
+#+END_SRC
+
+** Org files search
+:PROPERTIES:
+:ID:       E34847DB-7470-4BBC-8DA1-0A1823FD5890
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/org-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/org-dir "")))
+#+END_SRC
+
+* TODO Hydra Hera and nougat
+** hera
+:PROPERTIES:
+:ID:       E6516FB9-DC4A-44EC-98F9-8A2420F2B219
+:END:
+
+ldlewell's package that provides an API for defining a stack of hydras. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package hera
+:demand t
+:straight (hera :type git :host github :repo "dustinlacewell/hera"))
+#+END_SRC
+
+#+RESULTS:
+
+** nougat-hydra
+:PROPERTIES:
+:ID:       70D6E497-A30F-4027-8D4D-D5CF9C21E788
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun nougat--inject-hint (symbol hint)
+(-let* ((name (symbol-name symbol))
+(hint-symbol (intern (format "%s/hint" name)))
+(format-form (eval hint-symbol))
+(string-cdr (nthcdr 1 format-form))
+(format-string (string-trim (car string-cdr)))
+(amended-string (format "%s\n\n%s" format-string hint)))
+(setcar string-cdr amended-string)))
+
+(defun nougat--make-head-hint (head default-color)
+(-let (((key _ hint . rest) head))
+(when key
+(-let* (((&plist :color color) rest)
+(color (or color default-color))
+(face (intern (format "hydra-face-%s" color)))
+(propertized-key (propertize key 'face face)))
+(format " [%s]: %s" propertized-key hint)))))
+
+(defun nougat--make-hint (heads default-color)
+(string-join
+(cl-loop for head in heads
+for hint = (nougat--make-head-hint head default-color)
+do (pp hint)
+collect hint) "\n"))
+
+(defun nougat--clear-hint (head)
+(-let* (((key form _ . rest) head))
+`(,key ,form nil ,@rest)))
+
+(defun nougat--add-exit-head (heads)
+(let ((exit-head '("SPC" (hera-pop) "to exit" :color blue)))
+(append heads `(,exit-head))))
+
+(defun nougat--add-heads (columns extra-heads)
+(let* ((cell (nthcdr 1 columns))
+(heads (car cell))
+(extra-heads (mapcar 'nougat--clear-hint extra-heads)))
+(setcar cell (append heads extra-heads))))
+
+(defmacro nougat-hydra (name body columns &optional extra-heads)
+(declare (indent defun))
+(-let* (((&plist :color default-color :major-mode mode) body)
+(extra-heads (nougat--add-exit-head extra-heads))
+(extra-hint (nougat--make-hint extra-heads default-color))
+(body (plist-put body :hint nil))
+(body-name (format "%s/body" (symbol-name name)))
+(body-symbol (intern body-name))
+(mode-support
+`(when ',mode
+(setq major-mode-hydra--body-cache
+(a-assoc major-mode-hydra--body-cache ',mode ',body-symbol)))))
+(nougat--add-heads columns extra-heads)
+(when mode
+(remf body :major-mode))
+`(progn
+(pretty-hydra-define ,name ,body ,columns)
+(nougat--inject-hint ',name ,extra-hint)
+,mode-support)))
+
+;; (nougat-hydra hydra-test (:color red :major-mode fundamental-mode)
+;; ("First"
+;; (("a" (message "first - a") "msg a" :color blue)
+;; ("b" (message "first - b") "msg b"))
+;; "Second"
+;; (("c" (message "second - c") "msg c" :color blue)
+;; ("d" (message "second - d") "msg d"))))
+#+END_SRC
+
+#+RESULTS:
+: nougat-hydra
+
+** hydra-dwim
+:PROPERTIES:
+:ID:       83B2E03A-A2DF-468B-9004-C36FDA0FAE9C
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun my/hydra-dwim ()
+(interactive)
+(-let (((&alist major-mode mode) major-mode-hydra--body-cache))
+(if mode (major-mode-hydra)
+(hera-start 'hydra-default/body))))
+
+(setq kbd-hera-pop "<f12>")
+(global-set-key (kbd "M-s p") 'my/hydra-dwim)
+(global-set-key (kbd "M-s p") (lambda () (interactive) (hera-start 'hydra-default/body)))
+
+#+END_SRC
+
+#+RESULTS:
+| lambda | nil | (interactive) | (hera-start 'hydra-default/body) |
+
+** hydra default
+:PROPERTIES:
+:ID:       76AD6939-FBF3-40A1-8AAB-31355ED12259
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defhydra hydra-default (:color blue :hint nil)
+"
+
+Entrypoint Hydra
+
+"
+("a" (org-agenda nil "a") "agenda" :column "Open")
+("p" (hera-push 'hydra-projectile/body) "projectile")
+("c" (org-capture) "capture")
+("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
+("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
+("m" (hera-push 'hydra-mu4e/body) "mail")
+("w" (hera-push 'hydra-window/body) "windows")
+("z" (hera-push 'hydra-zoom/body) "zoom")
+("R" (hera-push 'hydra-registers/body) "registers")
+("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
+("S" (hera-push 'hydra-straight/body) "Straight")
+("s" (call-interactively 'helm-imenu) "semantic")
+("g" (hera-push 'hydra-gist/body) "gist")
+("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python"))
+
+#+END_SRC
+
+#+RESULTS:
+: hydra-default/body
+** straight-hydra
+:PROPERTIES:
+:ID:       6CAF1975-F604-41AB-B402-27F3461D068C
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/straight-pull-rebuild-combo (&optional package)
+  "Function to select a package, and then -> pull and rebuild using straight."
+  (interactive)
+  (let ((package (or package
+                     (straight--select-package "Pull & Rebuild package" 'for-build 'installed))))
+    (message package)
+    (straight-pull-package package)
+    (straight-rebuild-package package)))
+
+
+(nougat-hydra hydra-straight (:color red)
+  ("Straight" (("P" (call-interactively 'straight-pull-package)
+		"Pull one")
+	       ("p" (call-interactively 'sr/fun/straight-pull-rebuild-combo)
+		"Pull and Rebuild one package" :column "Pull")
+	       ("C-a" (straight-pull-all) "Pull ALL")
+	       ("f" (call-interactively 'straight-fetch-package)
+		"Fetch one")
+	       ("F" (straight-fetch-all) "Fetch ALL")
+	       ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
+	       ("g" (call-interactively 'straight-get-recipe)
+		"Get recipe")
+	     ("r" (call-interactively 'straight-rebuild-package)
+		"rebuild package")
+	       )))
+#+END_SRC
+
+#+RESULTS:
+** mu4e-hydra
+:PROPERTIES:
+:ID:       C319B9EC-65A6-48B9-B89D-849C866CA4B9
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-mu4e (:color blue)
+("mu4e" (("m" (mu4e) "mail")
+	     ("u" (mu4e-update-mail-and-index) "Update mail and index"))))
+#+END_SRC
+
+#+RESULTS:
+** pyvenv-hydra
+:PROPERTIES:
+:ID:       52E4B983-F0A4-433B-B2DC-A464127E8933
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-pyvenv (:color red)
+  ("pyvenv - virtualenv" (("c" (call-interactively 'pyvenv-create)
+		"create")
+	       ("w" (call-interactively 'pyvenv-workon) "work on")
+	       ("a" (call-interactively 'pyvenv-activate)	"activate")
+	       ("d" (call-interactively 'pyvenv-deactivate) "deactivate")
+	       ("t" (call-interactively 'pyvenv-tracking-mode) "tracking mode")
+	       ("r" (call-interactively 'pyvenv-restart-python) "restart python") 
+	       )))
+#+END_SRC
+
+#+RESULTS:
+
+* Pastes
+:PROPERTIES:
+:ID:       D4908CF2-5B45-4FDF-9FA2-0D212BCA8BA3
+:END:
+
+** Webpaste
+:PROPERTIES:
+:ID:       A104F0FD-9059-4DF3-9EF5-137300E7E89A
+:END:
+
+- Note taken on [2020-03-29 Sun 11:18] \\
+  This package is useful to use multiple paste services with a fallback. dpaste has a pleasant format and therefore chosen as the first priority. The advantage of using github gists is that org mode exports can be directly rendered. This package can also be configured to use a custom paste service.
+
+#+BEGIN_SRC emacs-lisp
+(use-package webpaste
+  :ensure t
+  :config
+  (progn
+    (setq webpaste-provider-priority '("dpaste.org" "ix.io"))))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** github gists
+:PROPERTIES:
+:ID:       E33FD48A-4049-464E-B956-9BEA3A48B07E
+:END:
+Gists posted right from emacs. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package gist
+:straight (gist :type git :host github :repo "defunkt/gist.el"))
+
+
+(nougat-hydra hydra-gist (:color blue)
+("Gist" (("p" (gist-region-or-buffer) "public")
+("P" (gist-region-or-buffer-private) "private")
+("b" (browse-url "https://gist.github.com/shrysr") "browse"))))
+#+END_SRC
+
+#+RESULTS:
+* org-id
+:PROPERTIES:
+:ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
+:END:
+
+Using the org-id for reference to headings ensures that even if the heading changes, the links will still work.
+
+In addition, I would like an org id to be created every time the capture is used. This facilitates using packages like org-brain which rely extensively on org-id's.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'org-id)
+  (setq org-id-link-to-org-use-id t)
+  (org-link-set-parameters "id" :store #'org-id-store-link)
+  (org-link-set-parameters "nb" :store nil)
+  ;; ;; Update ID file .org-id-locations on startup
+  ;; ;; This adds too much time to startup
+  ;; ;; (org-id-update-id-locations)
+
+  (setq org-id-method (quote uuidgen))
+  (setq org-id-track-globally t)
+  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+#+end_src
+
+#+RESULTS:
+: ~/my_org/emacs_meta/.org-id-locations
+* COMMENT Elfeed 
+- Note taken on [2019-09-25 Wed 14:09] \\
+  Scimax's elfeed is enabled, along with elfeed-org and elfeeed-goodies
+- Note taken on [2019-07-08 Mon 08:10] \\
+  Disabling elfeed for now.
+
+** Scimax + Elfeed-org and elfeed-goodies setup [/]
+:PROPERTIES:
+:ID:       8302d89f-756b-4a47-87aa-3f3df5a39a3f
+:END:
+Using an org source is the easiest way to organise my RSS feeds for reading with Elfeed.
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'elfeed)
+;; use an org file to organise feeds
+(use-package elfeed-org
+  :ensure t
+  :config
+  (setq rmh-elfeed-org-files (list "~/my_org/elfeed.org"))
+  )
+
+(use-package elfeed-goodies
+  :ensure t
+  :init
+  (elfeed-goodies/setup)
+  )
+
+;; (require 'scimax-elfeed)
+
 #+end_src
 
 #+RESULTS:
 
-** keywords as boxes with inverted colors
-:PROPERTIES:
-:ID:       62dcdc53-ee2f-4db2-afda-6b68a05cbeda
-:END:
+** Elfeed get full entry
 
-Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to-emacs-org-mode][link]] ,
+Source: [[https://punchagan.muse-amuse.in/blog/elfeed-hook-to-fetch-full-content/][Elfeed hook to fetch full content - Noetic Nought]]
 
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'org-todo nil
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
-(set-face-attribute 'org-done nil
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
-(set-face-attribute 'org-priority nil
-                    :inherit font-lock-keyword-face
-                    :inverse-video t
-                    :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    )
+(defun pc/get-url-content (url)
+  "Fetches the content for a url."
+  (shell-command-to-string (format "~/bin/get_article.py %s" url)))
+
+(defun pc/get-entry-content (entry)
+  "Fetches content for pinboard entries that are not tweets."
+  (interactive
+   (let ((entry elfeed-show-entry))
+     (list entry)))
+
+  (let ((url (elfeed-entry-link entry))
+        (feed-id (elfeed-deref (elfeed-entry-feed-id entry)))
+        (content (elfeed-deref (elfeed-entry-content entry))))
+    (when (and (s-matches? "feeds.pinboard.in/" feed-id)
+               (not (s-matches? "twitter.com/\\|pdf$\\|png$\\|jpg$" url))
+               (string-equal "" content))
+      (setq content (pc/get-url-content url))
+      (setf (elfeed-entry-content entry) (elfeed-ref content)))))
+
+(add-hook 'elfeed-new-entry-hook #'pc/get-entry-content)
 #+END_SRC
 
 #+RESULTS:
+| pc/get-entry-content | elfeed-goodies/html-decode-title | elfeed-org-run-new-entry-hook |
 
-** Remove the bars and startup messages
+** COMMENT Elfeed Basic + Customisations
+- Note taken on [2020-03-28 Sat 15:50] \\
+  This was my earlier configuration. However, there are issues with the save db feature and I am anyway not really syncing across computers anymore. I read feeds on my VPS. Scimax's elfeed customisations provide me the functions that I need as I can easily email an article to instapaper or anywhere else. However, these remain here for reference, as there are some useful functions here.
+
+Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][Note taking 3: Notes from elfeed entries - Heikki @ home]] 
+
+#+BEGIN_SRC emacs-lisp
+;; Elfeed configuration source :
+(use-package elfeed
+  :bind (:map elfeed-search-mode-map
+              ("A" . bjm/elfeed-show-all)
+              ("E" . bjm/elfeed-show-emacs)
+              ("D" . bjm/elfeed-show-daily)
+              ("q" . bjm/elfeed-save-db-and-bury))
+  :init
+  (setq my/default-elfeed-search-filter "@1-month-ago +unread !sport ")
+  (setq-default elfeed-search-filter my/default-elfeed-search-filter)
+  (setq elfeed-db-direcory "~/scimax/user/elfeeddb")
+  :config
+  (elfeed-org)
+  (elfeed-goodies/setup)
+  (setq elfeed-use-curl t)
+
+  ;;
+  ;; linking and capturing
+  ;;
+
+  (defun elfeed-link-title (entry)
+    "Copy the entry title and URL as org link to the clipboard."
+    (interactive)
+    (let* ((link (elfeed-entry-link entry))
+           (title (elfeed-entry-title entry))
+           (titlelink (concat "[[" link "][" title "]]")))
+      (when titlelink
+        (kill-new titlelink)
+        (x-set-selection 'PRIMARY titlelink)
+        (message "Yanked: %s" titlelink))))
+
+  ;; show mode
+
+  (defun elfeed-show-link-title ()
+    "Copy the current entry title and URL as org link to the clipboard."
+    (interactive)
+    (elfeed-link-title elfeed-show-entry))
+
+  (defun elfeed-show-quick-url-note ()
+    "Fastest way to capture entry link to org agenda from elfeed show mode"
+    (interactive)
+    (elfeed-link-title elfeed-show-entry)
+    (org-capture nil "n")
+    (yank)
+    (org-capture-finalize))
+
+  (bind-keys :map elfeed-show-mode-map
+             ("l" . elfeed-show-link-title)
+             ("v" . elfeed-show-quick-url-note))
+
+  ;; search mode
+
+  (defun elfeed-search-link-title ()
+    "Copy the current entry title and URL as org link to the clipboard."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+               when (elfeed-entry-link entry)
+               do (elfeed-link-title entry))))
+
+  (defun elfeed-search-quick-url-note ()
+    "In search mode, capture the title and link for the selected
+     entry or entries in org aganda."
+    (interactive)
+    (let ((entries (elfeed-search-selected)))
+      (cl-loop for entry in entries
+               do (elfeed-untag entry 'unread)
+               when (elfeed-entry-link entry)
+               do (elfeed-link-title entry)
+               do (org-capture nil "n")
+               do (yank)
+               do (org-capture-finalize)
+               (mapc #'elfeed-search-update-entry entries))
+      (unless (use-region-p) (forward-line))))
+
+  (bind-keys :map elfeed-search-mode-map
+             ("l" . elfeed-search-link-title)
+             ("v" . elfeed-search-quick-url-note))
+
+   ;;functions to support syncing .elfeed between machines
+  ;;makes sure elfeed reads index from disk before launching
+  (defun bjm/elfeed-load-db-and-open ()
+    "Wrapper to load the elfeed db from disk before opening"
+    (interactive)
+    (elfeed-db-load)
+    (elfeed)
+    (elfeed-search-update--force))
+
+  ;;write to disk when quiting
+  (defun bjm/elfeed-save-db-and-bury ()
+    "Wrapper to save the elfeed db to disk before burying buffer"
+    (interactive)
+    (elfeed-db-save)
+    (quit-window))
+  )
+#+END_SRC
+
+#+RESULTS:
+: bjm/elfeed-save-db-and-bury
+
+** COMMENT TEST Removing Scimax's default colors
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(set-face-attribute 'python-elfeed-entry nil :background nil :weight 'normal)
+(set-face-attribute 'emacs-elfeed-entry nil :background nil :weight 'normal)
+(set-face-attribute 'elfeed-search-unread-title-face nil  :weight 'normal)
+(set-face-attribute 'elfeed-search-feed-face nil :height '0.8)
+#+END_SRC
+
+* eww
+*** Default browser to be eww and basic settings
 :PROPERTIES:
-:ID:       38F9FE46-13E7-4281-8DC0-7C9F9AAB673C
+:ID:       97B74055-86BA-4471-853C-96BD35055AF5
 :END:
 
 #+BEGIN_SRC emacs-lisp
-;; Removing all the bars 
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-;; No start up message and nothing to pollute the scratch buffer
-(setq inhibit-startup-message t initial-scratch-message nil)
+(setq browse-url-browser-function 'eww-browse-url)
 #+END_SRC
 
+#+RESULTS:
+: eww-browse-url
+
+*** Keyboard map for default external browser
+:PROPERTIES:
+:ID:       5E6E35E7-08EF-47F1-AFC0-ADE231C4BD38
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;; Open the current URL in the default external browser
+(eval-after-load 'eww
+  '(progn
+     (define-key eww-mode-map "o" 'eww-browse-with-external-browser)
+     ))
+#+END_SRC
+
+#+RESULTS:
+: eww-browse-with-external-browser
+
+*** Wikipedia search
+:PROPERTIES:
+:ID:       1E0D1DBF-8D54-472D-8B32-E1E371586389
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun wikipedia-search (search-term)
+  "Search for SEARCH-TERM on wikipedia"
+  (interactive
+   (let ((term (if mark-active
+                   (buffer-substring (region-beginning) (region-end))
+                 (word-at-point))))
+     (list
+      (read-string
+       (format "Wikipedia (%s):" term) nil nil term)))
+   )
+  (browse-url
+   (concat
+    "http://en.m.wikipedia.org/w/index.php?search="
+    search-term
+    ))
+  )
+#+end_src
+
+#+RESULTS:
+: wikipedia-search
+
+*** Access Hacker News
+:PROPERTIES:
+:ID:       076038EA-5427-4C17-9530-7298911256F7
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun hn ()
+  (interactive)
+  (browse-url "http://news.ycombinator.com"))
+#+end_src
+
+#+RESULTS:
+: hn
+
+*** TODO Open specific browser depending on the URL
+
+- Note taken on [2019-03-07 Thu 11:59] \\
+  This is worth setting up. It would be convenient for frequently visited websites like reddit and others, to open in the external browser, especially as they do not render well within w3m.
+
+Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; use browser depending on url
+(setq
+ browse-url-browser-function
+ '(
+  ("wikipedia\\.org" . eww-browse-url)
+  ("github" . eww-browse-url)
+  ("thefreedictionary\\.com" . eww-browse-url)
+  ("." . browse-url-default-browser)
+  ))
+#+END_SRC
+
+#+RESULTS:
+: ((wikipedia\.org . eww-browse-url) (github . eww-browse-url) (thefreedictionary\.com . eww-browse-url) (. . browse-url-default-browser))
+
 * New Scimax port
-** Adding scimax folder to load path
+** COMMENT Adding scimax folder to load path
+:PROPERTIES:
+:ID:       07625F90-FBFE-46A1-8FDE-2E4D0B664B9D
+:END:
 
 #+BEGIN_SRC emacs-lisp :results silent
 ;; (add-to-list 'load-path (sr/fun/scimax-ref-dir "scimax-stuff"))
 ;; (defvar scimax-dir (sr/fun/scimax-ref-dir "scimax-stuff"))
 #+END_SRC
-
-** Temporary package list
-
-#+BEGIN_SRC emacs-lisp
-      (use-package helm-bibtex)
-
-      (use-package helm-projectile)
-
-      ;; Functions for working with hash tables
-      (use-package ht)
-
-      (use-package htmlize)
-
-      (use-package hy-mode)
-
-      (use-package hydra
-        :init
-        (setq hydra-is-helpful t)
-
-        :config
-        (require 'hydra-ox))
-
-      (use-package ivy-hydra)
-
-      (use-package jedi)
-
-      (use-package jedi-direx)
-
-      (use-package diminish)
-
-      ;; (use-package avy)
-
-    (use-package pydoc)
-
-    (use-package pyvenv
-    :config
-    (require 'pyvenv))
-
-    (use-package rainbow-mode)
-
-    (use-package elpy
-      :config
-      (elpy-enable))
-
-    (use-package esup)
-
-    ;; Provides functions for working with files
-    (use-package f)
-
-    (straight-use-package 'dash)
-    (straight-use-package 'dash-functional)
-    (straight-use-package 'ov)
-  (straight-use-package 'flx)
-
-    (use-package auto-complete
-      :diminish auto-complete-mode
-      :config (ac-config-default))
-
-  (use-package google-this
-    :config
-    (google-this-mode 1))
-
-  (straight-use-package 'ggtags)
-  (straight-use-package 'ibuffer-projectile)
-#+END_SRC
-
-#+RESULTS:
-: t
 
 ** org-ref
 :PROPERTIES:
@@ -2599,6 +3405,9 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 : t
 ** scimax-org port
 *** General Org mode related
+:PROPERTIES:
+:ID:       064C080D-4C7E-4EA5-A173-2EA058A7B19A
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (require 'org-inlinetask)
@@ -2642,6 +3451,9 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 : ((q lambda nil (avy-with avy-goto-line (avy--generic-jump ^\*+ nil avy-style))) (q lambda nil (let ((avy-keys (or (cdr (assq (quote avy-goto-line) avy-keys-alist)) avy-keys)) (avy-style (or (cdr (assq (quote avy-goto-line) avy-styles-alist)) avy-style)) (avy-command (quote avy-goto-line))) (setq avy-action nil) (fset (quote avy-resume) (function (lambda nil (interactive) (avy--generic-jump ^\*+ nil avy-style)))) (avy--generic-jump ^\*+ nil avy-style))) (k lambda nil (org-mark-subtree) (kill-region (region-beginning) (region-end))) (S . widen) (m . org-mark-subtree) (d . org-deadline) (P . org-set-property))
 
 *** Babel settings
+:PROPERTIES:
+:ID:       BD32BC22-7F2B-4872-A950-23BDCB128CF9
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; * Babel settings
@@ -2657,15 +3469,15 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
    (latex . t)
    (python . t)
    (shell . t)
-   (matlab . t)
+   (matlab . nil)
    (sqlite . t)
-   (ruby . t)
+   (ruby . nil)
    (perl . t)
    (org . t)
    (dot . t)
    (plantuml . t)
    (R . t)
-   (fortran . t)
+   (fortran . nil)
    (C . t)))
 
 ;; no extra indentation in the source blocks
@@ -2712,6 +3524,9 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+END_SRC
 
 *** Org formatting functions
+:PROPERTIES:
+:ID:       DF1FBFBF-886B-4951-B077-105805A7A1AF
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; * Markup commands for org-mode
@@ -2865,6 +3680,9 @@ This function tries to do what you mean:
 #+END_SRC
 
 *** Links and Jumping functions
+:PROPERTIES:
+:ID:       566F6D94-A39B-40D9-BD0A-321B56FC34B4
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; * New org links
@@ -3144,6 +3962,9 @@ the scope."
 #+END_SRC
 
 *** Better return
+:PROPERTIES:
+:ID:       A4E26EAE-9189-4000-807B-B2BF2778A3F8
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; * A better return
@@ -3260,7 +4081,7 @@ Use a prefix arg to get regular RET. "
 
 *** TODO Numbered headings and overlays
 *** TODO PDF and EPS images in org mode
-** scimax-yas
+** COMMENT scimax-yas
 :PROPERTIES:
 :ID:       259205AA-4D49-4917-B79D-0A785822C33F
 :END:
@@ -3281,7 +4102,6 @@ Use a prefix arg to get regular RET. "
 :END:
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-ivy
-    :after scimax-org
     :straight (scimax-ivy :local-repo "scimax-subset" :files ("scimax-ivy.el")))
 (require 'scimax-ivy)
 #+END_SRC
@@ -3289,6 +4109,9 @@ Use a prefix arg to get regular RET. "
 #+RESULTS:
 : scimax-ivy
 ** scimax-apps
+:PROPERTIES:
+:ID:       217D4F99-21D9-4FEE-8ACC-24113C70A750
+:END:
 
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-apps
@@ -3319,6 +4142,9 @@ Use a prefix arg to get regular RET. "
 #+RESULTS:
 : scimax/body
 ** scimax-notebook
+:PROPERTIES:
+:ID:       D6B5E656-0A40-4B50-A37C-889FE990C063
+:END:
 
 #+BEGIN_SRC emacs-lisp
 
@@ -3349,7 +4175,7 @@ Use a prefix arg to get regular RET. "
 
 #+RESULTS:
 : scimax-journal
-** scimax utils
+** COMMENT scimax utils
 
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-utils
@@ -3360,6 +4186,9 @@ Use a prefix arg to get regular RET. "
 #+RESULTS:
 : scimax-utils
 ** scimax-ipython
+:PROPERTIES:
+:ID:       06455092-7B57-4E40-A474-6252B67B4D1B
+:END:
 
 - [X] use the file keyword to add the client.py file as a symlink. Note here that the entire list of files have to be provided.
 
@@ -3400,737 +4229,256 @@ scimax-ipython upstream
 #+END_SRC
 
 #+RESULTS:
-
-* Programming customisations
-** emmet-mode 
+* Aesthetics
+** Setting custom themes to be safe
+:PROPERTIES:
+:ID:       E7FEA82C-0CCD-40D2-842A-E6797A9BB3BF
+:END:
 
 #+BEGIN_SRC emacs-lisp
-(use-package emmet-mode
+(setq custom-safe-themes t)
+#+END_SRC
+
+** Theme : modus
+:PROPERTIES:
+:ID:       1F5F41EC-6BDA-46BC-B1E6-DED28B899196
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'modus-operandi-theme)
+
+(use-package modus-operandi-theme
 :straight t
 :config
+(setq modus-operandi-theme-scale-headings t)
+(setq modus-operandi-theme-proportional-fonts t)
+(setq modus-operandi-theme-slanted-constructs t)
+(load-theme 'modus-operandi t))
 
-;; Auto-start on any markup modes
-(add-hook 'sgml-mode-hook 'emmet-mode) 
-;; enable Emmet's css abbreviation.
-(add-hook 'css-mode-hook  'emmet-mode) 
-;; enable HTML 
-(add-hook 'html-mode-hook  'emmet-mode)
-;; Enable cursor to be placed within quotes
-(setq emmet-move-cursor-between-quotes t)
-)
+;; These are placed here for ready reference
+;; (setq modus-operandi-theme-scale-1 1.05)
+;; (setq modus-operandi-theme-scale-2 1.1)
+;; (setq modus-operandi-theme-scale-3 1.15)
+;; (setq modus-operandi-theme-scale-4 1.2)
 
 #+END_SRC
 
 #+RESULTS:
 : t
 
-** web-mode 
-
-#+BEGIN_SRC emacs-lisp :results silent
-(straight-use-package 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+** Font and other aesthetics
+*** COMMENT Old config
+#+BEGIN_SRC emacs-lisp
+;; My customisations
+(set-face-attribute 'default nil :family "iA Writer Mono V" :height 130)
+;; (set-face-attribute 'default nil :family "Iosevka term" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "Iosevka term")
+(set-face-attribute 'variable-pitch nil :family "iA Writer Mono V")
 #+END_SRC
 
-** ESS configuration
+#+RESULTS:
+
+*** Fixed pitch and variable pitch fonts
+:PROPERTIES:
+:ID:       7257A394-D3EE-4918-9939-1BA885C1A51E
+:END:
 
 #+BEGIN_SRC emacs-lisp
-(use-package ess
-  :ensure t
-  :config
-  (require 'ess)
-  (show-paren-mode)
-  (use-package ess-R-data-view)
-  (use-package polymode)
-  (setq ess-describe-at-point-method nil)
-  (setq ess-switch-to-end-of-proc-buffer t)
-  (setq ess-rutils-keys +1)
-  (setq ess-eval-visibly 'nil)
-  (setq ess-use-flymake "lintr::default_linters()")
-   (setq ess-use-company t)
-  (setq ess-history-file "~/.Rhistory")
-  (setq ess-use-ido t)
-  (setq ess-roxy-hide-show-p t)
-  ;;(speedbar-add-supported-extension ".R")
-  (setq comint-scroll-to-bottom-on-input t)
-  (setq comint-scroll-to-bottom-on-output t)
-  (setq comint-move-point-for-output t)
+(custom-theme-set-faces
+ 'user
+ '(variable-pitch ((t (:family "iA Writer Mono V"))))
+ '(fixed-pitch ((t ( :family "Iosevka term" 
+			     :slant normal 
+			     :weight normal 
+			     :height 1.1
+			     :width normal)))))
 
-;;setting up eldoc
-(setq ess-use-eldoc t)
-(setq ess-eldoc-show-on-symbol t)
-(setq ess-doc-abbreviation-style 'aggresive)
-  )
+;; Setting the default general font 
+(set-face-attribute 'default nil 
+		    :family "iA Writer Mono V" 
+		    :height 130
+		    )
 
-;; The following chunk is taken from: https://github.com/syl20bnr/spacemacs/blob/master/layers/%2Blang/ess/packages.el
-;;; Follow Hadley Wickham's R style guide
-(setq ess-first-continued-statement-offset 2
-      ess-continued-statement-offset 4
-      ess-expression-offset 4
-      ess-nuke-trailing-whitespace-p t
-      ess-default-style 'DEFAULT)
-
-
-;; Adding Poly-R package
-
-(use-package poly-R
-  :ensure t
-  )
-;; The following chunk is taken from antonio's answer from https://stackoverflow.com/questions/16172345/how-can-i-use-emacs-ess-mode-with-r-markdown
-(defun rmd-mode ()
-  "ESS Markdown mode for rmd files."
-  (interactive)
-  (require 'poly-R)
-  (require 'poly-markdown)
-  (poly-markdown+r-mode))
-
-(use-package ess-view
-  :ensure t
-  :config
-  (require 'ess-view)
-  (if (system-type-is-darwin)
-      (setq ess-view--spreadsheet-program
-            "/Applications/Tad.app/Contents/MacOS/Tad"
-            )
-    )
-  (if (system-type-is-gnu)
-      (setq ess-view--spreadsheet-program
-            "tad"
-            )
-    )
-  )
-
-;; This is taken and slightly modified from the ESS manual
-;; The display config is similar to that of Rstudio
-
-(setq display-buffer-alist
-      `(("*R Dired"
-         (display-buffer-reuse-window display-buffer-in-side-window)
-         (side . right)
-         (slot . -1)
-         (window-width . 0.33)
-         (reusable-frames . nil))
-        ("*R"
-         (display-buffer-reuse-window display-buffer-at-bottom)
-         (window-width . 0.35)
-         (reusable-frames . nil))
-        ("*Help"
-         (display-buffer-reuse-window display-buffer-in-side-window)
-         (side . right)
-         (slot . 1)
-         (window-width . 0.33)
-         (reusable-frames . nil))))
-
-(message "Loaded ESS configuration")
 #+END_SRC
 
-** flycheck
+#+RESULTS:
+
+*** Faces for specific org elements
+:PROPERTIES:
+:ID:       3C14EDA6-1BA3-4FE0-ADA5-FF6D7424B38D
+:END:
+
+Hello 
 
 #+BEGIN_SRC emacs-lisp
-(straight-use-package 'flycheck)
-#+END_SRC
-
-** Python [0/4]
-- Note taken on [2020-03-23 Mon 18:10] \\
-  For now I will disable this as it appears logical to use pyenv and other packages to set the correct interpreter. However, since shims are being used, one would assume that the correct environment will be used anyway.
-
-At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] require pydoc, elpy and jedi, which are already installed. These packages have to be grouped here.
-
-[[https://realpython.com/emacs-the-best-python-editor/][Emacs: The Best Python Editor? Real Python]] is a good guide towards setting up Emacs and python. [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]] provides a satisfyingly detailed configuration with customisations for python. The latter guide is worth following. 
-
-#+BEGIN_SRC emacs-lisp :tangle no
-;; Enabling python 3 to be the default interpreter.
-(setq python-shell-interpreter "python3")
-(setq org-babel-python-command "python3")
-(setq flycheck-python-pycompile-executable "python3")
-
-;; Enabling flycheck for elpy mode
-
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
+(custom-theme-set-faces
+ 'user
+ '(org-block ((t (:inherit fixed-pitch))))
+ '(org-code ((t (:inherit (shadow variable-pitch)))))
+ '(org-document-info ((t (:foreground "dark orange"))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-indent ((t (:inherit (org-hide variable-pitch)))))
+ '(org-link ((t (:foreground "royal blue" :underline t))))
+ '(org-meta-line ((t (:inherit (font-lock-comment-face -pitch)))))
+ '(org-property-value ((t (:inherit fixed-pitch))) t)
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+ '(org-verbatim ((t (:inherit (shadow variable-pitch))))))
 
 #+END_SRC
 
-- [ ] pyment
-- [ ] isort
-- [ ] pyenv version alias and activating on a per buffer basis
-- [ ] 
+#+RESULTS:
 
-*** pyenv
+** COMMENT Doom modeline
 
-Reference: [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]]
+- [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
 
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package pyenv
-    :straight (:host github :repo "aiguofer/pyenv.el")
-    :config
-    (setq pyenv-use-alias 't)
-    (setq pyenv-modestring-prefix "PyE-")
-    (setq pyenv-modestring-postfix nil)
-    (setq pyenv-set-path nil)(global-pyenv-mode)
-    (defun pyenv-update-on-buffer-switch (prev curr)
-      (if (string-equal "Python" (format-mode-line mode-name nil nil curr))
-          (pyenv-use-corresponding)))
-    (add-hook 'switch-buffer-functions 'pyenv-update-on-buffer-switch))
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :straight t
+  :custom
+  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon nil)
+  (doom-modeline-minor-modes nil)
+  :hook
+  (after-init . doom-modeline-mode)
+  :config
+  (line-number-mode 0)
+  (column-number-mode 0)
+  (doom-modeline-def-modeline 'main
+    '(bar window-number matches buffer-info remote-host buffer-position selection-info)
+    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+
 #+END_SRC
+
+#+RESULTS:
+| doom-modeline-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | tramp-register-archive-file-name-handler | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | table--make-cell-map |
+
+** COMMENT Org Aesthetics Headline scales
+- Note taken on [2020-03-28 Sat 19:56] \\
+  These are not required for the modus theme, as inbuilt options exist upto level 4.
+
+#+BEGIN_SRC emacs-lisp  
+
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.3 :weight bold))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.2 :weight bold))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.1 :weight bold))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0 :weight bold)))))
+#+END_SRC
+
+#+RESULTS:
+
+** COMMENT Olivetti mode
+- Note taken on [2020-03-28 Sat 20:04] \\
+  The problem with this mode is that it seems to activate and deactivate constantly, especially when the buffer is saved. However it is certainly very useful with wide screens in general.
+
+This package is useful in centering the text in a buffer, and is particularly helpful with wide screens.
+
+#+BEGIN_SRC emacs-lisp
+(use-package olivetti
+:config
+(olivetti-mode 1))
+
+#+END_SRC
+** TODO Spaceline : modeline configuration
+   :PROPERTIES:
+   :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
+   :END:
+- [X] [[http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/][Get that spacemacs look without spacemacs | Pragmatic Emacs]] - this provides a bare bones setup
+- [ ] [[http://amitp.blogspot.com/2017/01/emacs-spaceline-mode-line.html][Amit's Thoughts: Emacs spaceline mode line]] : This is an excellent guide covering a lot of possibilities to customise so many aspects of the modeline and make it look great.
+- [ ] It seems that spaceline adds a few extra seconds to the init time. I wonder if there are lighter packages that achieve the same effect.
+
+#+BEGIN_SRC emacs-lisp
+(use-package spaceline
+  :straight t
+  :init
+  (setq powerline-default-separator 'arrow-fade)
+  :config
+  (disable-theme 'smart-mode-line-light)
+  (require 'spaceline-config)
+  (spaceline-spacemacs-theme)
+  (spaceline-toggle-buffer-position-off)
+  (spaceline-toggle-hud-off)
+  (setq spaceline-python-pyvenv-on 1)
+  (spaceline-toggle-minor-modes-off))
+  #+END_SRC
 
 #+RESULTS:
 : t
 
-*** Blacken
-
-The black library will re-format the code on a save. Elpy will automatically use black, as long as the elisp package installed, along with the python black package which can be installed using pip
-
-#+BEGIN_SRC sh :tangle no
-pip3 install black
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(use-package blacken
-:straight t
-:hook (python-mode . blacken-mode))
-#+END_SRC
-
-* TODO Custom search functions [0/1]
-This section contains sections to search in specific directories, with customised options.
-
-- [ ] Incorporate these functions into a hydra.
-  - [ ] Explore ldlework's hera and nougat hydra packages for this. Perhaps include into scimax under the applications menu. 
-
-** Episteme search
-Adapted from ldlework
-
-#+BEGIN_SRC emacs-lisp
-(defun episteme-search ()
-  (interactive)
-  (helm-do-ag (sr/fun/project-dir "episteme/brain"))
-  (let* ((p (point))
-         (f (org-brain-first-headline-position))
-         (adjusted-point (max 0 (- p f))))
-    (org-brain-visualize (file-name-sans-extension (buffer-name)))
-    (with-current-buffer "*org-brain*"
-      (let ((minmax (polybrain--get-point-min-max)))
-        (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
-#+END_SRC
-
-** Projects search [0/6]
-- [ ] Exclude git files
-- [ ] Exclude csv files
-- [ ] Exclude html and related files 
-- [ ] decide between helm-ag and counsel-ag and the method to jump between files.
-- [ ] Decide about plugging in arguments to activate different kinds of search.
-- [ ] Find if multiple paths can be included or not. 
-
-#+BEGIN_SRC emacs-lisp
-(defun sr/fun/proj-search ()
-  (interactive)
-  (helm-do-ag (sr/fun/project-dir "")))
-#+END_SRC
-
-** Org files search
-
-#+BEGIN_SRC emacs-lisp
-(defun sr/fun/org-search ()
-  (interactive)
-  (helm-do-ag (sr/fun/org-dir "")))
-#+END_SRC
-
-* TODO Hydra setup
-** hera
-
-ldlewell's package that provides an API for defining a stack of hydras. 
-
-#+BEGIN_SRC emacs-lisp
-(use-package hera
-:demand t
-:straight (hera :type git :host github :repo "dustinlacewell/hera"))
-#+END_SRC
-
-#+RESULTS:
-
-** nougat-hydra
-
-#+BEGIN_SRC emacs-lisp
-(defun nougat--inject-hint (symbol hint)
-(-let* ((name (symbol-name symbol))
-(hint-symbol (intern (format "%s/hint" name)))
-(format-form (eval hint-symbol))
-(string-cdr (nthcdr 1 format-form))
-(format-string (string-trim (car string-cdr)))
-(amended-string (format "%s\n\n%s" format-string hint)))
-(setcar string-cdr amended-string)))
-
-(defun nougat--make-head-hint (head default-color)
-(-let (((key _ hint . rest) head))
-(when key
-(-let* (((&plist :color color) rest)
-(color (or color default-color))
-(face (intern (format "hydra-face-%s" color)))
-(propertized-key (propertize key 'face face)))
-(format " [%s]: %s" propertized-key hint)))))
-
-(defun nougat--make-hint (heads default-color)
-(string-join
-(cl-loop for head in heads
-for hint = (nougat--make-head-hint head default-color)
-do (pp hint)
-collect hint) "\n"))
-
-(defun nougat--clear-hint (head)
-(-let* (((key form _ . rest) head))
-`(,key ,form nil ,@rest)))
-
-(defun nougat--add-exit-head (heads)
-(let ((exit-head '("SPC" (hera-pop) "to exit" :color blue)))
-(append heads `(,exit-head))))
-
-(defun nougat--add-heads (columns extra-heads)
-(let* ((cell (nthcdr 1 columns))
-(heads (car cell))
-(extra-heads (mapcar 'nougat--clear-hint extra-heads)))
-(setcar cell (append heads extra-heads))))
-
-(defmacro nougat-hydra (name body columns &optional extra-heads)
-(declare (indent defun))
-(-let* (((&plist :color default-color :major-mode mode) body)
-(extra-heads (nougat--add-exit-head extra-heads))
-(extra-hint (nougat--make-hint extra-heads default-color))
-(body (plist-put body :hint nil))
-(body-name (format "%s/body" (symbol-name name)))
-(body-symbol (intern body-name))
-(mode-support
-`(when ',mode
-(setq major-mode-hydra--body-cache
-(a-assoc major-mode-hydra--body-cache ',mode ',body-symbol)))))
-(nougat--add-heads columns extra-heads)
-(when mode
-(remf body :major-mode))
-`(progn
-(pretty-hydra-define ,name ,body ,columns)
-(nougat--inject-hint ',name ,extra-hint)
-,mode-support)))
-
-;; (nougat-hydra hydra-test (:color red :major-mode fundamental-mode)
-;; ("First"
-;; (("a" (message "first - a") "msg a" :color blue)
-;; ("b" (message "first - b") "msg b"))
-;; "Second"
-;; (("c" (message "second - c") "msg c" :color blue)
-;; ("d" (message "second - d") "msg d"))))
-#+END_SRC
-
-#+RESULTS:
-: nougat-hydra
-
-** hydra-dwim
-
-#+BEGIN_SRC emacs-lisp
-(defun my/hydra-dwim ()
-(interactive)
-(-let (((&alist major-mode mode) major-mode-hydra--body-cache))
-(if mode (major-mode-hydra)
-(hera-start 'hydra-default/body))))
-
-(setq kbd-hera-pop "<f12>")
-(global-set-key (kbd "M-s p") 'my/hydra-dwim)
-(global-set-key (kbd "M-s p") (lambda () (interactive) (hera-start 'hydra-default/body)))
-
-#+END_SRC
-
-#+RESULTS:
-| lambda | nil | (interactive) | (hera-start 'hydra-default/body) |
-
-** hydra default
-
-#+BEGIN_SRC emacs-lisp
-(defhydra hydra-default (:color blue :hint nil)
-"
-
-Entrypoint Hydra
-
-"
-("a" (org-agenda nil "a") "agenda" :column "Open")
-("p" (hera-push 'hydra-projectile/body) "projectile")
-("c" (org-capture) "capture")
-("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
-("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
-("m" (hera-push 'hydra-mu4e/body) "mail")
-("w" (hera-push 'hydra-window/body) "windows")
-("z" (hera-push 'hydra-zoom/body) "zoom")
-("R" (hera-push 'hydra-registers/body) "registers")
-("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
-("S" (hera-push 'hydra-straight/body) "Straight")
-("s" (call-interactively 'helm-imenu) "semantic")
-("g" (hera-push 'hydra-gist/body) "gist")
-("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python"))
-
-#+END_SRC
-
-#+RESULTS:
-: hydra-default/body
-** straight-hydra
-
-#+BEGIN_SRC emacs-lisp
-(defun sr/fun/straight-pull-rebuild-combo (&optional package)
-  "Function to select a package, and then -> pull and rebuild using straight."
-  (interactive)
-  (let ((package (or package
-                     (straight--select-package "Pull & Rebuild package" 'for-build 'installed))))
-    (message package)
-    (straight-pull-package package)
-    (straight-rebuild-package package)))
-
-
-(nougat-hydra hydra-straight (:color red)
-  ("Straight" (("P" (call-interactively 'straight-pull-package)
-		"Pull one")
-	       ("p" (call-interactively 'sr/fun/straight-pull-rebuild-combo)
-		"Pull and Rebuild one package" :column "Pull")
-	       ("C-a" (straight-pull-all) "Pull ALL")
-	       ("f" (call-interactively 'straight-fetch-package)
-		"Fetch one")
-	       ("F" (straight-fetch-all) "Fetch ALL")
-	       ("w" (call-interactively 'straight-visit-package-website) "visit package Website")
-	       ("g" (call-interactively 'straight-get-recipe)
-		"Get recipe")
-	     ("r" (call-interactively 'straight-rebuild-package)
-		"rebuild package")
-	       )))
-#+END_SRC
-
-#+RESULTS:
-** mu4e-hydra
-
-#+BEGIN_SRC emacs-lisp
-(nougat-hydra hydra-mu4e (:color blue)
-("mu4e" (("m" (mu4e) "mail")
-	     ("u" (mu4e-update-mail-and-index) "Update mail and index"))))
-#+END_SRC
-
-#+RESULTS:
-** pyvenv-hydra
-
-#+BEGIN_SRC emacs-lisp
-(nougat-hydra hydra-pyvenv (:color red)
-  ("pyvenv - virtualenv" (("c" (call-interactively 'pyvenv-create)
-		"create")
-	       ("w" (call-interactively 'pyvenv-workon) "work on")
-	       ("a" (call-interactively 'pyvenv-activate)	"activate")
-	       ("d" (call-interactively 'pyvenv-deactivate) "deactivate")
-	       ("t" (call-interactively 'pyvenv-tracking-mode) "tracking mode")
-	       ("r" (call-interactively 'pyvenv-restart-python) "restart python") 
-	       )))
-#+END_SRC
-
-#+RESULTS:
-
-* github gists
-Gists posted right from emacs. 
-
-#+BEGIN_SRC emacs-lisp
-(use-package gist
-:straight (gist :type git :host github :repo "defunkt/gist.el"))
-
-
-(nougat-hydra hydra-gist (:color blue)
-("Gist" (("p" (gist-region-or-buffer) "public")
-("P" (gist-region-or-buffer-private) "private")
-("b" (browse-url "https://gist.github.com/shrysr") "browse"))))
-#+END_SRC
-
-#+RESULTS:
-* org-id
+** Striking out Done headlines
 :PROPERTIES:
-:ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
+:ID:       3263d812-c3f5-4947-b2de-c75c537d19df
 :END:
 
-Using the org-id for reference to headings ensures that even if the heading changes, the links will still work.
+source: Sacha Chua
 
-In addition, I would like an org id to be created every time the capture is used. This facilitates using packages like org-brain which rely extensively on org-id's.
-
-#+BEGIN_SRC emacs-lisp
-  ;; (require 'org-id)
-  ;; (setq org-id-link-to-org-use-id t)
-  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
-  ;; (org-link-set-parameters "nb" :store nil)
-  ;; ;; Update ID file .org-id-locations on startup
-  ;; ;; This adds too much time to startup
-  ;; ;; (org-id-update-id-locations)
-
-  ;; (setq org-id-method (quote uuidgen))
-  ;; (setq org-id-track-globally t)
-  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
-  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+#+begin_src emacs-lisp
+(setq org-fontify-done-headline t)
+(custom-set-faces
+ '(org-done ((t (:foreground "DarkGreen"
+			     :weight normal
+			     :strike-through t))))
+ '(org-headline-done
+   ((((class color) (min-colors 16) (background dark))
+     (:foreground "LightSalmon" :strike-through t)))))
 #+end_src
 
 #+RESULTS:
-| org-id-get-create |
-* Elfeed 
-- Note taken on [2019-09-25 Wed 14:09] \\
-  Scimax's elfeed is enabled, along with elfeed-org and elfeeed-goodies
-- Note taken on [2019-07-08 Mon 08:10] \\
-  Disabling elfeed for now.
 
-** Scimax + Elfeed-org and elfeed-goodies setup [/]
+** keywords as boxes with inverted colors
 :PROPERTIES:
-:ID:       8302d89f-756b-4a47-87aa-3f3df5a39a3f
+:ID:       62dcdc53-ee2f-4db2-afda-6b68a05cbeda
 :END:
-Using an org source is the easiest way to organise my RSS feeds for reading with Elfeed.
+
+Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to-emacs-org-mode][link]] ,
 
 #+BEGIN_SRC emacs-lisp
-(straight-use-package 'elfeed)
-;; use an org file to organise feeds
-(use-package elfeed-org
-  :ensure t
-  :config
-  (setq rmh-elfeed-org-files (list "~/my_org/elfeed.org"))
-  )
-
-(use-package elfeed-goodies
-  :ensure t
-  :init
-  (elfeed-goodies/setup)
-  )
-
-;; (require 'scimax-elfeed)
-
-#+end_src
-
-#+RESULTS:
-
-** Elfeed get full entry
-
-Source: [[https://punchagan.muse-amuse.in/blog/elfeed-hook-to-fetch-full-content/][Elfeed hook to fetch full content - Noetic Nought]]
-
-#+BEGIN_SRC emacs-lisp
-(defun pc/get-url-content (url)
-  "Fetches the content for a url."
-  (shell-command-to-string (format "~/bin/get_article.py %s" url)))
-
-(defun pc/get-entry-content (entry)
-  "Fetches content for pinboard entries that are not tweets."
-  (interactive
-   (let ((entry elfeed-show-entry))
-     (list entry)))
-
-  (let ((url (elfeed-entry-link entry))
-        (feed-id (elfeed-deref (elfeed-entry-feed-id entry)))
-        (content (elfeed-deref (elfeed-entry-content entry))))
-    (when (and (s-matches? "feeds.pinboard.in/" feed-id)
-               (not (s-matches? "twitter.com/\\|pdf$\\|png$\\|jpg$" url))
-               (string-equal "" content))
-      (setq content (pc/get-url-content url))
-      (setf (elfeed-entry-content entry) (elfeed-ref content)))))
-
-(add-hook 'elfeed-new-entry-hook #'pc/get-entry-content)
+(set-face-attribute 'org-todo nil
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    :inverse-video t
+                    )
+(set-face-attribute 'org-done nil
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    :inverse-video t
+                    )
+(set-face-attribute 'org-priority nil
+                    :inherit font-lock-keyword-face
+                    :inverse-video t
+                    :box '(:line-width 2
+                           :color "black"
+                           :style released-button)
+                    )
 #+END_SRC
 
 #+RESULTS:
-| pc/get-entry-content | elfeed-goodies/html-decode-title | elfeed-org-run-new-entry-hook |
 
-** COMMENT Elfeed Basic + Customisations
-- Note taken on [2020-03-28 Sat 15:50] \\
-  This was my earlier configuration. However, there are issues with the save db feature and I am anyway not really syncing across computers anymore. I read feeds on my VPS. Scimax's elfeed customisations provide me the functions that I need as I can easily email an article to instapaper or anywhere else. However, these remain here for reference, as there are some useful functions here.
-
-Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][Note taking 3: Notes from elfeed entries - Heikki @ home]] 
+** Remove the bars and startup messages
+:PROPERTIES:
+:ID:       38F9FE46-13E7-4281-8DC0-7C9F9AAB673C
+:END:
 
 #+BEGIN_SRC emacs-lisp
-;; Elfeed configuration source :
-(use-package elfeed
-  :bind (:map elfeed-search-mode-map
-              ("A" . bjm/elfeed-show-all)
-              ("E" . bjm/elfeed-show-emacs)
-              ("D" . bjm/elfeed-show-daily)
-              ("q" . bjm/elfeed-save-db-and-bury))
-  :init
-  (setq my/default-elfeed-search-filter "@1-month-ago +unread !sport ")
-  (setq-default elfeed-search-filter my/default-elfeed-search-filter)
-  (setq elfeed-db-direcory "~/scimax/user/elfeeddb")
-  :config
-  (elfeed-org)
-  (elfeed-goodies/setup)
-  (setq elfeed-use-curl t)
+;; Removing all the bars 
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 
-  ;;
-  ;; linking and capturing
-  ;;
-
-  (defun elfeed-link-title (entry)
-    "Copy the entry title and URL as org link to the clipboard."
-    (interactive)
-    (let* ((link (elfeed-entry-link entry))
-           (title (elfeed-entry-title entry))
-           (titlelink (concat "[[" link "][" title "]]")))
-      (when titlelink
-        (kill-new titlelink)
-        (x-set-selection 'PRIMARY titlelink)
-        (message "Yanked: %s" titlelink))))
-
-  ;; show mode
-
-  (defun elfeed-show-link-title ()
-    "Copy the current entry title and URL as org link to the clipboard."
-    (interactive)
-    (elfeed-link-title elfeed-show-entry))
-
-  (defun elfeed-show-quick-url-note ()
-    "Fastest way to capture entry link to org agenda from elfeed show mode"
-    (interactive)
-    (elfeed-link-title elfeed-show-entry)
-    (org-capture nil "n")
-    (yank)
-    (org-capture-finalize))
-
-  (bind-keys :map elfeed-show-mode-map
-             ("l" . elfeed-show-link-title)
-             ("v" . elfeed-show-quick-url-note))
-
-  ;; search mode
-
-  (defun elfeed-search-link-title ()
-    "Copy the current entry title and URL as org link to the clipboard."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (cl-loop for entry in entries
-               when (elfeed-entry-link entry)
-               do (elfeed-link-title entry))))
-
-  (defun elfeed-search-quick-url-note ()
-    "In search mode, capture the title and link for the selected
-     entry or entries in org aganda."
-    (interactive)
-    (let ((entries (elfeed-search-selected)))
-      (cl-loop for entry in entries
-               do (elfeed-untag entry 'unread)
-               when (elfeed-entry-link entry)
-               do (elfeed-link-title entry)
-               do (org-capture nil "n")
-               do (yank)
-               do (org-capture-finalize)
-               (mapc #'elfeed-search-update-entry entries))
-      (unless (use-region-p) (forward-line))))
-
-  (bind-keys :map elfeed-search-mode-map
-             ("l" . elfeed-search-link-title)
-             ("v" . elfeed-search-quick-url-note))
-
-   ;;functions to support syncing .elfeed between machines
-  ;;makes sure elfeed reads index from disk before launching
-  (defun bjm/elfeed-load-db-and-open ()
-    "Wrapper to load the elfeed db from disk before opening"
-    (interactive)
-    (elfeed-db-load)
-    (elfeed)
-    (elfeed-search-update--force))
-
-  ;;write to disk when quiting
-  (defun bjm/elfeed-save-db-and-bury ()
-    "Wrapper to save the elfeed db to disk before burying buffer"
-    (interactive)
-    (elfeed-db-save)
-    (quit-window))
-  )
+;; No start up message and nothing to pollute the scratch buffer
+(setq inhibit-startup-message t initial-scratch-message nil)
 #+END_SRC
-
-#+RESULTS:
-: bjm/elfeed-save-db-and-bury
-
-** COMMENT TEST Removing Scimax's default colors
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(set-face-attribute 'python-elfeed-entry nil :background nil :weight 'normal)
-(set-face-attribute 'emacs-elfeed-entry nil :background nil :weight 'normal)
-(set-face-attribute 'elfeed-search-unread-title-face nil  :weight 'normal)
-(set-face-attribute 'elfeed-search-feed-face nil :height '0.8)
-#+END_SRC
-
-* eww
-*** Default browser to be eww and basic settings
-
-#+BEGIN_SRC emacs-lisp
-(setq browse-url-browser-function 'eww-browse-url)
-#+END_SRC
-
-#+RESULTS:
-: eww-browse-url
-
-*** Keyboard map for default external browser
-
-#+BEGIN_SRC emacs-lisp
-;; Open the current URL in the default external browser
-(eval-after-load 'eww
-  '(progn
-     (define-key eww-mode-map "o" 'eww-browse-with-external-browser)
-     ))
-#+END_SRC
-
-#+RESULTS:
-: eww-browse-with-external-browser
-
-*** Wikipedia search
-
-#+BEGIN_SRC emacs-lisp
-(defun wikipedia-search (search-term)
-  "Search for SEARCH-TERM on wikipedia"
-  (interactive
-   (let ((term (if mark-active
-                   (buffer-substring (region-beginning) (region-end))
-                 (word-at-point))))
-     (list
-      (read-string
-       (format "Wikipedia (%s):" term) nil nil term)))
-   )
-  (browse-url
-   (concat
-    "http://en.m.wikipedia.org/w/index.php?search="
-    search-term
-    ))
-  )
-#+end_src
-
-#+RESULTS:
-: wikipedia-search
-
-*** Access Hacker News
-
-#+BEGIN_SRC emacs-lisp
-(defun hn ()
-  (interactive)
-  (browse-url "http://news.ycombinator.com"))
-#+end_src
-
-#+RESULTS:
-: hn
-
-*** TODO Open specific browser depending on the URL
-
-- Note taken on [2019-03-07 Thu 11:59] \\
-  This is worth setting up. It would be convenient for frequently visited websites like reddit and others, to open in the external browser, especially as they do not render well within w3m.
-
-Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
-
-#+BEGIN_SRC emacs-lisp :tangle no
-;; use browser depending on url
-(setq
- browse-url-browser-function
- '(
-  ("wikipedia\\.org" . eww-browse-url)
-  ("github" . eww-browse-url)
-  ("thefreedictionary\\.com" . eww-browse-url)
-  ("." . browse-url-default-browser)
-  ))
-#+END_SRC
-
-#+RESULTS:
-: ((wikipedia\.org . eww-browse-url) (github . eww-browse-url) (thefreedictionary\.com . eww-browse-url) (. . browse-url-default-browser))
-
 * Loading secret config
+:PROPERTIES:
+:ID:       F71603D8-BA36-4055-9417-FFED3ABF9E4B
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; Loading secret config containing personal information
@@ -4313,8 +4661,11 @@ pipx inject numpy jupyter
 
 #+BEGIN_SRC emacs-lisp
 (use-package linkmarks
-  :straight (linkmarks :type git :host github :repo "dustinlacewell/linkmarks")
-:config
+  :straight (linkmarks 
+	     :type git 
+	     :host github 
+	     :repo "dustinlacewell/linkmarks")
+  :config
 (setq linkmarks-file "~/my_org/emacs_meta/bookmarks.org"))
 
  #+END_SRC
@@ -4557,6 +4908,7 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
 * Disabled
 :PROPERTIES:
 :header-args: :tangle no
+:ID:       50D44546-9A06-4F1D-A582-FAD07286D962
 :END:
 
 These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
@@ -7183,3 +7535,5 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
   :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
 #+END_SRC
+
+
