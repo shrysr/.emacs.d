@@ -2255,7 +2255,7 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+RESULTS:
 : /Users/shrysr/my_mail/fmail/Queue/cur
 
-** TODO Mu4e and use-package
+** TODO mu4e via use-package
 :PROPERTIES:
 :ID:       658B1502-41E1-487A-B0CF-5F1D1A366368
 :END:
@@ -2264,17 +2264,18 @@ This is an indispensable tool. The additional options of showing the timestamp a
 
 #+BEGIN_SRC emacs-lisp
 (use-package mu4e
-  :ensure nil
-  :hook
-  (mu4e-headers-mode . (lambda () (setq visual-fill-column nil)))
-  ((mu4e-view-mode . visual-line-mode)
-   (mu4e-compose-mode . (lambda ()
+:straight t
+:ensure nil
+:hook
+  ((mu4e-compose-mode . (lambda ()
                           (visual-line-mode)
                           (use-hard-newlines -1)
                           (flyspell-mode)))
    (mu4e-view-mode . (lambda() ;; try to emulate some of the eww key-bindings
                        (local-set-key (kbd "<tab>") 'shr-next-link)
-                       (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+                       (local-set-key (kbd "<backtab>") 'shr-previous-link)
+		       (fill-paragraph)
+		       (visual-line-mode)))
    (mu4e-headers-mode . (lambda ()
                           (interactive)
                           (setq mu4e-headers-fields
@@ -2283,15 +2284,137 @@ This is an indispensable tool. The additional options of showing the timestamp a
                                   (:from . 22)
                                   (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
                                   (:size . 7))))))
-  )
+  :config
+  (require 'mu4e)
+  (require 'mu4e-contrib)
+  (require 'org-mu4e)
 
+  (setq
+   mail-user-agent 'mu4e-user-agent
+   mue4e-headers-skip-duplicates  t
+   mu4e-view-show-images t
+   mu4e-view-show-addresses 't
+   mu4e-compose-format-flowed t
+   ;;mu4e-update-interval 200
+   message-ignored-cited-headers 'nil
+   mu4e-date-format "%y/%m/%d"
+   mu4e-headers-date-format "%Y/%m/%d"
+   mu4e-change-filenames-when-moving t
+   mu4e-attachments-dir "~/Downloads/Mail-Attachments/"
+   mu4e-maildir (expand-file-name "~/my_mail/fmail")
+   message-citation-line-format "On %Y-%m-%d at %R %Z, %f wrote..."
+   mu4e-index-lazy-check t
+   ;; After Years. I've finally found you.
+   mu4e-compose-dont-reply-to-self t
+   mu4e-headers-auto-update t
+   message-kill-buffer-on-exit t
+   mu4e-update-interval 300
+   )
+
+  ;; mu4e email refiling loations
+  (setq
+   mu4e-refile-folder "/Archive"
+   mu4e-trash-folder  "/Trash"
+   mu4e-sent-folder   "/Sent"
+   mu4e-drafts-folder "/Drafts"
+   )
+
+  ;; setup some handy shortcuts
+  (setq mu4e-maildir-shortcuts
+	'(("/INBOX"   . ?i)
+	  ("/Sent"    . ?s)
+	  ("/Archive" . ?a)
+	  ("/Trash"   . ?t)))
+
+  ;;store link to message if in header view, not to header query
+  (setq org-mu4e-link-query-in-headers-mode nil
+	org-mu4e-convert-to-html t) ;; org -> html
+
+
+  (autoload 'mu4e "mu4e" "mu for Emacs." t)
+
+  ;; Earlier Config for sending email
+  ;; (setq
+  ;;  message-send-mail-function 'message-send-mail-with-sendmail
+  ;;  send-mail-function 'sendmail-send-it
+  ;;  message-kill-buffer-on-exit t
+  ;;  )
+
+  ;; allow for updating mail using 'U' in the main view:
+  (setq mu4e-get-mail-command  "mbsync -q fins")
+
+  ;; Stolen from https://github.com/djcb/mu/issues/1431 and found thanks to parsnip in #emacs
+  (defun my-mu4e-mbsync-current-maildir (msg)
+    (interactive)
+    (let* ((maildir (downcase (substring (plist-get msg :maildir) 1)))
+	   (mu4e-get-mail-command (format "mbsync %s" maildir)))
+      (mu4e-update-mail-and-index t)))
+
+  ;; Enabling view in browser for HTML heavy emails that don't render well
+  (add-to-list 'mu4e-view-actions
+	       '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+  (add-to-list 'mu4e-view-actions
+	       '("mbsync maildir of mail at point" . my-mu4e-mbsync-current-maildir) t)
+
+  (setq mu4e-view-use-gnus t)
+
+  ;; Don't keep asking for confirmation for every action
+  (defun my-mu4e-mark-execute-all-no-confirm ()
+    "Execute all marks without confirmation."
+    (interactive)
+    (mu4e-mark-execute-all 'no-confirm))
+  ;; mapping x to above function
+  (define-key mu4e-headers-mode-map "x" #'my-mu4e-mark-execute-all-no-confirm)
+
+  ;; source: http://matt.hackinghistory.ca/2016/11/18/sending-html-mail-with-mu4e/
+
+  ;; this is stolen from John but it didn't work for me until I
+  ;; made those changes to mu4e-compose.el
+  (defun htmlize-and-send ()
+    "When in an org-mu4e-compose-org-mode message, htmlize and send it."
+    (interactive)
+    (when
+	(member 'org~mu4e-mime-switch-headers-or-body post-command-hook)
+      (org-mime-htmlize)
+      (org-mu4e-compose-org-mode)
+      (mu4e-compose-mode)
+      (message-send-and-exit)))
+
+  ;; This overloads the amazing C-c C-c commands in org-mode with one more function
+  ;; namely the htmlize-and-send, above.
+  (add-hook 'org-ctrl-c-ctrl-c-hook 'htmlize-and-send t)
+
+
+  ;; Config for queued sending of emails
+  ;; Reference  :https://vxlabs.com/2017/02/07/mu4e-0-9-18-e-mailing-with-emacs-now-even-better/https://vxlabs.com/2017/02/07/mu4e-0-9-18-e-mailing-with-emacs-now-even-better/
+
+  ;; when switch off queue mode, I still prefer async sending
+  (use-package async
+    :ensure t
+    :defer nil
+    :config (require 'smtpmail-async))
+
+  (setq
+   send-mail-function 'async-smtpmail-send-it
+   message-send-mail-function 'async-smtpmail-send-it
+   ;; replace with your email provider's settings
+   smtpmail-smtp-server "smtp.fastmail.com"
+   smtpmail-smtp-service 465
+   smtpmail-stream-type 'ssl
+
+   ;; if you need offline mode, set to true -- and create the queue dir
+   ;; with 'mu mkdir', i.e:
+   ;; mu mkdir /home/user/Mail/queue && touch ~/Maildir/queue/.noindex
+   ;; https://www.djcbsoftware.nl/code/mu/mu4e/Queuing-mail.html
+   smtpmail-queue-mail  nil
+   smtpmail-queue-dir  (expand-file-name "~/my_mail/fmail/Queue/cur")))))
 
 
 
 #+END_SRC
 
 #+RESULTS:
-| visual-fill-mode | visual-line-mode | visual-fill-line-mode | (lambda nil (local-set-key (kbd <tab>) 'shr-next-link) (local-set-key (kbd <backtab>) 'shr-previous-link)) | visual-fill-column-mode | #[0 \301\300!\210\302\211\207 [bookmark-make-record-function make-local-variable mu4e-view-bookmark-make-record] 2] |
+| (lambda nil (interactive) (setq mu4e-headers-fields `((:human-date . 25) (:flags . 6) (:from . 22) (:thread-subject , (- (window-body-width) 70)) (:size . 7)))) | (lambda nil (setq visual-fill-column nil)) | my/mu4e-change-headers | #[0 \301\300!\210\302\211\207 [bookmark-make-record-function make-local-variable mu4e-view-bookmark-make-record] 2] |
 
 ** COMMENT mu4e alerts
 :PROPERTIES:
