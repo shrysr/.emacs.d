@@ -3,7 +3,14 @@
 
 * Introduction
 
-I've been using my own configuration on top of the excellent Scimax for the past many years. This is a reboot to reverse the bias, and create my very own emacs configuration. It obviously includes massive snippets of code from scimax, as well as other configurations I come across, not to mention the excellent advice often received from #emacs and other geniuses lurking in irc channels, not to mention the vast internet. In the process I hope to contribute to the reliability and modularity of Scimax as well.
+I've been using my own configuration on top of the excellent Scimax
+for the past many years. This is a reboot to reverse the bias, and
+create my very own emacs configuration. It obviously includes massive
+snippets of code from scimax, as well as other configurations I come
+across, not to mention the excellent advice often received from #emacs
+and other geniuses lurking in irc channels, not to mention the vast
+internet. In the process I hope to contribute to the reliability and
+modularity of Scimax as well.
 
 #+BEGIN_QUOTE
 Note that this config is still under a great deal of flux at the
@@ -45,7 +52,10 @@ In general, effort has been made to add references to the source where I obtaine
 :header-args: :tangle ./init.el
 :END:
 
-This part of the config has to be tangled to init.el so that straight and use-package can be setup. This is a separate init file as it is expected to remain stable and will be the only .el file that is in git commit.
+This part of the config has to be tangled to init.el so that straight
+and use-package can be setup. This is a separate init file as it is
+expected to remain stable and will be the only .el file that is in git
+commit.
 
 ** Lexical Scope and binding
 :PROPERTIES:
@@ -481,7 +491,8 @@ List of hooks
 
 #+END_SRC
 
-** Markdown export
+** Exports
+*** Markdown export
 :PROPERTIES:
 :ID:       A7FBD8B1-5C55-407A-8409-65EB85C8FDD4
 :END:
@@ -490,7 +501,7 @@ List of hooks
 (require 'ox-md)
 #+END_SRC
 
-** TEST ox-pandoc
+*** ox-pandoc
 :PROPERTIES:
 :ID:       1B23050A-3ABD-48C9-A0B1-6294414748E0
 :END:
@@ -642,19 +653,8 @@ I initially included my journal location to the agenda search. However it is ver
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-agenda-mode-hook
           '(lambda ()
-             (visual-fill-column-mode -1)
-	     (hl-line-mode 1)))
+ 	     (hl-line-mode 1)))
 #+END_SRC
-
-#+RESULTS:
-| (lambda nil (visual-fill-column-mode -1) (hl-line-mode 1)) | #[0 \302\303	\304\305#\210\303	\306\307#\210\303	\310\311#\210\303	\312\313#\210\303	\314\315#\207 [org-mouse-context-menu-function org-agenda-mode-map org-mouse-agenda-context-menu org-defkey [mouse-3] org-mouse-show-context-menu [down-mouse-3] org-mouse-move-tree-start [C-mouse-4] org-agenda-earlier [C-mouse-5] org-agenda-later [drag-mouse-3] #[257 \300!\211\301\267\202 \302\303!\202 \304\303!\202 \305\207 [org-mouse-get-gesture #s(hash-table size 2 test eq rehash-size 1.5 rehash-threshold 0.8125 purecopy t data (:left 9 :right 15)) org-agenda-earlier 1 org-agenda-later nil] 4 |
-
-
-
-
-
-
-
 
 *** DONE org-habit
 CLOSED: [2019-02-12 Tue 13:21]
@@ -678,16 +678,6 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 ** TODO Capture mechanics
 - Note taken on [2019-02-07 Thu 08:24]  \\
   need to clean this up.
-*** Removing timestamp from datetree captures
-:PROPERTIES:
-:ID:       4ED98157-D6D9-463C-BE2B-FAE5DB1FC3C6
-:END:
-#+BEGIN_SRC emacs-lisp
-(setq org-datetree-add-timestamp nil)
-#+END_SRC
-
-#+RESULTS:
-
 *** TODO Doct for org capture templates
 
 **** Install doct
@@ -727,11 +717,18 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 ":END:"
 "%?"))
 
-(defun sr/fun/todo-mail-active ()
+(defun sr/fun/todo-link-active ()
 '("* %doct(todo-state) %a"
 ":PROPERTIES:"
 ":CREATED: %U"
 ":PLANNED: %t"
+":END:"
+"%?"))
+
+(defun sr/fun/todo-link-passive ()
+'("* %a"
+":PROPERTIES:"
+":CREATED: %U"
 ":END:"
 "%?"))
 
@@ -749,7 +746,19 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 
 ***** doct templates
 
-#+BEGIN_SRC emacs-lisp :tangle no
+- [X] Created inactive date for all entries
+- [X] Mail : Active date + mu4e link
+- [X] Mail : Passive date + mu4e link. Meant for general notes and archive.
+- [X] Note : passive date. Generally not refiled.
+- [ ] Note : With active date to be refiled or acted upon.
+  - I am not sure if this makes sense. If action is required, it should
+    be a task.
+- [ ] Link : 
+- [ ] Capture to today's journal
+- [ ] Capture to tomorrow's journal
+- [ ] Capture to current clocked task
+
+#+BEGIN_SRC emacs-lisp :results replace
 (setq org-capture-templates
       (doct '(("Tasks" :keys "t"
                :file "~/my_org/todo-global.org"
@@ -768,12 +777,12 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 			         :file "~/my_org/datascience.org"
                            :headline   "@Datascience @Inbox"
                            :todo-state "TODO"
-			   :template (lambda () (sr/fun/todo-passive)))
+			   :template (lambda () (sr/fun/todo-active)))
                           ("Mail TODO"  :keys "m"
-			         :file "~/my_org/todo-global.org"
-                           :headline   "@Mail"
+			         :file "~/my_org/mail.org"
+                           :headline   "@Mail tasks"
                            :todo-state "TODO"
-			   :template (lambda () (sr/fun/todo-mail-active)))))
+			   :template (lambda () (sr/fun/todo-link-active)))))
 	      ("Notes" :keys "n"
                :file "~/my_org/notes.org"
                :prepend t
@@ -782,23 +791,38 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 			   :keys "n"
 			   :type entry	                       
 			   :headline   "@Notes"
-			    ))))))
+			   )
+			  ("Mail note"
+			   :template (lambda () (sr/fun/todo-link-passive))
+			   :keys "m"
+			   :type entry
+			   :headline "@Mail archive"
+			   :file "~/my_org/mail.org")
+			  ("DS Link note"  :keys "d"
+			         :file "~/my_org/datascience.org"
+                           :headline   "@Datascience @Notes"
+                           :todo-state "TODO"
+			   :template (lambda () (sr/fun/todo-link-passive))))))))
 
 #+END_SRC
 
 #+RESULTS:
-| t  | Tasks      |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                             |
-| tt | Fast TODO  | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast TODO :keys t :type entry :headline @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-active)) :inherited-keys tt :file ~/my_org/todo-global.org :prepend t :doct-custom (:todo-state TODO))       |
-| te | Emacs TODO | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | #'doct--fill-template | :prepend | t | :doct | (:doct-name Emacs TODO :keys e :headline @Emacs notes and tasks :todo-state TODO :template (lambda nil (sr/fun/todo-passive)) :inherited-keys te :file ~/my_org/todo-global.org :prepend t :doct-custom (:todo-state TODO)) |
-| td | DS TODO    | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | #'doct--fill-template | :prepend | t | :doct | (:doct-name DS TODO :keys d :file ~/my_org/datascience.org :headline @Datascience @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-passive)) :inherited-keys td :prepend t :doct-custom (:todo-state TODO))       |
-| tm | Mail TODO  | entry | (file+headline ~/my_org/todo-global.org @Mail)                  | #'doct--fill-template | :prepend | t | :doct | (:doct-name Mail TODO :keys m :file ~/my_org/todo-global.org :headline @Mail :todo-state TODO :template (lambda nil (sr/fun/todo-mail-active)) :inherited-keys tm :prepend t :doct-custom (:todo-state TODO))               |
-| n  | Notes      |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                             |
-| nn | Fast note  | entry | (file+headline ~/my_org/notes.org @Notes)                       | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast note :keys n :type entry :headline @Notes :inherited-keys nn :file ~/my_org/notes.org :prepend t :template (lambda nil (sr/fun/note-passive)))                                                             |
+| t  | Tasks        |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                                 |
+| tt | Fast TODO    | entry | (file+headline ~/my_org/todo-global.org @Inbox)                 | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast TODO :keys t :type entry :headline @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-active)) :inherited-keys tt :file ~/my_org/todo-global.org :prepend t :doct-custom (:todo-state TODO))           |
+| te | Emacs TODO   | entry | (file+headline ~/my_org/todo-global.org @Emacs notes and tasks) | #'doct--fill-template | :prepend | t | :doct | (:doct-name Emacs TODO :keys e :headline @Emacs notes and tasks :todo-state TODO :template (lambda nil (sr/fun/todo-passive)) :inherited-keys te :file ~/my_org/todo-global.org :prepend t :doct-custom (:todo-state TODO))     |
+| td | DS TODO      | entry | (file+headline ~/my_org/datascience.org @Datascience @Inbox)    | #'doct--fill-template | :prepend | t | :doct | (:doct-name DS TODO :keys d :file ~/my_org/datascience.org :headline @Datascience @Inbox :todo-state TODO :template (lambda nil (sr/fun/todo-active)) :inherited-keys td :prepend t :doct-custom (:todo-state TODO))            |
+| tm | Mail TODO    | entry | (file+headline ~/my_org/mail.org @Mail tasks)                   | #'doct--fill-template | :prepend | t | :doct | (:doct-name Mail TODO :keys m :file ~/my_org/mail.org :headline @Mail tasks :todo-state TODO :template (lambda nil (sr/fun/todo-link-active)) :inherited-keys tm :prepend t :doct-custom (:todo-state TODO))                    |
+| n  | Notes        |       |                                                                 |                       |          |   |       |                                                                                                                                                                                                                                 |
+| nn | Fast note    | entry | (file+headline ~/my_org/notes.org @Notes)                       | #'doct--fill-template | :prepend | t | :doct | (:doct-name Fast note :keys n :type entry :headline @Notes :inherited-keys nn :file ~/my_org/notes.org :prepend t :template (lambda nil (sr/fun/note-passive)))                                                                 |
+| nm | Mail note    | entry | (file+headline ~/my_org/mail.org @Mail archive)                 | #'doct--fill-template | :prepend | t | :doct | (:doct-name Mail note :template (lambda nil (sr/fun/todo-link-passive)) :keys m :type entry :headline @Mail archive :file ~/my_org/mail.org :inherited-keys nm :prepend t)                                                      |
+| nd | DS Link note | entry | (file+headline ~/my_org/datascience.org @Datascience @Notes)    | #'doct--fill-template | :prepend | t | :doct | (:doct-name DS Link note :keys d :file ~/my_org/datascience.org :headline @Datascience @Notes :todo-state TODO :template (lambda nil (sr/fun/todo-link-passive)) :inherited-keys nd :prepend t :doct-custom (:todo-state TODO)) |
 
-**** Capture templates
+**** COMMENT Capture templates
     :PROPERTIES:
     :ID:       50f2b318-d9e6-4403-af24-875c662d888d
     :END:
+    - Note taken on [2020-04-02 Thu 01:38] \\
+      This section will be retired soon in favor of using the doct package.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
@@ -867,7 +891,7 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 - Note taken on [2019-02-07 Thu 08:53]  \\
   Needs further review.
 
-Source: http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection
+Source: [[http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection][emacs - hook or advice when aborting org-capture before template selection? - Stack Overflow]]
 
 #+BEGIN_SRC emacs-lisp
 (defadvice org-capture
@@ -893,7 +917,15 @@ Source: http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting
 - Note taken on [2019-03-13 Wed 08:01] \\
   This interferes with org-journal's capture format.
 
-I dislike the way org-capture disrupts my current window, and shows me the capture buffer, and the target buffer as well. I would prefer a small pop up window, and then a revert back to the existing windows once the capture is completed or aborted. However this does not seem possible without modifying Org-mode's source code. This is a workaround described at https://stackoverflow.com/questions/54192239/open-org-capture-buffer-in-specific-Window ,which partially resolves the issue by enabling just a single capture buffer.
+I dislike the way org-capture disrupts my current window, and shows me
+the capture buffer, and the target buffer as well. I would prefer a
+small pop up window, and then a revert back to the existing windows once
+the capture is completed or aborted. However this does not seem possible
+without modifying Org-mode's source code. This is a workaround described
+at
+https://stackoverflow.com/questions/54192239/open-org-capture-buffer-in-specific-Window
+,which partially resolves the issue by enabling just a single capture
+buffer.
 
 #+BEGIN_SRC emacs-lisp :tangle no
 
@@ -1216,34 +1248,6 @@ package provides a more functional interface.
   :straight (bufler :host github :repo "alphapapa/bufler.el")
 :bind ("C-x C-b" . bufler-list))
 #+END_SRC
-
-** Visual Fill Column and global visual line   
-:PROPERTIES:
-:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
-:END:
-I think it makes sense to have the global visual fill column mode active and then have the visual line mode to 
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'visual-fill-column)
-
-;; Putting this into a function because I want these settings called again when a frame is created.
-(defun sr/fun/visual-fill-line()
-(interactive)
-(setq-default fill-column 70)
-(global-visual-line-mode 1)
-;; (visual-fill-column-mode)
-(add-hook 'visual-line-mode-hook #'visual-fill-column-mode))
-;; (add-hook 'visual-fill-column-mode-hook #'visual-line-mode))
-
-;; Placing this function here so that if emacs is run as an bapp - the settings will still be in effect.
-(sr/fun/visual-fill-line)
-
-;; ;; No visual fill column for the agenda
-;; (remove-hook 'org-agenda-mode '(lambda () (setq visual-fill-column-mode nil)))
-#+END_SRC
-
-#+RESULTS:
-| visual-line-mode | visual-fill-column-mode-set-explicitly |
 
 ** Frame settings
 :PROPERTIES:
@@ -2100,11 +2104,12 @@ This is an indispensable tool. The additional options of showing the timestamp a
 : helm-multi-swoop
 
 * Email
-** TODO [#A] mu4e
+** TODO [#A] COMMENT mu4e
 :PROPERTIES:
 :ID:       87453c9b-3981-4097-84e7-e309f867ee46
 :END:
-
+- Note taken on [2020-04-01 Wed 11:49] \\
+  All this content has been transferred to the use package hook.
 - Note taken on [2019-02-12 Tue 14:53] \\
   The use-package documentation specifies a method to do this via use-package itself, without enclosing the whole snippet within a if clause.
 - Note taken on [2019-02-07 Thu 20:43] \\
@@ -2194,6 +2199,9 @@ This is an indispensable tool. The additional options of showing the timestamp a
 			  (:from-or-to . 15)
 			  (:subject . ,(- (window-body-width) 47))
 			  (:size . 7)))))
+
+      (add-hook 'mu4e-view-mode-hook (lambda () (fill-paragraph)))
+      (setq mu4e-view-use-gnus t)
 
       ;; Don't keep asking for confirmation for every action
       (defun my-mu4e-mark-execute-all-no-confirm ()
@@ -2478,8 +2486,6 @@ This is an indispensable tool. The additional options of showing the timestamp a
 :PROPERTIES:
 :ID:       531433C5-5BE0-4377-BBC0-1D6B8EDCA686
 :END:
-
-
 - Note taken on [2020-03-25 Wed 23:33] \\
   For some reason, the basic CSS does not look good. Even though some customisation is done below, it does not appear the font choice is respected. In any case, the size and line height are now acceptable.
 #+BEGIN_SRC emacs-lisp
@@ -3172,20 +3178,22 @@ Gists posted right from emacs.
 #+END_SRC
 
 #+RESULTS:
-* org-id
-:PROPERTIES:
-:ID:       a6dc5f0c-af32-42bd-b342-48be31c8317c
-:END:
+* TODO org-id
 
-Using the org-id for reference to headings ensures that even if the heading changes, the links will still work.
+Using the org-id for reference to headings ensures that even if the
+heading changes, the links will still work.
 
-In addition, I would like an org id to be created every time the capture is used. This facilitates using packages like org-brain which rely extensively on org-id's.
+In addition, I would like an org id to be created every time the capture
+is used. This facilitates using packages like org-brain which rely
+extensively on org-id's.
 
 #+BEGIN_SRC emacs-lisp
   (require 'org-id)
   (setq org-id-link-to-org-use-id t)
-  (org-link-set-parameters "id" :store #'org-id-store-link)
-  (org-link-set-parameters "nb" :store nil)
+  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
+  ;; (org-link-set-parameters "nb" :store nil)
+  (org-link-set-parameters 'nil)
+  ;; (org-link-set-parameters "nb" :store nil)
   ;; ;; Update ID file .org-id-locations on startup
   ;; ;; This adds too much time to startup
   ;; ;; (org-id-update-id-locations)
@@ -3198,7 +3206,7 @@ In addition, I would like an org id to be created every time the capture is used
 
 #+RESULTS:
 : ~/my_org/emacs_meta/.org-id-locations
-* COMMENT Elfeed 
+* COMMENT Elfeed :elfeed:
 - Note taken on [2019-09-25 Wed 14:09] \\
   Scimax's elfeed is enabled, along with elfeed-org and elfeeed-goodies
 - Note taken on [2019-07-08 Mon 08:10] \\
@@ -4453,6 +4461,54 @@ Hello
 
 #+RESULTS:
 
+** Fill column and auto fill
+
+#+BEGIN_SRC emacs-lisp
+(setq-default fill-column 72)
+(global-visual-line-mode 1)
+(add-hook 'text-mode-hook 'auto-fill-mode)
+#+END_SRC
+
+** COMMENT Visual Fill Column and global visual line   
+:PROPERTIES:
+:ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
+:END:
+- Note taken on [2020-04-01 Wed 08:43] \\
+  I have had trouble in using the visual fill column mode. Overall it
+  does what I want it to do, however, some modes simply do not lend
+  themselves very well to the visual fill column mode. Git gutter
+  vanishes for example. Split buffers have a different behaviour from
+  the usual. In general, it seems most people set a default fill column,
+  and a hook for the automatic fill mode and then the global visual line
+  mode.
+
+I think it makes sense to have the global visual fill column mode active
+and then have the visual line mode to
+
+#+BEGIN_SRC emacs-lisp
+;; (straight-use-package 'visual-fill-column)
+
+;; Putting this into a function because I want these settings called
+;; again when a frame is created.
+(defun sr/fun/visual-fill-line()
+(interactive)
+(setq-default fill-column 72)
+(global-visual-line-mode 1)
+;; (visual-fill-column-mode)
+;; (add-hook 'visual-line-mode-hook #'visual-fill-column-mode))
+;; (add-hook 'visual-fill-column-mode-hook #'visual-line-mode))
+
+;; Placing this function here so that if emacs is run as an bapp - the
+;; settings will still be in effect.
+(sr/fun/visual-fill-line)
+
+;; ;; No visual fill column for the agenda (remove-hook 'org-agenda-mode
+;; '(lambda () (setq visual-fill-column-mode nil)))
+#+END_SRC
+
+#+RESULTS:
+| visual-fill-column-mode | visual-line-mode-set-explicitly |
+
 ** COMMENT Doom modeline
 
 - [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
@@ -4611,9 +4667,8 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+RESULTS:
 : Loaded /Users/shrysr/.emacs.d/sr-secrets.org.el
 
-* Testing Area
+* COMMENT Testing Area
 :PROPERTIES:
-:header-args: :tangle no
 :END:
 
 This section will be the place where all new packages and their settings make an entrance. In short the test will be that they are not activated by default and if I seek out the package, that would mean I find it useful to include in my main configuration.
@@ -4651,6 +4706,131 @@ Perhaps this package can extended as some tool belt of org utilities. Some ideas
 | 0 | headline  |           |       |                 |
 | 1 | paragraph | src-block | table | property-drawer |
 
+** Hugo
+*** TODO Function to create specific properties for a blog post
+Modified this function from:
+
+**** TODO Defining content directory
+:PROPERTIES:
+:ID:       3a7485ab-33cf-4e94-ac93-7063db94a094
+:END:
+- Note taken on [2019-02-07 Thu 08:06]  \\
+  Need to check if this is still required since I have switche to ox-hugo
+
+#+BEGIN_SRC emacs-lisp
+(defvar hugo-content-dir "~/my_gits/hugo-sr/content/post/"
+  "Path to Hugo's content directory")
+#+END_SRC
+
+**** Ensuring properties exist and creating if they dont exist
+:PROPERTIES:
+:ID:       e5a99a03-c3da-420c-ae9c-9ac6e50ecbdf
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun hugo-ensure-property (property)
+  "Make sure that a property exists. If not, it will be created.
+Returns the property name if the property has been created, otherwise nil."
+  (org-id-get-create)
+  (if (org-entry-get nil property)
+      nil
+    (progn (org-entry-put nil property "")
+           property)))
+
+(defun hugo-ensure-properties ()
+
+  (require 'dash)
+  (let ((current-time (format-time-string
+                       (org-time-stamp-format t t) (org-current-time)))
+        first)
+    (save-excursion
+      (setq first (--first it (mapcar #'hugo-ensure-property
+                                      '("HUGO_TAGS" "HUGO_CATEGORIES"))))
+      (unless (org-entry-get nil "HUGO_DATE")
+        (org-entry-put nil "EXPORT_DATE" current-time)))
+    (org-entry-put nil "EXPORT_FILE_NAME" (org-id-get-create))
+    (org-entry-put nil "EXPORT_HUGO_CUSTOM_FRONT_MATTER" ":profile false")
+    (when first
+      (goto-char (org-entry-beginning-position))
+      ;; The following opens the drawer
+      (forward-line 1)
+      (beginning-of-line 1)
+      (when (looking-at org-drawer-regexp)
+        (org-flag-drawer nil))
+      ;; And now move to the drawer property
+      (search-forward (concat ":" first ":"))
+      (end-of-line))
+    first))
+#+END_SRC
+
+#+RESULTS:
+: hugo-ensure-properties
+
+**** Hugo function calling the above
+:PROPERTIES:
+:ID:       c677537c-c70b-4be9-b91a-40bc283d5f40
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun hugo ()
+  (interactive)
+  (unless (hugo-ensure-properties)
+    (let* ((type    (concat "type = \"" (org-entry-get nil "HUGO_TYPE") "\"\n"))
+           (date     (concat "date = \""
+                             (format-time-string "%Y-%m-%d"
+                                                 (apply 'encode-time
+                                                        (org-parse-time-string
+                                                         (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
+           (tags     (concat "tags = [ \""
+                             (mapconcat 'identity
+                                        (split-string
+                                         (org-entry-get nil "HUGO_TAGS")
+                                         "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+           (fm (concat "+++\n"
+                       title
+		       type
+                       date
+                       tags
+                       topics
+                       "+++\n\n"))
+           (coding-system-for-write buffer-file-coding-system)
+           (backend  'md)
+           (blog))
+      ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
+      (if (require 'ox-gfm nil t)
+          (setq backend 'gfm)
+        (require 'ox-md))
+      (setq blog (org-export-as backend t))
+      ;; Normalize save file path
+      (unless (string-match "^[/~]" file)
+        (setq file (concat hugo-content-dir file))
+        (unless (string-match "\\.md$" file)
+          (setq file (concat file ".md")))
+        ;; save markdown
+        (with-temp-buffer
+          (insert fm)
+          (insert blog)
+          (untabify (point-min) (point-max))
+          (write-file file)
+          (message "Exported to %s" file))))))
+#+END_SRC
+
+#+RESULTS:
+: hugo
+
+*** ox-hugo setup
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-hugo
+  :ensure t
+  :after ox
+  :custom
+  (org-hugo--tag-processing-fn-replace-with-hyphens-maybe t)
+(require 'ox-hugo)
+  )
+#+END_SRC
+
+#+RESULTS:
 ** STABLE Pinboard [1/2]
 CLOSED: [2020-01-19 Sun 14:33]
 :PROPERTIES:
@@ -5028,14 +5208,28 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
   (setq org-confirm-elisp-link-function nil))
 #+END_SRC
 
-* Disabled
+* COMMENT Disabled
 :PROPERTIES:
-:header-args: :tangle no
 :ID:       50D44546-9A06-4F1D-A582-FAD07286D962
+:LINK:     [[nb:.emacs.d::emacs-config.org::c154188]]
 :END:
 
 These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
+** COMMENT Removing timestamp from datetree captures
+:PROPERTIES:
+:ID:       4ED98157-D6D9-463C-BE2B-FAE5DB1FC3C6
+:END:
+- Note taken on [2020-04-02 Thu 01:39] \\
+  This was needed due to some setting in scimax or an org mode
+  update. This is being disabled for the timebeing since I am not using a
+  date tree for capture.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-datetree-add-timestamp nil)
+#+END_SRC
+
+#+RESULTS:
 ** Theme : Poet
 - Note taken on [2020-03-22 Sun 12:41] \\
   Apparently, with a high gloss screen, it makes no difference whether the theme is light or dark. The distracting reflection still exists. Interestingly enough, the macbook pro screen does not reflect much under the same conditions and position with respect to light source.
@@ -7658,5 +7852,6 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
   :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
 #+END_SRC
+
 
 
