@@ -701,24 +701,22 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 :ID:       CC7C84DE-AFEF-4E44-9B5B-056DFA58AF5B
 :END:
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp  
 (defun sr/fun/todo-active ()
-'("* %doct(todo-state) %^{Description}"
+'("* %{todo-state} %?"
 ":PROPERTIES:"
 ":CREATED: %U"
 ":PLANNED: %t"
-":END:"
-"%?"))
+":END:"))
 
 (defun sr/fun/todo-passive ()
-'("* %doct(todo-state) %^{Description}"
+'("* %{todo-state} %?"
 ":PROPERTIES:"
 ":CREATED: %U"
-":END:"
-"%?"))
+":END:"))
 
 (defun sr/fun/todo-link-active ()
-'("* %doct(todo-state) %a"
+'("* %{todo-state} %a"
 ":PROPERTIES:"
 ":CREATED: %U"
 ":PLANNED: %t"
@@ -733,11 +731,10 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 "%?"))
 
 (defun sr/fun/note-passive ()
-'("* %^{Description}"
+'("* %?"
 ":PROPERTIES:"
 ":CREATED: %U"
-":END:"
-"%?"))
+":END:"))
 
 #+END_SRC
 
@@ -882,12 +879,13 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 | l  | Link/Snippet      | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | ** %? %a         |
 | e  | Protocol info     | entry | (file+headline ~/my_org/link_database.org .UL Unfiled Links)    | *** %a,          |
 
-*** TEST Closing org-capture frame on abort
+*** Closing org-capture frame on abort
     :PROPERTIES:
     :ID:       1f79f2ff-2185-451d-8485-8f11c7b1de41
     :END:
 - Note taken on [2019-03-13 Wed 07:35] \\
-  This basically ensures a clean exit in case of aborting a capture.
+  This basically ensures a clean exit in case of aborting a capture, and
+  also maintains buffer configuration on going ahead with the capture.
 - Note taken on [2019-02-07 Thu 08:53]  \\
   Needs further review.
 
