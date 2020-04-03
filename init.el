@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t -*-
 (setq-default lexical-binding t)
 
+(setq gc-cons-threshold 50000000)
+
  (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
  (bootstrap-version 3))
  (unless (file-exists-p bootstrap-file)
