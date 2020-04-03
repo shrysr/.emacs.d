@@ -121,6 +121,11 @@ construct.
    #+END_SRC
 
 ** Garbage collection
+- Note taken on [2020-04-02 Thu 22:11] \\
+  This seems to have reduced my init time by 50% ! From ~7 seconds to
+  3.5s at the moment. This is found from (emacs-init-time). This is
+  probably the fastest init time I have ever had.
+
 Reference: [[https://github.com/wasamasa/dotemacs/blob/master/init.org#memory-management][dotemacs/init.org at master · wasamasa/dotemacs · GitHub]]
 
 - [ ] There are additional options that can be tried on this
@@ -4417,6 +4422,8 @@ scimax-ipython upstream
 (setq modus-operandi-theme-scale-headings t)
 (setq modus-operandi-theme-proportional-fonts t)
 (setq modus-operandi-theme-slanted-constructs t)
+(setq modus-operandi-theme-visible-fringes t)
+(setq modus-operandi-theme-distinct-org-blocks t)
 (load-theme 'modus-operandi t))
 
 ;; These are placed here for ready reference
