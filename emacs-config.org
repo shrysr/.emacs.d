@@ -2965,12 +2965,17 @@ Adapted from ldlework
 #+END_SRC
 
 * TODO Hydra Hera and nougat
+
+This hydra setup is based off hera and nougat, which are packages
+available in [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]. I've essentially adapted, modified and
+expanded his setup. These cool packages make defining hydras a little
+easier, especially in a stack.
 ** hera
 :PROPERTIES:
 :ID:       E6516FB9-DC4A-44EC-98F9-8A2420F2B219
 :END:
 
-ldlewell's package that provides an API for defining a stack of hydras. 
+ldlework's package that provides an API for defining a stack of hydras. 
 
 #+BEGIN_SRC emacs-lisp
 (use-package hera
@@ -3061,6 +3066,9 @@ collect hint) "\n"))
 :PROPERTIES:
 :ID:       83B2E03A-A2DF-468B-9004-C36FDA0FAE9C
 :END:
+- Note taken on [2020-04-04 Sat 17:17] \\
+  I still need to integrate these hydras with scimax hydras and figure out
+  a good key for the exit.
 
 #+BEGIN_SRC emacs-lisp
 (defun my/hydra-dwim ()
@@ -3069,7 +3077,7 @@ collect hint) "\n"))
 (if mode (major-mode-hydra)
 (hera-start 'hydra-default/body))))
 
-(setq kbd-hera-pop "<f12>")
+(setq kbd-hera-pop "Q")
 (global-set-key (kbd "M-s p") 'my/hydra-dwim)
 (global-set-key (kbd "M-s p") (lambda () (interactive) (hera-start 'hydra-default/body)))
 
@@ -3078,7 +3086,7 @@ collect hint) "\n"))
 #+RESULTS:
 | lambda | nil | (interactive) | (hera-start 'hydra-default/body) |
 
-** hydra default
+** hydra-default
 :PROPERTIES:
 :ID:       76AD6939-FBF3-40A1-8AAB-31355ED12259
 :END:
@@ -3091,8 +3099,9 @@ Entrypoint Hydra
 
 "
 ("a" (org-agenda nil "a") "agenda" :column "Open")
-("p" (hera-push 'hydra-projectile/body) "projectile")
+;; ("p" (hera-push 'hydra-projectile/body) "projectile")
 ("c" (org-capture) "capture")
+("t" (hera-push 'hydra-treemacs/body))
 ("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
 ("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
 ("m" (hera-push 'hydra-mu4e/body) "mail")
@@ -3109,7 +3118,7 @@ Entrypoint Hydra
 
 #+RESULTS:
 : hydra-default/body
-** straight-hydra
+** hydra-straight
 :PROPERTIES:
 :ID:       6CAF1975-F604-41AB-B402-27F3461D068C
 :END:
@@ -3143,7 +3152,7 @@ Entrypoint Hydra
 #+END_SRC
 
 #+RESULTS:
-** mu4e-hydra
+** hydra-mu4e
 :PROPERTIES:
 :ID:       C319B9EC-65A6-48B9-B89D-849C866CA4B9
 :END:
@@ -3155,7 +3164,7 @@ Entrypoint Hydra
 #+END_SRC
 
 #+RESULTS:
-** pyvenv-hydra
+** hydra-pyvenv
 :PROPERTIES:
 :ID:       52E4B983-F0A4-433B-B2DC-A464127E8933
 :END:
@@ -3173,6 +3182,85 @@ Entrypoint Hydra
 #+END_SRC
 
 #+RESULTS:
+
+** hydra-window
+
+Source : [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]
+
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window)
+(winner-mode 1)
+
+(nougat-hydra hydra-window (:color red)
+("Jump"
+(("h" windmove-left "left")
+("l" windmove-right "right")
+("k" windmove-up "up")
+("j" windmove-down "down")
+("a" ace-select-window "ace"))
+"Split"
+(("q" split-window-right "left")
+("r" (progn (split-window-right) (call-interactively 'other-window)) "right")
+("e" split-window-below "up")
+("w" (progn (split-window-below) (call-interactively 'other-window)) "down"))
+"Do"
+(("d" delete-window "delete")
+("o" delete-other-windows "delete others")
+("u" winner-undo "undo")
+("R" winner-redo "redo")
+("t" nougat-hydra-toggle-window "toggle"))))
+#+END_SRC
+
+Toggle window split
+
+#+BEGIN_SRC emacs-lisp
+(defun my/toggle-window-split (&optional arg)
+"Switch between 2 windows split horizontally or vertically.
+With ARG, swap them instead."
+(interactive "P")
+(unless (= (count-windows) 2)
+(user-error "Not two windows"))
+;; Swap two windows
+(if arg
+(let ((this-win-buffer (window-buffer))
+(next-win-buffer (window-buffer (next-window))))
+(set-window-buffer (selected-window) next-win-buffer)
+(set-window-buffer (next-window) this-win-buffer))
+;; Swap between horizontal and vertical splits
+(let* ((this-win-buffer (window-buffer))
+(next-win-buffer (window-buffer (next-window)))
+(this-win-edges (window-edges (selected-window)))
+(next-win-edges (window-edges (next-window)))
+(this-win-2nd (not (and (<= (car this-win-edges)
+(car next-win-edges))
+(<= (cadr this-win-edges)
+(cadr next-win-edges)))))
+(splitter
+(if (= (car this-win-edges)
+(car (window-edges (next-window))))
+'split-window-horizontally
+'split-window-vertically)))
+(delete-other-windows)
+(let ((first-win (selected-window)))
+(funcall splitter)
+(if this-win-2nd (other-window 1))
+(set-window-buffer (selected-window) this-win-buffer)
+(set-window-buffer (next-window) next-win-buffer)
+(select-window first-win)
+(if this-win-2nd (other-window 1))))))
+#+END_SRC
+
+** hydra-treemacs
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-treemacs (:color red)
+("Workspace"
+(("t" treemacs "Treemacs buffer")
+("o" treemacs-switch-workspace "open")
+("n" treemacs-create-workspace "new")
+("k" treemacs-delete-workspace "kill")
+("r" treemacs-rename-workspace "rename"))))
+#+END_SRC
 
 * Pastes
 :PROPERTIES:
