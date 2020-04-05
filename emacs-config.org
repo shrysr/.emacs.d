@@ -1,4 +1,4 @@
-#+PROPERTY: header-args :tangle ./dotemacs.el
+#+PROPERTY: header-args :results silent :tangle ./dotemacs.el 
 #+TITLE: shrysr's Dotemacs
 
 * Introduction
