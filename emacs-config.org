@@ -59,14 +59,14 @@ General notes:
 
 ** TODO Inspirations (and other literate configurations)
 
+- [[http://doc.norang.ca/org-mode.html][Bernt Hansen's very detailed Org-mode config]]
+- [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]]
+- [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Mathieu Marques]]
+- [[https://writequit.org/org/][Lee Hinman]]
+- [[https://karl-voit.at/2017/06/03/emacs-org/][Karl Voit]]
 - [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
 - [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
 - [[https://github.com/IvanMalison/dotfiles][GitHub - IvanMalison/dotfiles: Configuration files for XMonad, Emacs, NixOS, Taffybar and more.]]
-- [[https://karl-voit.at/2017/06/03/emacs-org/][Karl Voit]]
-- [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org][Mathieu Marques]]
-- [[https://writequit.org/org/][Lee Hinman]]
-- [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]]
-- [[http://doc.norang.ca/org-mode.html][Bernt Hansen's very detailed Org-mode config]]
 
 In general - code and snippet source references are added as and when
 possible though this is a tedius task for those with configurations
@@ -4501,6 +4501,7 @@ scimax-ipython upstream
 :ID:       1F5F41EC-6BDA-46BC-B1E6-DED28B899196
 :END:
 
+*** modus operandi
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'modus-operandi-theme)
 
@@ -4524,6 +4525,29 @@ scimax-ipython upstream
 
 #+RESULTS:
 : t
+
+*** COMMENT modus vivendi
+
+#+BEGIN_SRC emacs-lisp  
+(straight-use-package 'modus-vivendi-theme)
+
+(use-package modus-vivendi-theme
+:straight t
+:config
+(setq modus-vivendi-theme-scale-headings t)
+(setq modus-vivendi-theme-proportional-fonts t)
+(setq modus-vivendi-theme-slanted-constructs t)
+(setq modus-vivendi-theme-visible-fringes t)
+(setq modus-vivendi-theme-distinct-org-blocks t)
+(load-theme 'modus-vivendi t))
+
+;; These are placed here for ready reference
+;; (setq modus-vivendi-theme-scale-1 1.05)
+;; (setq modus-vivendi-theme-scale-2 1.1)
+;; (setq modus-vivendi-theme-scale-3 1.15)
+;; (setq modus-vivendi-theme-scale-4 1.2)
+
+#+END_SRC
 
 ** Font and other aesthetics
 *** COMMENT Old config
@@ -4659,9 +4683,6 @@ and then have the visual line mode to
     '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
 
 #+END_SRC
-
-#+RESULTS:
-| doom-modeline-mode | #[0 \303\211\235\203 \304"\301\305!\210\210	\205 \306 \210\307\211\207 [command-line-args desktop-save-mode inhibit-startup-screen --no-desktop delete 0 desktop-read t] 4] | tramp-register-archive-file-name-handler | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version | table--make-cell-map |
 
 ** COMMENT Org Aesthetics Headline scales
 - Note taken on [2020-03-28 Sat 19:56] \\
