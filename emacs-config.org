@@ -987,6 +987,27 @@ buffer.
 #+END_SRC
 
 #+RESULTS:
+
+** TODO Refile mechanics
+
+*** Refile target level
+
+#+BEGIN_SRC emacs-lisp
+(setq org-refile-targets
+      '((nil :maxlevel . 3)
+        (org-agenda-files :maxlevel . 2)))
+#+END_SRC
+
+*** General refiling settings
+
+#+BEGIN_SRC emacs-lisp
+(setq org-refile-use-outline-path 'file)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-reverse-note-order t)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+#+END_SRC
+
+
 ** org-source-window split setup
 :PROPERTIES:
 :ID:       34171B48-C042-4CB4-959A-75DECE5F4DC2
