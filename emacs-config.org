@@ -763,10 +763,33 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 
 #+RESULTS:
 : 90
+** Archiving mechanics
+
+- Note taken on [2020-04-06 Mon 23:27] \\
+  I prefer to keep my archived files in a separate folder to promote a
+  cleaner look and less files in the main org directory. The earlier
+  archive file used to replicate the structure of the file where the entry
+  was archived from. However, I have realised that the properties of
+  archived entries provide all the information that I would need from an
+  archived file. 
+  
+  Projects may require a separate approach. Perhaps archived subtrees
+  would help in that case. For general GTD based workflows, the simple
+  approach of archiving under a 'Archive' heading seems sufficient. This
+  will also mark the difference between using this approach and the
+  earlier complete replication.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-archive-mark-done nil)
+(setq org-archive-location (sr/fun/org-dir "archive/%s_archive::* Archive"))
+#+END_SRC
+
 ** TODO Capture mechanics
 - Note taken on [2019-02-07 Thu 08:24]  \\
   need to clean this up.
 *** TODO Doct for org capture templates
+
+[[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At the moment, I am interested in adding hooks to specific functions and improving the entire capture process.
 
 **** Install doct
 :PROPERTIES:
