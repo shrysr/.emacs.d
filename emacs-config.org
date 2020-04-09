@@ -54,7 +54,20 @@ never get inserted into the el files that are loaded during init.
 The better method to disable tangling of specific blocks would be to
 comment out Org headings. It should also be possible to have a setup
 wherein headings with specific tags are not tangled, similar to the
-noexport tag option with typical org exports.
+noexport tag option with typical org exports. The caveat of using this
+option is that these headings will be neglected in an export to say,
+something like a Hugo document. 
+
+Package management is done via the interesting straight.el. There are
+other approaches like borg, using quelpa and so on that I have not
+tried. However, the point is that it is better to rely on git to draw
+packages rather than MELPA, which can be frustrating at times.
+
+The last 2 headlines contain a 'Testing Area' and 'Disabled'
+headline. This contains all the packages that are yet to be a part of my
+main setup, or packages that I use occasionally and activate when I
+need to. These are available in the raw org file in the repository of
+the configuration.
 
 General notes:
 - I was initially using a single init.org file that tangled to an
@@ -67,7 +80,10 @@ General notes:
   workflow is still erratic. Sometimes, there is no change in code, but
   just some additional notes to the configuration. 
 
-** TODO Inspirations (and other literate configurations)
+** Inspirations (and other literate configurations)
+
+This is a growing and non-comprehensive list of configurations that I
+admire and have liberally copied from in constructing my own.
 
 - [[http://doc.norang.ca/org-mode.html][Bernt Hansen's very detailed Org-mode config]]
 - [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua]]
@@ -85,22 +101,22 @@ under a great rate of flux.
 ** TODO Packages I've found very useful
 
 Though I'm using a huge number of packages - this list reflects the
-absolute core that I consider to be essential to my current /daily/ workflow.
+absolute core that I consider to be essential to my current /daily/
+workflow. This list is being formulated so that I can develop a minimal
+Emacs config that can be used for a rapid setup on a headless server.
 
 1. org-download
 2. org-web-tools
 3. org-ref
-4. org-brain
-5. poly-brain
-6. treemacs
-7. eyebrowse
-8. projectile
-9. org-projectile
-10. counsel + ivy + swiper
-11. Helm (some functions)
-12. magit
-13. hydra (and other variants)
-14. straight.el
+4. treemacs
+5. eyebrowse
+6. projectile
+7. org-projectile
+8. counsel + ivy + swiper
+9. Helm (some functions)
+10. magit
+11. hydra (and other variants)
+12. straight.el
 
 * Init setup
 :PROPERTIES:
