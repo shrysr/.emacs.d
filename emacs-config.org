@@ -1,4 +1,14 @@
 #+PROPERTY: header-args :results silent :tangle ./dotemacs.el 
+#+toc: t
+#+hugo_base_dir: ~/hugo-sr/
+#+hugo_section: docs
+#+hugo_auto_set_lastmod: t
+#+author: Shreyas Ragavan
+#+hugo_tags: Emacs config dotemacs
+#+hugo_categories: Emacs
+#+hugo_menu: :menu "docs" :weight 2001 :parent "Emacs"
+#+hugo_custom_front_matter: :linktitle Dotemacs - Emacs config  :toc true
+#+hugo_draft: false
 #+TITLE: shrysr's Dotemacs
 
 * Introduction
