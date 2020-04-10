@@ -151,19 +151,18 @@ construct.
   As the doom emacs FAQ states - the GC collection has to be set back to
   normal as well.
 - Note taken on [2020-04-02 Thu 22:11] \\
-  This seems to have reduced my init time by 50% ! From ~7 seconds to
-  3.5s at the moment. This is found from (emacs-init-time). This is
-  probably the fastest init time I have ever had.
+  Just increasing teh gc threshold seems to have reduced my init time by
+  50% ! From ~7 seconds to 3.5s at the moment. This is found from
+  (emacs-init-time). This is probably the fastest init time I have ever
+  had.
 
 References:
 - [[https://github.com/wasamasa/dotemacs/blob/master/init.org#memory-management][dotemacs/init.org at master · wasamasa/dotemacs · GitHub]]
 - [[https://github.com/hlissner/doom-emacs/blob/665b627b7c07c8d29ec8d334588cecc2ba308248/docs/faq.org#how-does-doom-start-up-so-quickly][doom-emacs/faq.org  · hlissner/doom-emacs · GitHub]]
 
-
 - [ ] There are additional options that can be tried on this
   subject. Like garbage collection when focus is lost from
-  Emacs. However, this option should speed up init by reducing the
-  number of times garbage collection takes place. 
+  Emacs. The doom docs claim this is done via the gcmh package.
 
 #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
@@ -183,7 +182,8 @@ References:
   ;; Defer it so that commands launched immediately after will enjoy the
   ;; benefits.
   (run-at-time
-   1 nil (lambda () (setq gc-cons-threshold doom-gc-cons-threshold))))
+   1 nil (lambda () (setq gc-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage 0.1) )))
 
 (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
 (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
