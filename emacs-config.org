@@ -5572,6 +5572,43 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
 
 These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
+** Archival Retain file structure
+- Note taken on [2020-04-05 Sun 08:57] \\
+  Apparently, a new org version does not have the org-extract-archive-file
+  function any more. Otherwise, this was my earlier preferred
+  method. However, over time, as the structure of files change, there is
+  no real point in preserving the structure as it is. In any case the
+  properties of archived entries generally contain enough information to
+  re-construct the org entry. 
+
+Archive organised by Top level headings in the original file and with Tag preservation
+
+#+BEGIN_SRC emacs-lisp
+
+(defun my-org-inherited-no-file-tags ()
+  (let ((tags (org-entry-get nil "ALLTAGS" 'selective))
+        (ltags (org-entry-get nil "TAGS")))
+    (mapc (lambda (tag)
+            (setq tags
+                  (replace-regexp-in-string (concat tag ":") "" tags)))
+          (append org-file-tags (when ltags (split-string ltags ":" t))))
+    (if (string= ":" tags) nil tags)))
+
+(defadvice org-archive-subtree (around my-org-archive-subtree-low-level activate)
+  (let ((tags (my-org-inherited-no-file-tags))
+        (org-archive-location
+         (if (save-excursion (org-back-to-heading)
+                             (> (org-outline-level) 1))
+             (concat (car (split-string org-archive-location "::"))
+                     "::* "
+                     (car (org-get-outline-path)))
+           org-archive-location)))
+    ad-do-it
+    (with-current-buffer (find-file-noselect (org-extract-archive-file))
+      (save-excursion
+        (while (org-up-heading-safe))
+        (org-set-tags-to tags)))))
+#+end_src
 ** ag.el
 - Note taken on [2020-03-30 Mon 18:06] \\
   Though helm-do-ag is avialable, this appears to be a separate ag implementation that does not required the separate silver searcher program to be installed in the system. This remains to be verified.
@@ -5952,52 +5989,6 @@ Okay. The above works. It occurs to me that I could include the paths as a list 
 ;; Bind this to a reasonable key
 (define-key org-capture-mode-map "\C-c\C-t" 'mrb/add-tags-in-capture)
 #+end_src
-
-** Org journal
-- Note taken on [2020-02-22 Sat 10:58] \\
-  I've been using scimax journal for several months now, as it has some defaults which suit my current workflow. However, org-journal does have a bunch of nifty features that I want to try and port to scimax.
-
-*** Base config
-:PROPERTIES:
-:ID:       d65645d1-aba7-4fde-b8c0-0755254e0f2b
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-journal
-  :ensure t
-  :defer t
-  :custom
-  (org-journal-dir "~/my_org/journal/")
-  (org-journal-file-format "%Y%m%d")
-  (org-journal-enable-agenda-integration t)
-  )
-#+end_src
-
-#+RESULTS:
-: t
-
-*** setting org-capture template for Journal
-    :PROPERTIES:
-    :ID:       5fbcf96a-d366-485a-aafc-23b29b3ff497
-    :END:
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(defun org-journal-find-location ()
-  ;; Open today's journal, but specify a non-nil prefix argument in order to
-  ;; inhibit inserting the heading; org-capture will insert the heading.
-  (org-journal-new-entry t)
-  ;; Position point on the journal's top-level heading so that org-capture
-  ;; will add the new entry as a child entry.
-  (goto-char (point-min)))
-#+END_SRC
-
-#+RESULTS:
-: org-journal-find-location
-
-*** TODO Figure out easy encryption approach for org journal
-:PROPERTIES:
-:CREATED:  <2019-02-07 Thu 13:51>
-:END:
 
 ** TEST Enabling org capture and org protocol
 :PROPERTIES:
