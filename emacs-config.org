@@ -3140,12 +3140,21 @@ Adapted from ldlework
   (helm-do-ag (sr/fun/org-dir "")))
 #+END_SRC
 
+** Journal files search
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/org-journal-search ()
+  (interactive)
+  (helm-do-ag (sr/fun/org-dir "journal")))
+#+END_SRC
+
+
 * TODO Hydra Hera and nougat
 
 This hydra setup is based off hera and nougat, which are packages
-available in [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]. I've essentially adapted, modified and
-expanded his setup. These cool packages make defining hydras a little
-easier, especially in a stack.
+available in [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]. I've adapted, modified and expanded his
+setup. These cool packages make defining hydras a little easier,
+especially in a stack.
 ** hera
 :PROPERTIES:
 :ID:       E6516FB9-DC4A-44EC-98F9-8A2420F2B219
@@ -3254,8 +3263,8 @@ collect hint) "\n"))
 (hera-start 'hydra-default/body))))
 
 (setq kbd-hera-pop "Q")
-(global-set-key (kbd "M-s p") 'my/hydra-dwim)
-(global-set-key (kbd "M-s p") (lambda () (interactive) (hera-start 'hydra-default/body)))
+(global-set-key (kbd "H-l") 'my/hydra-dwim)
+(global-set-key (kbd "H-l") (lambda () (interactive) (hera-start 'hydra-default/body)))
 
 #+END_SRC
 
@@ -3288,7 +3297,8 @@ Entrypoint Hydra
 ("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
-("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python"))
+("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
+("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily"))
 
 #+END_SRC
 
