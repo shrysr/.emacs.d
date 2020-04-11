@@ -1171,6 +1171,69 @@ buffer.
 #+RESULTS:
 : t
 
+* Org journal
+- Note taken on [2020-04-10 Fri 17:29] \\
+  Scimax journal has the benefit of being well integrated with Scimax. The
+  other benefit is being able to have journal files within a
+  folder. However, for the journal to be included into GTD workflow and
+  not just a scratch pad, the org-journal package offers a lot more out of
+  the box. I see from the documentation that is also possible now to have
+  a weekly, daily or yearly journal. In addition, the agenda integration
+  simplifies things in terms of tracking what I am doing and then refiling
+  the entries into appropriate locations.
+- Note taken on [2020-02-22 Sat 10:58] \\
+  I've been using scimax journal for several months now, as it has some
+  defaults which suit my current workflow. However, org-journal does
+  have a bunch of nifty features that I want to try and port to scimax.
+
+** Base config
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-journal
+  :ensure t
+  :defer t
+:config
+(defun org-journal-file-header-func (time)
+  "Custom function to create journal header."
+  (concat
+    (pcase org-journal-file-type
+      (`daily "#+TITLE: Daily Journal\n#+STARTUP: showeverything")
+      (`weekly "#+TITLE: Weekly Journal\n#+STARTUP: folded")
+      (`monthly "#+TITLE: Monthly Journal\n#+STARTUP: folded")
+      (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded"))))
+  :custom
+  (org-journal-dir "~/my_org/journal/")
+  (org-journal-file-format "%Y/%m/%Y-%m-%d.org")
+  (org-journal-enable-agenda-integration t)
+  (org-journal-date-format "%A, %d %B %Y")
+  (org-journal-file-type 'daily) ;; Set this explicitly, even though the default is daily.
+  (org-journal-file-header 'org-journal-file-header-func))
+#+end_src
+
+#+RESULTS:
+: t
+
+** TODO org-capture template for Journal
+ 
+#+BEGIN_SRC emacs-lisp :tangle no
+(defun org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+  (org-journal-new-entry t)
+  ;; Position point on the journal's top-level heading so that org-capture
+  ;; will add the new entry as a child entry.
+  (goto-char (point-min)))
+#+END_SRC
+
+#+RESULTS:
+: org-journal-find-location
+
+** TODO Figure out easy encryption approach for org journal
+:PROPERTIES:
+:CREATED:  <2019-02-07 Thu 13:51>
+:END:
+
 * Crypto
 
 ** Basic crypto
