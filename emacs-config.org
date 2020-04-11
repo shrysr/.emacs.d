@@ -1094,6 +1094,20 @@ buffer.
 #+BEGIN_SRC emacs-lisp
 (setq org-src-window-setup 'split-window-right)
 #+END_SRC
+
+** Log done
+
+#+BEGIN_SRC emacs-lisp
+(setq org-log-done 'time)
+#+END_SRC
+
+** TODO Shortcuts (to be replaced via hydra)
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c d") 'org-time-stamp)
+(global-set-key (kbd "M-s s") 'org-save-all-org-buffers)
+#+END_SRC
+
 * Temporary package list
 :PROPERTIES:
 :ID:       491FD99B-040E-41AF-93E3-E35D63FC38A9
