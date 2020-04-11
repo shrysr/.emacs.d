@@ -3371,7 +3371,10 @@ Entrypoint Hydra
 
 ** hydra-window
 
-Source : [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]
+- Note taken on [2020-04-08 Wed 12:34] \\
+  For some reason, ace commands for windows ask for a 2nd number even with
+  only 2 windows in the frame. This may be because the buffer is open in
+  another frame as well. THis has to be fixed.
 
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window)
@@ -3383,7 +3386,8 @@ Source : [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]
 ("l" windmove-right "right")
 ("k" windmove-up "up")
 ("j" windmove-down "down")
-("a" ace-select-window "ace"))
+("a" ace-select-window "ace")
+("s" ace-swap-window "ace-swap"))
 "Split"
 (("q" split-window-right "left")
 ("r" (progn (split-window-right) (call-interactively 'other-window)) "right")
@@ -3446,6 +3450,21 @@ With ARG, swap them instead."
 ("n" treemacs-create-workspace "new")
 ("k" treemacs-delete-workspace "kill")
 ("r" treemacs-rename-workspace "rename"))))
+#+END_SRC
+
+** hydra-journal
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-journal (:color blue)
+("Workspace"
+(("j"  org-journal-new-entry "Entry")
+("n" org-journal-next-entry "Next entry")
+("p" org-journal-previous-entry "Previous entry")
+("S" org-journal-new-scheduled-entry "Future scheduled")
+("s" sr/fun/org-journal-search "Journal search")
+("r" treemacs-rename-workspace "rename"))))
+
+(global-set-key (kbd "H-j") (lambda () (interactive) (hera-start 'hydra-journal/body)))
 #+END_SRC
 
 * Pastes
@@ -4603,10 +4622,12 @@ Use a prefix arg to get regular RET. "
 #+RESULTS:
 : scimax-notebook
 
-** scimax-journal
+** COMMENT scimax-journal
 :PROPERTIES:
 :ID:       61A12586-DAA7-4601-92F3-DD688B9725D5
 :END:
+- Note taken on [2020-04-10 Fri 18:37] \\
+  Switching back to org-journal
 
 #+BEGIN_SRC emacs-lisp
 (use-package scimax-journal
