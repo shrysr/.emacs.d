@@ -814,8 +814,6 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+END_SRC
 
 ** TODO Capture mechanics
-- Note taken on [2019-02-07 Thu 08:24]  \\
-  need to clean this up.
 *** TODO Doct for org capture templates
 
 [[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At the moment, I am interested in adding hooks to specific functions and improving the entire capture process.
@@ -832,14 +830,19 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+RESULTS:
 : t
 
-**** Capture templates using the doct package
-
-[[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At the moment, I am interested in adding hooks to specific functions and improving the entire capture process.
-
-***** Defining doct template supporting functions 
+**** doct functions 
 :PROPERTIES:
 :ID:       CC7C84DE-AFEF-4E44-9B5B-056DFA58AF5B
 :END:
+
+- Note taken on [2020-04-12 Sun 11:42] \\
+  It seems easier to prompt for a date with respect to active dates. The
+  default date is today, and there requires just another RET to select
+  today. The prompt ensures being able to cater to tasks that definitely
+  belong tomorrow or another date down the line. Without a template, an
+  additional refile, or schedule, or manipulation in the capture window
+  is required. This approach seems to cater to more situations in a
+  standard manner.
 
 #+BEGIN_SRC emacs-lisp  
 (defun sr/fun/todo-act-today ()
@@ -847,6 +850,13 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 ":PROPERTIES:"
 ":CREATED: %<%Y-%m-%d %a %H:%M>"
 ":PLANNED: %t"
+":END:"))
+
+(defun sr/fun/todo-act-date ()
+'("* %{todo-state} %?"
+":PROPERTIES:"
+":CREATED: %<%Y-%m-%d %a %H:%M>"
+":PLANNED: %^t"
 ":END:"))
 
 (defun sr/fun/todo-passive ()
@@ -860,6 +870,14 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 ":PROPERTIES:"
 ":CREATED: %<%Y-%m-%d %a %H:%M>"
 ":PLANNED: %t"
+":END:"
+"%?"))
+
+(defun sr/fun/todo-link-act-date ()
+'("* %{todo-state} %a"
+":PROPERTIES:"
+":CREATED: %<%Y-%m-%d %a %H:%M>"
+":PLANNED: %^t"
 ":END:"
 "%?"))
 
@@ -881,7 +899,7 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+RESULTS:
 : sr/fun/note-passive
 
-***** doct templates
+**** doct templates
 
 - [X] Created inactive date for all entries
 - [X] Mail : Active date + mu4e link
@@ -932,19 +950,19 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 			   :type entry
 			   :headline "@inbox"
 			   :todo-state "TODO"
-			   :template sr/fun/todo-act-today)
+			   :template sr/fun/todo-act-date)
 			  ("mail"  
 			   :keys "m"
 			   :type entry
 			   :headline "@mail"
 			   :todo-state "TODO"
-			   :template sr/fun/todo-link-act-today)
+			   :template sr/fun/todo-link-act-date)
 			  ("article"  
 			   :keys "r"
 			   :type entry
 			   :headline "@reading"
 			   :todo-state "TODO"
-			   :template sr/fun/todo-link-act-today)))
+			   :template sr/fun/todo-link-act-date)))
 	      ("Notes" :keys "n"
                :file "~/my_org/notes.org"
                :prepend t
