@@ -842,10 +842,10 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 :END:
 
 #+BEGIN_SRC emacs-lisp  
-(defun sr/fun/todo-active ()
+(defun sr/fun/todo-act-today ()
 '("* %{todo-state} %?"
 ":PROPERTIES:"
-":CREATED: %U"
+":CREATED: %<%Y-%m-%d %a %H:%M>"
 ":PLANNED: %t"
 ":END:"))
 
@@ -855,10 +855,10 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 ":CREATED: %U"
 ":END:"))
 
-(defun sr/fun/todo-link-active ()
+(defun sr/fun/todo-link-act-today ()
 '("* %{todo-state} %a"
 ":PROPERTIES:"
-":CREATED: %U"
+":CREATED: %<%Y-%m-%d %a %H:%M>"
 ":PLANNED: %t"
 ":END:"
 "%?"))
