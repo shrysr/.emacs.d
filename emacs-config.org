@@ -895,31 +895,56 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 - [ ] Capture to tomorrow's journal
 - [ ] Capture to current clocked task
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp 
 (setq org-capture-templates
-      (doct '(("Tasks" :keys "t"
+      (doct '(("capture" :keys "c"
                :file "~/my_org/todo-global.org"
+	       :template sr/fun/todo/passive
                :prepend t
-	       :children (("Fast TODO"  
+	       :children (("inbox"  
 			   :keys "t"
-			   :type entry	                           
-			   :headline   "@Inbox"
+			   :type entry
+	                   :file "~/my_org/refile.org"
+			   :headline "inbox"
 			   :todo-state "TODO"
-			   :template sr/fun/todo-active)
-                          ("Emacs TODO" :keys "e"
-                           :headline   "@Emacs notes and tasks"
-                           :todo-state "TODO"
 			   :template sr/fun/todo-passive)
-                          ("DS TODO"  :keys "d"
-			         :file "~/my_org/datascience.org"
-                           :headline   "@Datascience @Inbox"
+			  ("mail"  
+			   :keys "m"
+			   :type entry
+	                   :file "~/my_org/refile.org"
+			   :todo-state "TODO"
+			   :headline "mail"
+			   :template sr/fun/todo-link-passive)
+                          ("reading" :keys "r"
+                           :headline   "reading"
                            :todo-state "TODO"
-			   :template sr/fun/todo-active)
-                          ("Mail TODO"  :keys "m"
-			         :file "~/my_org/mail.org"
-                           :headline   "@Mail tasks"
+			   :template sr/fun/todo-link-passive)
+			  ("emacs" :keys "e"
+                           :headline   "emacs"
                            :todo-state "TODO"
-			   :template sr/fun/todo-link-active)))
+			   :template sr/fun/todo-link-passive)))
+	      ("Todo" :keys "t"
+               :file "~/my_org/todo-global.org"
+	       :template sr/fun/todo-act-today
+               :prepend t
+	       :children (("inbox"  
+			   :keys "t"
+			   :type entry
+			   :headline "@inbox"
+			   :todo-state "TODO"
+			   :template sr/fun/todo-act-today)
+			  ("mail"  
+			   :keys "m"
+			   :type entry
+			   :headline "@mail"
+			   :todo-state "TODO"
+			   :template sr/fun/todo-link-act-today)
+			  ("article"  
+			   :keys "r"
+			   :type entry
+			   :headline "@reading"
+			   :todo-state "TODO"
+			   :template sr/fun/todo-link-act-today)))
 	      ("Notes" :keys "n"
                :file "~/my_org/notes.org"
                :prepend t
@@ -934,16 +959,20 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 			   :keys "m"
 			   :type entry
 			   :headline "@Mail archive"
-			   :file "~/my_org/mail.org")
+			   :file "~/my_org/notes.org")
 			  ("DS Link note"  :keys "d"
 			         :file "~/my_org/datascience.org"
                            :headline   "@Datascience @Notes"
                            :todo-state "TODO"
-			   :template sr/fun/todo-link-passive))))))
+			   :template sr/fun/todo-link-passive)))
+	      ;; ("Project" :keys "p"
+              ;;  :file "~/my_org/project-tasks.org"
+              ;;  :template sr/fun/todo-link-active)
+	      )))
 
 #+END_SRC
 
-**** COMMENT Capture templates
+*** COMMENT Old Capture templates
     :PROPERTIES:
     :ID:       50f2b318-d9e6-4403-af24-875c662d888d
     :END:
@@ -1109,66 +1138,41 @@ buffer.
 #+END_SRC
 
 * Temporary package list
-:PROPERTIES:
-:ID:       491FD99B-040E-41AF-93E3-E35D63FC38A9
-:END:
 - Note taken on [2020-03-30 Mon 07:58] \\
   A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
 
 #+BEGIN_SRC emacs-lisp
       ;; (use-package helm-bibtex)
 
-      ;; (use-package helm-projectile)
-
       ;; Functions for working with hash tables
       (use-package ht)
-
-      (use-package htmlize)
 
       (use-package hy-mode)
 
       (use-package hydra
         :init
         (setq hydra-is-helpful t)
-
         :config
         (require 'hydra-ox))
 
-      (use-package ivy-hydra)
-
       (use-package jedi)
-
-      (use-package jedi-direx)
 
       (use-package diminish)
 
-      ;; (use-package avy)
-
     (use-package rainbow-mode)
-
-    (use-package esup)
 
     ;; Provides functions for working with files
     (use-package f)
 
-    (straight-use-package 'dash)
-    (straight-use-package 'dash-functional)
-    (straight-use-package 'ov)
-  (straight-use-package 'flx)
 
     (use-package auto-complete
       :diminish auto-complete-mode
       :config (ac-config-default))
 
-  (use-package google-this
-    :config
-    (google-this-mode 1))
-
   (straight-use-package 'ggtags)
   (straight-use-package 'ibuffer-projectile)
 #+END_SRC
 
-#+RESULTS:
 : t
 
 * Org journal
@@ -1529,15 +1533,33 @@ Crux has a handle re-open and root function that will open a file as root if the
     (which-key-mode))
 #+END_SRC
 
-#+RESULTS:
 : t
 
 * Project management
-** projectile
-:PROPERTIES:
-:ID:       20541E59-CC5A-43C7-A2DB-9D4304951AB4
-:END:
+** TODO org-projectile
 
+- Note taken on [2019-02-07 Thu 08:42]  \\
+  need to optimise further and convert to use-package style. Also need a way to capture Notes from projects, in addition to tasks.
+
+Starting off with the basic configuration posted in org-projectile github repo.
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-projectile
+  :straight t
+  :bind (("C-c n p" . org-projectile-project-todo-completing-read)
+         ("C-c c" . org-capture))
+  :config
+  (setq org-projectile-projects-file
+        "~/my_org/project-tasks.org")
+  ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
+  (push (org-projectile-project-todo-entry) org-capture-templates)
+  (setq org-projectile-capture-template "* TODO %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:\n%l"))
+
+#+end_src
+
+: org-capture
+
+** projectile
 - [ ] Add a variable for the emacs_meta directory.
 
 #+BEGIN_SRC emacs-lisp
@@ -1561,31 +1583,6 @@ Crux has a handle re-open and root function that will open a file as root if the
   (projectile-global-mode))
 
 #+END_SRC
-
-** TODO org-projectile
-   :PROPERTIES:
-   :ID:       214c990f-b0d1-44a1-987d-94637a13c528
-   :END:
-- Note taken on [2019-02-07 Thu 08:42]  \\
-  need to optimise further and convert to use-package style. Also need a way to capture Notes from projects, in addition to tasks.
-
-Starting off with the basic configuration posted in org-projectile github repo.
-
-#+BEGIN_SRC emacs-lisp
-(use-package org-projectile
-:straight t
-:bind (("C-c n p" . org-projectile-project-todo-completing-read)
-         ("C-c c" . org-capture))
-  :config
-  (setq org-projectile-projects-file
-        "~/my_org/project-tasks.org")
-  ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
-  (push (org-projectile-project-todo-entry) org-capture-templates))
-
-#+end_src
-
-#+RESULTS:
-: org-capture
 
 * Knowledge management
 ** COMMENT org-brain
@@ -1860,7 +1857,7 @@ Note that =C-x C-q= for =dired-toggle-read= only.
 
 #+RESULTS:
 : always
-* TEST Treemacs [0/3]
+* Treemacs [0/3]
   :PROPERTIES:
   :ID:       2571745f-97de-4fa9-8d56-0e6599bdc489
   :CREATED:  [2020-01-21 Tue]
@@ -2067,20 +2064,6 @@ This configuration is picked up from scimax.
 #+RESULTS:
 : counsel-pt
 
-*** Temp
-:PROPERTIES:
-:ID:       93C8E3B4-8914-47C6-918C-A1F7C638DDD8
-:END:
-- Note taken on [2020-03-28 Sat 23:09] \\
-  For some reason, this seems to be required at the moment. 
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'counsel)
-(counsel-mode)
-#+END_SRC
-
-#+RESULTS:
-: t
 ** Expand region package
    :PROPERTIES:
    :ID:       046c8e8c-a6c0-451e-9e7e-61de54ab0945
@@ -2256,15 +2239,22 @@ This is an indispensable tool. The additional options of showing the timestamp a
 (global-set-key (kbd "C-x b") 'helm-mini)
 (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x C-r") 'helm-recentf))
+
 #+END_SRC
 
-#+RESULTS:
 : helm-find-file
 
+*** General settings for helm
+
+#+BEGIN_SRC emacs-lisp
+;; Don't have helm do window management for me
+(setq helm-display-function 'pop-to-buffer)
+
+;; optimising highlight speed of token matches
+(setq helm-mp-highlight-delay 0.3)
+#+END_SRC
+
 *** Helm bibtex and projectile
-:PROPERTIES:
-:ID:       014BAB93-F5EE-4179-8034-B69165EB2CDD
-:END:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-bibtex)
 
@@ -2318,169 +2308,22 @@ This is an indispensable tool. The additional options of showing the timestamp a
         helm-swoop-speed-or-color nil))
 #+END_SRC
 
-#+RESULTS:
 : helm-multi-swoop
-
-* Email
-** TODO [#A] COMMENT mu4e
-:PROPERTIES:
-:ID:       87453c9b-3981-4097-84e7-e309f867ee46
-:END:
-- Note taken on [2020-04-01 Wed 11:49] \\
-  All this content has been transferred to the use package hook.
-- Note taken on [2019-02-12 Tue 14:53] \\
-  The use-package documentation specifies a method to do this via use-package itself, without enclosing the whole snippet within a if clause.
-- Note taken on [2019-02-07 Thu 20:43] \\
-  The mu4e config has to be broken down and the send email with htmlize has to be evaluated.
-- Note taken on [2019-02-07 Thu 09:04] \\
-  As of now, I do not acess my email on different computers via Emacs. The end goal is to setup a mail server via VPS and store my email online, which can then be searched via Emacs and mu4e from any location.
+** ace-isearch
+- Note taken on [2020-04-04 Sat 16:46] \\
+  While the concept is clear, I am not yet sure how the function is
+  getting activated or whether it will work as I think it might. I am
+  generally more comfortable using a specific function for a specific
+  purpose. THis requires further investigation.
 
 #+BEGIN_SRC emacs-lisp
-(if (system-type-is-darwin)
-    (progn
-      (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
-      (require 'mu4e)
-      (require 'mu4e-contrib)
-      (require 'org-mu4e)
-
-      (setq
-       mail-user-agent 'mu4e-user-agent
-       mue4e-headers-skip-duplicates  t
-       mu4e-view-show-images t
-       mu4e-view-show-addresses 't
-       mu4e-compose-format-flowed t
-       ;;mu4e-update-interval 200
-       message-ignored-cited-headers 'nil
-       mu4e-date-format "%y/%m/%d"
-       mu4e-headers-date-format "%Y/%m/%d"
-       mu4e-change-filenames-when-moving t
-       mu4e-attachments-dir "~/Downloads/Mail-Attachments/"
-       mu4e-maildir (expand-file-name "~/my_mail/fmail")
-       message-citation-line-format "On %Y-%m-%d at %R %Z, %f wrote..."
-       mu4e-index-lazy-check t
-       ;; After Years. I've finally found you.
-       mu4e-compose-dont-reply-to-self t
-       mu4e-headers-auto-update t
-       )
-
-      ;; mu4e email refiling loations
-      (setq
-       mu4e-refile-folder "/Archive"
-       mu4e-trash-folder  "/Trash"
-       mu4e-sent-folder   "/Sent"
-       mu4e-drafts-folder "/Drafts"
-       )
-
-      ;; setup some handy shortcuts
-      (setq mu4e-maildir-shortcuts
-            '(("/INBOX"   . ?i)
-	      ("/Sent"    . ?s)
-	      ("/Archive" . ?a)
-	      ("/Trash"   . ?t)))
-
-      ;;store link to message if in header view, not to header query
-      (setq org-mu4e-link-query-in-headers-mode nil
-            org-mu4e-convert-to-html t) ;; org -> html
-
-
-      (autoload 'mu4e "mu4e" "mu for Emacs." t)
-
-      ;; Earlier Config for sending email
-      ;; (setq
-      ;;  message-send-mail-function 'message-send-mail-with-sendmail
-      ;;  send-mail-function 'sendmail-send-it
-      ;;  message-kill-buffer-on-exit t
-      ;;  )
-
-      ;; allow for updating mail using 'U' in the main view:
-      (setq mu4e-get-mail-command  "mbsync -q fins")
-
-      ;; Stolen from https://github.com/djcb/mu/issues/1431 and found thanks to parsnip in #emacs
-      (defun my-mu4e-mbsync-current-maildir (msg)
-	(interactive)
-	(let* ((maildir (downcase (substring (plist-get msg :maildir) 1)))
-	       (mu4e-get-mail-command (format "mbsync %s" maildir)))
-	  (mu4e-update-mail-and-index t)))
-
-      ;; Enabling view in browser for HTML heavy emails that don't render well
-      (add-to-list 'mu4e-view-actions
-	           '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-      (add-to-list 'mu4e-view-actions
-		   '("mbsync maildir of mail at point" . my-mu4e-mbsync-current-maildir) t)
-
-      (add-hook 'mu4e-headers-mode-hook
-		(defun my/mu4e-change-headers ()
-		  (interactive)
-		  (setq mu4e-headers-fields
-			`((:human-date . 12)
-			  (:flags . 4)
-			  (:from-or-to . 15)
-			  (:subject . ,(- (window-body-width) 47))
-			  (:size . 7)))))
-
-      (add-hook 'mu4e-view-mode-hook (lambda () (fill-paragraph)))
-      (setq mu4e-view-use-gnus t)
-
-      ;; Don't keep asking for confirmation for every action
-      (defun my-mu4e-mark-execute-all-no-confirm ()
-	"Execute all marks without confirmation."
-	(interactive)
-	(mu4e-mark-execute-all 'no-confirm))
-      ;; mapping x to above function
-      (define-key mu4e-headers-mode-map "x" #'my-mu4e-mark-execute-all-no-confirm)
-
-      ;; source: http://matt.hackinghistory.ca/2016/11/18/sending-html-mail-with-mu4e/
-
-      ;; this is stolen from John but it didn't work for me until I
-      ;; made those changes to mu4e-compose.el
-      (defun htmlize-and-send ()
-	"When in an org-mu4e-compose-org-mode message, htmlize and send it."
-	(interactive)
-	(when
-	    (member 'org~mu4e-mime-switch-headers-or-body post-command-hook)
-	  (org-mime-htmlize)
-	  (org-mu4e-compose-org-mode)
-	  (mu4e-compose-mode)
-	  (message-send-and-exit)))
-
-      ;; This overloads the amazing C-c C-c commands in org-mode with one more function
-      ;; namely the htmlize-and-send, above.
-      (add-hook 'org-ctrl-c-ctrl-c-hook 'htmlize-and-send t)
-
-      (setq mu4e-update-interval 300)
-      (setq message-kill-buffer-on-exit t)
-
-      ;; Config for queued sending of emails
-      ;; Reference  :https://vxlabs.com/2017/02/07/mu4e-0-9-18-e-mailing-with-emacs-now-even-better/https://vxlabs.com/2017/02/07/mu4e-0-9-18-e-mailing-with-emacs-now-even-better/
-
-      ;; when switch off queue mode, I still prefer async sending
-      (use-package async
-	:ensure t
-	:defer nil
-	:config (require 'smtpmail-async))
-
-      (setq
-       send-mail-function 'async-smtpmail-send-it
-       message-send-mail-function 'async-smtpmail-send-it
-       ;; replace with your email provider's settings
-       smtpmail-smtp-server "smtp.fastmail.com"
-       smtpmail-smtp-service 465
-       smtpmail-stream-type 'ssl
-
-       ;; if you need offline mode, set to true -- and create the queue dir
-       ;; with 'mu mkdir', i.e:
-       ;; mu mkdir /home/user/Mail/queue && touch ~/Maildir/queue/.noindex
-       ;; https://www.djcbsoftware.nl/code/mu/mu4e/Queuing-mail.html
-       smtpmail-queue-mail  nil
-       smtpmail-queue-dir  (expand-file-name "~/my_mail/fmail/Queue/cur"))
-
-      ))
-
+(use-package ace-isearch
+:after helm-swoop avy
+:config
+(global-ace-isearch-mode +1))
 #+END_SRC
 
-#+RESULTS:
-: /Users/shrysr/my_mail/fmail/Queue/cur
-
+* Email
 ** TODO mu4e via use-package
 :PROPERTIES:
 :ID:       658B1502-41E1-487A-B0CF-5F1D1A366368
@@ -3014,11 +2857,25 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 - [ ] elpy
 - [ ] blacken
 
-*** emacs-lsp
-:PROPERTIES:
-:ID:       6454CCB4-FF06-457B-86A0-62804AEC2641
-:END:
+*** EIN notebooks
 
+- [ ] enable visual line mode?
+- [ ] Enable pictures by default
+- [ ] possible for better latex rendering?
+
+#+BEGIN_SRC emacs-lisp
+(use-package ein
+:defer t
+:ensure t
+:config
+(package-initialize)
+(require 'ein)
+(require 'ein-notebook)
+(require 'ein-subpackages)
+)
+#+END_SRC
+
+*** emacs-lsp
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-python-ms
   :ensure t
@@ -3027,18 +2884,11 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
                           (lsp))))  ; or lsp-deferred
 #+END_SRC
 
-#+RESULTS:
 | (lambda nil (require 'lsp-python-ms) (lsp)) | er/add-python-mode-expansions | blacken-mode | elpy-mode |
 
-
 *** pyvenv, pydoc and elpy
-:PROPERTIES:
-:ID:       3709F984-8825-485B-8C95-A53315ABB990
-:END:
-
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'pyvenv)
-
 (straight-use-package 'pydoc)
 
 (use-package elpy
@@ -3050,8 +2900,6 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 *** COMMENT pyenv
 - Note taken on [2020-03-29 Sun 17:00] \\
   I am predominantly using pyvenv at the moment with a single pyenv. This will be useful to look into down the line.
-
-Reference: [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]]
 
 #+BEGIN_SRC emacs-lisp
 (use-package pyenv
@@ -3147,7 +2995,6 @@ Adapted from ldlework
   (interactive)
   (helm-do-ag (sr/fun/org-dir "journal")))
 #+END_SRC
-
 
 * TODO Hydra Hera and nougat
 
@@ -3445,9 +3292,9 @@ With ARG, swap them instead."
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-treemacs (:color red)
 ("Workspace"
-(("t" treemacs "Treemacs buffer")
-("o" treemacs-switch-workspace "open")
-("n" treemacs-create-workspace "new")
+(("t" treemacs "Treemacs buffer" :color blue)
+("o" treemacs-switch-workspace "open" :color blue)
+("n" treemacs-create-workspace "new" :color blue)
 ("k" treemacs-delete-workspace "kill")
 ("r" treemacs-rename-workspace "rename"))))
 #+END_SRC
@@ -3456,27 +3303,18 @@ With ARG, swap them instead."
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-journal (:color blue)
-("Workspace"
+("Journal"
 (("j"  org-journal-new-entry "Entry")
-("n" org-journal-next-entry "Next entry")
-("p" org-journal-previous-entry "Previous entry")
+("n" org-journal-open-next-entry "Next entry" :color red)
+("p" org-journal-open-previous-entry "Previous entry" :color red)
 ("S" org-journal-new-scheduled-entry "Future scheduled")
-("s" sr/fun/org-journal-search "Journal search")
-("r" treemacs-rename-workspace "rename"))))
+("s" sr/fun/org-journal-search "Journal search"))))
 
 (global-set-key (kbd "H-j") (lambda () (interactive) (hera-start 'hydra-journal/body)))
 #+END_SRC
 
 * Pastes
-:PROPERTIES:
-:ID:       D4908CF2-5B45-4FDF-9FA2-0D212BCA8BA3
-:END:
-
 ** Webpaste
-:PROPERTIES:
-:ID:       A104F0FD-9059-4DF3-9EF5-137300E7E89A
-:END:
-
 - Note taken on [2020-03-29 Sun 11:18] \\
   This package is useful to use multiple paste services with a fallback. dpaste has a pleasant format and therefore chosen as the first priority. The advantage of using github gists is that org mode exports can be directly rendered. This package can also be configured to use a custom paste service.
 
@@ -5029,6 +4867,160 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 
 This section will be the place where all new packages and their settings make an entrance. In short the test will be that they are not activated by default and if I seek out the package, that would mean I find it useful to include in my main configuration.
 
+** Enhanced python config
+*** TODO COMMENT Adapted python config
+Source [[https://github.com/PythonNut/quark-emacs/blob/dev/modules/config-python.el][quark-emacs/config-python.el at dev · PythonNut/quark-emacs · GitHub]]
+
+This is a nice and detailed configuration for python that is worth
+studying. I will be adapting this to my purposes. 
+
+**** Find local virtualenv
+- Note taken on [2020-04-05 Sun 15:16] \\
+  THe savehist package needs to be installed to use this
+  configuration. I have taken a minimal bunch of settings. This appears
+  to be setup to work with finding the local executable for poetry or
+  pipenv. Apparently the savehist package will replace the minibuffer
+  and so this is not a snippet that can be loaded at anytime, i.e it
+  needs to be loaded at Emacs init.
+
+#+BEGIN_SRC emacs-lisp
+(use-package savehist
+  :straight t
+  :init
+  (autoload 'savehist-minibuffer-hook "savehist")
+  (autoload 'savehist-autosave "savehist")
+  (autoload 'savehist-uninstall "savehist"))
+
+(defun my/python-find-virtualenv (&optional dir)  
+  "Find a virtualenv corresponding to the current buffer.  
+   Return either a string or nil."  
+  (message "Searching for Python virtual environment at %s" default-directory)  
+  (let* ((default-directory (or dir default-directory))  
+	 (path  
+	  (cl-block nil  
+	    (when (and (my/local-executable-find "poetry")  
+		       (locate-dominating-file default-directory  
+					       "pyproject.toml"))  
+	      ;; First, we try poetry env, which is safe and a bit  
+	      ;; faster, but only works in poetry versions 1.0 and up  
+	      (cl-destructuring-bind (return-code . output)  
+		  (my/process-file-to-string "poetry" nil '(t nil) nil  
+					     "env"  
+					     "info"  
+					     "-p")  
+		(when (= 0 return-code)  
+		  (cl-return output)))  
+	      ;; Fall back to poetry <1.0 check TODO: This code  
+	      ;; will become stale over time, so get rid of it  
+	      ;; after a while.  
+	      ;; Radon: May create virtualenv, but whatever.  
+	      (cl-destructuring-bind (return-code . output)  
+		  (my/process-file-to-string "poetry" nil '(t nil) nil  
+					     "run"  
+					     "which"  
+					     "python")  
+		(when (and (= 0 return-code)  
+			   (string-match (rx bol  
+					     (group (1+ any))  
+					     "/bin/python\n")  
+					 output))  
+		  (cl-return (match-string 1 output)))))  
+	    (when (and (my/local-executable-find "pipenv")  
+		       (locate-dominating-file default-directory  
+					       "Pipfile"))  
+	      (cl-destructuring-bind (return-code . output)  
+		  (my/process-file-to-string "pipenv" nil '(t nil) nil  
+					     "--venv")  
+		(when (= 0 return-code)  
+		  (cl-return (string-trim output)))))))  
+	 (universal-path (if (tramp-tramp-file-p default-directory)  
+			     (my/tramp-build-name-from-localname path)  
+			   path)))  
+    (when (file-directory-p universal-path)  
+      (substring-no-properties universal-path))))  
+
+(defvar my/python-virtualenv-cache nil)  
+(add-to-list 'savehist-additional-variables 'my/python-virtualenv-cache)  
+
+(defun my/python-find-virtualenv-cached (&optional dir)  
+  (let* ((dir (or dir default-directory))  
+	 (pyproject (locate-dominating-file dir "pyproject.toml")))  
+    (unless my/python-virtualenv-cache  
+      (setq my/python-virtualenv-cache (make-hash-table :test #'equal)))  
+    (if (and (my/local-executable-find "poetry")  
+	     dir  
+	     (not (file-exists-p (expand-file-name ".venv" dir))))  
+	(let ((cached (or (gethash dir my/python-virtualenv-cache)  
+			  (puthash dir  
+				   (my/python-find-virtualenv dir)  
+				   my/python-virtualenv-cache))))  
+	  (if (file-exists-p cached)  
+	      cached  
+	    (my/python-find-virtualenv dir)))  
+      (my/python-find-virtualenv dir))))  
+#+END_SRC
+
+**** Remote python
+
+#+BEGIN_SRC emacs-lisp
+   (with-eval-after-load 'pythonic  
+   (eval-when-compile  
+   (with-demoted-errors "Load error: %s"  
+   (require 'tramp)))  
+     
+   (defvar my/pythonic-remote-host-cache nil)  
+   (defun nadvice/pythonic-remote-host ()  
+   "Get host of the connection to the remote python interpreter."  
+   (unless my/pythonic-remote-host-cache  
+   (setq my/pythonic-remote-host-cache (make-hash-table :test #'equal)))  
+     
+   (with-parsed-tramp-file-name default-directory parsed  
+   (let ((hostname (replace-regexp-in-string "#.*\\'" "" parsed-host)))  
+   (if (member parsed-method '("ssh"  
+   "scp"  
+   "scpx"  
+   "sshx"  
+   "rsync"))  
+   (or (gethash hostname my/pythonic-remote-host-cache)  
+   (puthash hostname  
+   (with-temp-buffer  
+   (call-process "ssh" nil t nil "-G" hostname)  
+   (goto-char (point-min))  
+   (search-forward "\nhostname ")  
+   (buffer-substring-no-properties (point) (line-end-position)))  
+   my/pythonic-remote-host-cache))  
+   hostname))))  
+   (advice-add 'pythonic-remote-host :override #'nadvice/pythonic-remote-host))  
+     
+#+END_SRC
+
+**** pyvenv
+
+#+BEGIN_SRC emacs-lisp
+(use-package pyvenv  
+  :config  
+  (defun nadvice/pyvenv-activate (&optional arg)  
+    (interactive "P")  
+    (let ((default-venv (my/python-find-virtualenv-cached)))  
+      (if (or (not default-venv) (consp (car arg)))  
+	  (list (read-directory-name "Activate venv: "))  
+	(list default-venv))))  
+  
+  (advice-add 'pyvenv-activate :filter-args #'nadvice/pyvenv-activate))  
+#+END_SRC
+
+**** TODO ms-lsp detailed config
+*** TODO COMMENT Standard set of requirements for pip installations
+- Note taken on [2020-04-05 Sun 15:37] \\
+  The goal is to create a standard set of installations for any
+  virtualenvironment that is created. This basic set can be built further
+  as required.
+
+#+BEGIN_SRC sh :tangle no
+pip install numpy pandas jupyter scikitlearn black 
+#+END_SRC
+
+
 ** Org spacer
 
 #+BEGIN_QUOTE
@@ -5572,6 +5564,161 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
 
 These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
+** Earlier mu4e config
+- Note taken on [2020-04-01 Wed 11:49] \\
+  All this content has been transferred to the use package hook.
+- Note taken on [2019-02-12 Tue 14:53] \\
+  The use-package documentation specifies a method to do this via use-package itself, without enclosing the whole snippet within a if clause.
+- Note taken on [2019-02-07 Thu 20:43] \\
+  The mu4e config has to be broken down and the send email with htmlize has to be evaluated.
+- Note taken on [2019-02-07 Thu 09:04] \\
+  As of now, I do not acess my email on different computers via Emacs. The end goal is to setup a mail server via VPS and store my email online, which can then be searched via Emacs and mu4e from any location.
+
+#+BEGIN_SRC emacs-lisp
+(if (system-type-is-darwin)
+    (progn
+      (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+      (require 'mu4e)
+      (require 'mu4e-contrib)
+      (require 'org-mu4e)
+
+      (setq
+       mail-user-agent 'mu4e-user-agent
+       mue4e-headers-skip-duplicates  t
+       mu4e-view-show-images t
+       mu4e-view-show-addresses 't
+       mu4e-compose-format-flowed t
+       ;;mu4e-update-interval 200
+       message-ignored-cited-headers 'nil
+       mu4e-date-format "%y/%m/%d"
+       mu4e-headers-date-format "%Y/%m/%d"
+       mu4e-change-filenames-when-moving t
+       mu4e-attachments-dir "~/Downloads/Mail-Attachments/"
+       mu4e-maildir (expand-file-name "~/my_mail/fmail")
+       message-citation-line-format "On %Y-%m-%d at %R %Z, %f wrote..."
+       mu4e-index-lazy-check t
+       ;; After Years. I've finally found you.
+       mu4e-compose-dont-reply-to-self t
+       mu4e-headers-auto-update t
+       )
+
+      ;; mu4e email refiling loations
+      (setq
+       mu4e-refile-folder "/Archive"
+       mu4e-trash-folder  "/Trash"
+       mu4e-sent-folder   "/Sent"
+       mu4e-drafts-folder "/Drafts"
+       )
+
+      ;; setup some handy shortcuts
+      (setq mu4e-maildir-shortcuts
+            '(("/INBOX"   . ?i)
+	      ("/Sent"    . ?s)
+	      ("/Archive" . ?a)
+	      ("/Trash"   . ?t)))
+
+      ;;store link to message if in header view, not to header query
+      (setq org-mu4e-link-query-in-headers-mode nil
+            org-mu4e-convert-to-html t) ;; org -> html
+
+
+      (autoload 'mu4e "mu4e" "mu for Emacs." t)
+
+      ;; Earlier Config for sending email
+      ;; (setq
+      ;;  message-send-mail-function 'message-send-mail-with-sendmail
+      ;;  send-mail-function 'sendmail-send-it
+      ;;  message-kill-buffer-on-exit t
+      ;;  )
+
+      ;; allow for updating mail using 'U' in the main view:
+      (setq mu4e-get-mail-command  "mbsync -q fins")
+
+      ;; Stolen from https://github.com/djcb/mu/issues/1431 and found thanks to parsnip in #emacs
+      (defun my-mu4e-mbsync-current-maildir (msg)
+	(interactive)
+	(let* ((maildir (downcase (substring (plist-get msg :maildir) 1)))
+	       (mu4e-get-mail-command (format "mbsync %s" maildir)))
+	  (mu4e-update-mail-and-index t)))
+
+      ;; Enabling view in browser for HTML heavy emails that don't render well
+      (add-to-list 'mu4e-view-actions
+	           '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+      (add-to-list 'mu4e-view-actions
+		   '("mbsync maildir of mail at point" . my-mu4e-mbsync-current-maildir) t)
+
+      (add-hook 'mu4e-headers-mode-hook
+		(defun my/mu4e-change-headers ()
+		  (interactive)
+		  (setq mu4e-headers-fields
+			`((:human-date . 12)
+			  (:flags . 4)
+			  (:from-or-to . 15)
+			  (:subject . ,(- (window-body-width) 47))
+			  (:size . 7)))))
+
+      (add-hook 'mu4e-view-mode-hook (lambda () (fill-paragraph)))
+      (setq mu4e-view-use-gnus t)
+
+      ;; Don't keep asking for confirmation for every action
+      (defun my-mu4e-mark-execute-all-no-confirm ()
+	"Execute all marks without confirmation."
+	(interactive)
+	(mu4e-mark-execute-all 'no-confirm))
+      ;; mapping x to above function
+      (define-key mu4e-headers-mode-map "x" #'my-mu4e-mark-execute-all-no-confirm)
+
+      ;; source: http://matt.hackinghistory.ca/2016/11/18/sending-html-mail-with-mu4e/
+
+      ;; this is stolen from John but it didn't work for me until I
+      ;; made those changes to mu4e-compose.el
+      (defun htmlize-and-send ()
+	"When in an org-mu4e-compose-org-mode message, htmlize and send it."
+	(interactive)
+	(when
+	    (member 'org~mu4e-mime-switch-headers-or-body post-command-hook)
+	  (org-mime-htmlize)
+	  (org-mu4e-compose-org-mode)
+	  (mu4e-compose-mode)
+	  (message-send-and-exit)))
+
+      ;; This overloads the amazing C-c C-c commands in org-mode with one more function
+      ;; namely the htmlize-and-send, above.
+      (add-hook 'org-ctrl-c-ctrl-c-hook 'htmlize-and-send t)
+
+      (setq mu4e-update-interval 300)
+      (setq message-kill-buffer-on-exit t)
+
+      ;; Config for queued sending of emails
+      ;; Reference  :https://vxlabs.com/2017/02/07/mu4e-0-9-18-e-mailing-with-emacs-now-even-better/https://vxlabs.com/2017/02/07/mu4e-0-9-18-e-mailing-with-emacs-now-even-better/
+
+      ;; when switch off queue mode, I still prefer async sending
+      (use-package async
+	:ensure t
+	:defer nil
+	:config (require 'smtpmail-async))
+
+      (setq
+       send-mail-function 'async-smtpmail-send-it
+       message-send-mail-function 'async-smtpmail-send-it
+       ;; replace with your email provider's settings
+       smtpmail-smtp-server "smtp.fastmail.com"
+       smtpmail-smtp-service 465
+       smtpmail-stream-type 'ssl
+
+       ;; if you need offline mode, set to true -- and create the queue dir
+       ;; with 'mu mkdir', i.e:
+       ;; mu mkdir /home/user/Mail/queue && touch ~/Maildir/queue/.noindex
+       ;; https://www.djcbsoftware.nl/code/mu/mu4e/Queuing-mail.html
+       smtpmail-queue-mail  nil
+       smtpmail-queue-dir  (expand-file-name "~/my_mail/fmail/Queue/cur"))
+
+      ))
+
+#+END_SRC
+
+#+RESULTS:
+: /Users/shrysr/my_mail/fmail/Queue/cur
 ** Archival Retain file structure
 - Note taken on [2020-04-05 Sun 08:57] \\
   Apparently, a new org version does not have the org-extract-archive-file
