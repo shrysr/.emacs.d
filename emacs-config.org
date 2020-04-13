@@ -1791,6 +1791,23 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'define-word)
 #+END_SRC
+** Wiktionary lookup
+From [[https://www.reddit.com/r/emacs/comments/3yjzmu/dictionary_and_thesaurus_in_emacs/][Dictionary and thesaurus in Emacs : emacs]], this does not seem to
+work. 
+
+#+BEGIN_SRC emacs-lisp
+(defun lookup-word (word)
+  (interactive (list (save-excursion (car (ispell-get-word nil)))))
+  (browse-url (format "http://en.wiktionary.org/wiki/%s" word)))
+#+END_SRC
+** merriam-webster
+The advantage of this is that synonyms and other definitions are shown,
+and they are apparently within Emacs. Note that it is possible and may
+even be necessary to register an API key with merriam-webster. 
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'mw-thesaurus)
+#+END_SRC
 
 ** COMMENT polybrain
 
@@ -3433,13 +3450,15 @@ With ARG, swap them instead."
 
 #+BEGIN_SRC emacs-lisp  
 (nougat-hydra hydra-links (:color blue)
-("clock"
+("links"
 (("y" yt "youtube music playlist" :color blue)
 ("h" hn "hacker news" :color blue)
 ("w" wikipedia-search "wikipedia" :color blue)
 ("g" counsel-google "counsel web search" :color blue)
 ("G" google "Launch google" :color blue)
-("d" define-word "define word" :color red))))
+("d" define-word "define word" :color red)
+("D" lookup-word "wiktionary lookup" :color red)
+("m" mw-thesaurus-lookup-at-point "Merriam-webster thesaurus" :color red))))
 #+END_SRC
 
 * Pastes
@@ -3774,6 +3793,7 @@ Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
  browse-url-browser-function
  '(
   ("wikipedia\\.org" . eww-browse-url)
+  ("wiktionary\\.org" . eww-browse-url)
   ("github" . eww-browse-url)
   ("thefreedictionary\\.com" . eww-browse-url)
   ("." . browse-url-default-browser)
