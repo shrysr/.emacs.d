@@ -1138,6 +1138,37 @@ buffer.
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
 
+** Clocking mechanics
+*** org-mru-clock 
+- [ ] use the functions included to capture to the current clocked tasks.
+- [ ] method to jump to recent clocked task instead of starting the clock
+
+This is a handy package to quickly select past tasks which have been clocked in.
+#+BEGIN_SRC emacs-lisp
+(use-package org-mru-clock
+  :ensure t
+  :bind (("M-s 1" . org-mru-clock-in)
+          ("C-c C-x C-j" . org-mru-clock-select-recent-task))
+  :init
+  (setq org-mru-clock-how-many 100
+        org-mru-clock-completing-read #'ivy-completing-read))
+#+END_SRC
+#+END_SRC
+
+*** counsel-org-clock
+
+Here is a comparison of counsel-org-clock and org-mru-clock: [[http://mbork.pl/2018-04-28_org-mru-clock][Marcin
+Borkowski: 2018-04-28 org-mru-clock]]. As mentioned, one main advantage of
+this package are the extension via ivy actions, though these can be
+defined for =org-mru-clock=. Since I want to jump around previously
+clocked tasks and examine them, these functions are useful to
+me. However, the advantage of org-mru-clock is the list of all the
+clocked tasks from the agenda.
+
+#+BEGIN_SRC emacs-lisp
+(use-package counsel-org-clock)
+
+#+END_SRC
 
 ** org-source-window split setup
 :PROPERTIES:
@@ -3169,7 +3200,8 @@ Entrypoint Hydra
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
 ("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
-("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily"))
+("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
+("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily"))
 
 #+END_SRC
 
@@ -3336,6 +3368,21 @@ With ARG, swap them instead."
 
 (global-set-key (kbd "H-j") (lambda () (interactive) (hera-start 'hydra-journal/body)))
 #+END_SRC
+
+** hydra-clock
+
+- [ ] I will need to integrate this down the line with shortcuts for org mode.
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-clock (:color blue)
+("clock"
+(("j" counsel-org-clock-goto "clock go to current/last" :color red)
+("h" counsel-org-clock-history "counsel clock history" :color blue)
+("c" counsel-org-clock-context "counsel clock context" :color blue)
+("o" org-clock-out "clock out" :color red)
+("I" org-mru-clock-in "mru clock in" :color blue))))
+#+END_SRC
+
 
 * Pastes
 ** Webpaste
