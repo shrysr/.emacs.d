@@ -1786,6 +1786,11 @@ Starting off with the basic configuration posted in org-projectile github repo.
 
 #+RESULTS:
 : my/avy-brain-jump-sibling
+** define-word
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'define-word)
+#+END_SRC
 
 ** COMMENT polybrain
 
@@ -3424,6 +3429,18 @@ With ARG, swap them instead."
 ("h" org-mru-clock-in "mru clock in" :color blue))))
 #+END_SRC
 
+** hydra-links
+
+#+BEGIN_SRC emacs-lisp  
+(nougat-hydra hydra-links (:color blue)
+("clock"
+(("y" yt "youtube music playlist" :color blue)
+("h" hn "hacker news" :color blue)
+("w" wikipedia-search "wikipedia" :color blue)
+("g" counsel-google "counsel web search" :color blue)
+("G" google "Launch google" :color blue)
+("d" define-word "define word" :color red))))
+#+END_SRC
 
 * Pastes
 ** Webpaste
@@ -3736,6 +3753,14 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 #+RESULTS:
 : hn
 
+*** Youtube music playlist
+
+#+BEGIN_SRC emacs-lisp
+(defun yt ()
+  (interactive)
+  (browse-url "https://www.youtube.com/playlist?list=PLzDQK0UVrg2TiemiFoRmrwq-YbQ-Zn1AN"))
+#+END_SRC
+
 *** TODO Open specific browser depending on the URL
 
 - Note taken on [2019-03-07 Thu 11:59] \\
@@ -3752,7 +3777,7 @@ Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
   ("github" . eww-browse-url)
   ("thefreedictionary\\.com" . eww-browse-url)
   ("." . browse-url-default-browser)
-  ))
+  ("youtube" . browse-url-default-macosx-browser)))
 #+END_SRC
 
 #+RESULTS:
