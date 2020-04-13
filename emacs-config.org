@@ -820,6 +820,19 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+END_SRC
 
 ** TODO Capture mechanics
+Over time I've found an efficient capture mechanism to be important to
+nurture productivity while accounting for interruptions. I think the
+process of gathering templates takes time, and can be facilitated by
+keenly observing the typical repetitive capture-like tasks that are
+performed through the day. Needless to say, this has to be integrated
+into GTD. The ideal method seems to be to capture quickly ~somewhere and
+then review and refile, as well as schedule a time block for the
+tasks. Musa Al-hassy's [[https://alhassy.github.io/init/][A Life Configuring Emacs]] talks about the
+above. Some other good starting points are:
+- [[http://doc.norang.ca/org-mode.html][Bernt Hansen's config]]
+- [[http://pragmaticemacs.com/category/org/][org | Pragmatic Emacs]]
+- [[https://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's Emacs configuration]]
+
 *** TODO Doct for org capture templates
 
 [[https://github.com/progfolio/doct][DOCT]] makes it a lot easier to define capture templates in a clean manner. At the moment, I am interested in adding hooks to specific functions and improving the entire capture process.
@@ -988,6 +1001,7 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 			   :type entry
 			   :headline "@inbox"
 			   :todo-state "TODO"
+			   :clock-in t
 			   :template sr/fun/todo-file-link-act-date)
 			  ("External link"  
 			   :keys "e"
@@ -3227,7 +3241,8 @@ Entrypoint Hydra
 ("g" (hera-push 'hydra-gist/body) "gist")
 ("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
 ("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
-("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily"))
+("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
+("l" (hera-push 'hydra-linksl/body) "Links"))
 
 #+END_SRC
 
@@ -3403,10 +3418,10 @@ With ARG, swap them instead."
 (nougat-hydra hydra-clock (:color blue)
 ("clock"
 (("j" counsel-org-clock-goto "clock go to current/last" :color red)
-("h" counsel-org-clock-history "counsel clock history" :color blue)
+("i" counsel-org-clock-history "counsel clock in/historyo" :color blue)
 ("c" counsel-org-clock-context "counsel clock context" :color blue)
 ("o" org-clock-out "clock out" :color red)
-("I" org-mru-clock-in "mru clock in" :color blue))))
+("h" org-mru-clock-in "mru clock in" :color blue))))
 #+END_SRC
 
 
