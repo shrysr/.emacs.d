@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: buffer-org-header-args
+# key: boha
+# --
+#+PROPERTIES: header-args: :mkdirp yes
