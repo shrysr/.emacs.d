@@ -3074,6 +3074,70 @@ pip3 install black
 :hook (python-mode . blacken-mode))
 #+END_SRC
 
+* Docker
+
+The following packages will enable me to handle docker containers right within Emacs.
+
+*** Docker package
+:PROPERTIES:
+:ID:       91f02de1-f2d3-4722-9e18-df78f4b6ad95
+:END:
+
+With this package, I can easily view the containers available and run commands on them from emac without switching over the terminal.
+
+#+BEGIN_SRC emacs-lisp
+(use-package docker
+  :ensure t
+
+  :bind ("M-s d" . docker)
+)
+#+END_SRC
+
+#+RESULTS:
+: docker
+
+*** docker-compose-mode
+:PROPERTIES:
+:ID:       e887c7b6-5e53-49fb-ab13-a37ab7944407
+:END:
+
+Enabling syntax highlighting for docker-compose files.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package docker-compose-mode
+  :ensure t
+
+  :config
+;;  (require 'docker-compose-mode)
+  (add-to-list 'auto-mode-alist
+               '("docker-compose\\" . docker-compose-mode))
+  )
+#+END_SRC
+
+#+RESULTS:
+
+*** docker-file-mode
+:PROPERTIES:
+:ID:       33fdbbf6-5e67-43e7-8c84-aa90fa6b9de6
+:END:
+
+This is required for syntax highlighting in dockerfiles.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package dockerfile-mode
+  :ensure t
+
+  :config
+  (require 'dockerfile-mode)
+  (add-to-list 'auto-mode-alist
+               '("Dockerfile\\" . dockerfile-mode)
+               )
+  )
+#+END_SRC
+
+#+RESULTS:
+
+
 * TODO Custom search functions [0/1]
 This section contains sections to search in specific directories, with customised options.
 
@@ -4814,8 +4878,6 @@ scimax-ipython upstream
 :PROPERTIES:
 :ID:       3C14EDA6-1BA3-4FE0-ADA5-FF6D7424B38D
 :END:
-
-Hello 
 
 #+BEGIN_SRC emacs-lisp
 (custom-theme-set-faces
