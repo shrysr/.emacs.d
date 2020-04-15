@@ -2478,7 +2478,8 @@ This is an indispensable tool. The additional options of showing the timestamp a
   ((mu4e-compose-mode . (lambda ()
                           (visual-line-mode)
                           (use-hard-newlines -1)
-                          (flyspell-mode)))
+                          (flyspell-mode)
+			  (turn-off-auto-fill)))
    (mu4e-view-mode . (lambda() ;; try to emulate some of the eww key-bindings
                        (local-set-key (kbd "<tab>") 'shr-next-link)
                        (local-set-key (kbd "<backtab>") 'shr-previous-link)
