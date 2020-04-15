@@ -1210,6 +1210,42 @@ clocked tasks from the agenda.
 
 #+END_SRC
 
+** Task state sequences
+
+The difference between cancelled and failed would be that -
+
+failed: things I could have planned and done, and it would have been a
+good thing to do - but I did not. These kind of tasks are worth tracking
+in a general sense, and that is why a failed tag would be useful. The
+agenda can then be used to filter failed tasks to see whether there have
+been repeated failures in the past.
+
+Cancelled tasks - these are tasks that do not require to be done. The
+reason could be that they were pre-emptive tasks that were superceded by
+events, or simply deemed unnecessary at all levels. Such tasks would not
+warrant a detailed review in general. 
+
+Looking at Bernt Hansen's documentation - it also makes sense to have
+some more key words for filtering. Summary of sequences that make sense
+at this point: 
+
+- TODO
+- Next
+- Done
+
+This sequence will include a note as to why the state is being set. 
+
+- Waiting
+- Hold
+- Cancelled
+- Failed
+
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "FAILED(f@/!)"))))
+#+END_SRC
+
 ** org-source-window split setup
 :PROPERTIES:
 :ID:       34171B48-C042-4CB4-959A-75DECE5F4DC2
