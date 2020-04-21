@@ -3387,7 +3387,7 @@ Entrypoint Hydra
 ("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
 ("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
 ("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
-("l" (hera-push 'hydra-linksl/body) "Links"))
+("l" (hera-push 'hydra-links/body) "Links"))
 
 #+END_SRC
 
@@ -3534,11 +3534,12 @@ With ARG, swap them instead."
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-treemacs (:color red)
 ("Workspace"
-(("t" treemacs "Treemacs buffer" :color blue)
-("o" treemacs-switch-workspace "open" :color blue)
-("n" treemacs-create-workspace "new" :color blue)
+(("t" treemacs "Treemacs buffer" :color red)
+("o" treemacs-switch-workspace "switch workspace" :color red)
+("n" treemacs-create-workspace "new workspace" :color red)
 ("k" treemacs-delete-workspace "kill")
-("r" treemacs-rename-workspace "rename"))))
+("r" treemacs-rename-workspace "rename")
+("c" treemacs-collapse-other-projects "collapse other projects" :color blue))))
 #+END_SRC
 
 ** hydra-journal
