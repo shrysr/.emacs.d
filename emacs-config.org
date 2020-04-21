@@ -1683,8 +1683,9 @@ Starting off with the basic configuration posted in org-projectile github repo.
   (setq org-projectile-projects-file
         "~/my_org/project-tasks.org")
   ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
-  (push (org-projectile-project-todo-entry) org-capture-templates)
-  (setq org-projectile-capture-template "* TODO %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:\n%l"))
+  (setq org-projectile-capture-template "* TODO %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:\n")
+  (push (org-projectile-project-todo-entry) org-capture-templates))
+  
 
 #+end_src
 
@@ -1739,9 +1740,10 @@ Starting off with the basic configuration posted in org-projectile github repo.
      org-id-track-globally t
      org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
      org-brain-title-max-length 24)
-    (push '("b" "Brain" plain (function org-brain-goto-end)
-            "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
-          org-capture-templates)))
+    ;; (push '("b" "Brain" plain (function org-brain-goto-end)
+    ;;         "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
+    ;;       org-capture-templates))
+)
     ;; (add-hook 'org-brain-refile 'org-id-get-create)))
 #+end_src
 
