@@ -3910,7 +3910,7 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 
 Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp 
 ;; use browser depending on url
 (setq
  browse-url-browser-function
@@ -4984,7 +4984,7 @@ and then have the visual line mode to
 #+RESULTS:
 | visual-fill-column-mode | visual-line-mode-set-explicitly |
 
-** COMMENT Doom modeline
+** Doom modeline
 
 - [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
 
@@ -5035,7 +5035,7 @@ This package is useful in centering the text in a buffer, and is particularly he
 (olivetti-mode 1))
 
 #+END_SRC
-** TODO Spaceline : modeline configuration
+** COMMENT Spaceline : modeline configuration
    :PROPERTIES:
    :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
    :END:
