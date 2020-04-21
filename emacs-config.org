@@ -5129,6 +5129,29 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 ;; No start up message and nothing to pollute the scratch buffer
 (setq inhibit-startup-message t initial-scratch-message nil)
 #+END_SRC
+* Hugo
+** ox-hugo setup
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-hugo
+  :ensure t
+  :after ox
+  :custom
+  (org-hugo--tag-processing-fn-replace-with-hyphens-maybe t)
+(require 'ox-hugo)
+  )
+#+END_SRC
+
+#+RESULTS:
+** TODO Auto-generate some properties 
+
+The earlier procedure by choice was to use the org-id to name
+posts. This ensured that the post URL's would remain unique and
+indifferent to a title. However, this does not make for a human-friendly
+url to quickly distinguish which post is being referred to. Even so, I
+would like to generate some properties and attributes based on the
+heading, tags and so on. 
+
 * Loading secret config
 :PROPERTIES:
 :ID:       F71603D8-BA36-4055-9417-FFED3ABF9E4B
@@ -5335,131 +5358,6 @@ Perhaps this package can extended as some tool belt of org utilities. Some ideas
 | 0 | headline  |           |       |                 |
 | 1 | paragraph | src-block | table | property-drawer |
 
-** Hugo
-*** TODO Function to create specific properties for a blog post
-Modified this function from:
-
-**** TODO Defining content directory
-:PROPERTIES:
-:ID:       3a7485ab-33cf-4e94-ac93-7063db94a094
-:END:
-- Note taken on [2019-02-07 Thu 08:06]  \\
-  Need to check if this is still required since I have switche to ox-hugo
-
-#+BEGIN_SRC emacs-lisp
-(defvar hugo-content-dir "~/my_gits/hugo-sr/content/post/"
-  "Path to Hugo's content directory")
-#+END_SRC
-
-**** Ensuring properties exist and creating if they dont exist
-:PROPERTIES:
-:ID:       e5a99a03-c3da-420c-ae9c-9ac6e50ecbdf
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(defun hugo-ensure-property (property)
-  "Make sure that a property exists. If not, it will be created.
-Returns the property name if the property has been created, otherwise nil."
-  (org-id-get-create)
-  (if (org-entry-get nil property)
-      nil
-    (progn (org-entry-put nil property "")
-           property)))
-
-(defun hugo-ensure-properties ()
-
-  (require 'dash)
-  (let ((current-time (format-time-string
-                       (org-time-stamp-format t t) (org-current-time)))
-        first)
-    (save-excursion
-      (setq first (--first it (mapcar #'hugo-ensure-property
-                                      '("HUGO_TAGS" "HUGO_CATEGORIES"))))
-      (unless (org-entry-get nil "HUGO_DATE")
-        (org-entry-put nil "EXPORT_DATE" current-time)))
-    (org-entry-put nil "EXPORT_FILE_NAME" (org-id-get-create))
-    (org-entry-put nil "EXPORT_HUGO_CUSTOM_FRONT_MATTER" ":profile false")
-    (when first
-      (goto-char (org-entry-beginning-position))
-      ;; The following opens the drawer
-      (forward-line 1)
-      (beginning-of-line 1)
-      (when (looking-at org-drawer-regexp)
-        (org-flag-drawer nil))
-      ;; And now move to the drawer property
-      (search-forward (concat ":" first ":"))
-      (end-of-line))
-    first))
-#+END_SRC
-
-#+RESULTS:
-: hugo-ensure-properties
-
-**** Hugo function calling the above
-:PROPERTIES:
-:ID:       c677537c-c70b-4be9-b91a-40bc283d5f40
-:END:
-
-#+BEGIN_SRC emacs-lisp
-(defun hugo ()
-  (interactive)
-  (unless (hugo-ensure-properties)
-    (let* ((type    (concat "type = \"" (org-entry-get nil "HUGO_TYPE") "\"\n"))
-           (date     (concat "date = \""
-                             (format-time-string "%Y-%m-%d"
-                                                 (apply 'encode-time
-                                                        (org-parse-time-string
-                                                         (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
-           (tags     (concat "tags = [ \""
-                             (mapconcat 'identity
-                                        (split-string
-                                         (org-entry-get nil "HUGO_TAGS")
-                                         "\\( *, *\\)" t) "\", \"") "\" ]\n"))
-           (fm (concat "+++\n"
-                       title
-		       type
-                       date
-                       tags
-                       topics
-                       "+++\n\n"))
-           (coding-system-for-write buffer-file-coding-system)
-           (backend  'md)
-           (blog))
-      ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
-      (if (require 'ox-gfm nil t)
-          (setq backend 'gfm)
-        (require 'ox-md))
-      (setq blog (org-export-as backend t))
-      ;; Normalize save file path
-      (unless (string-match "^[/~]" file)
-        (setq file (concat hugo-content-dir file))
-        (unless (string-match "\\.md$" file)
-          (setq file (concat file ".md")))
-        ;; save markdown
-        (with-temp-buffer
-          (insert fm)
-          (insert blog)
-          (untabify (point-min) (point-max))
-          (write-file file)
-          (message "Exported to %s" file))))))
-#+END_SRC
-
-#+RESULTS:
-: hugo
-
-*** ox-hugo setup
-
-#+BEGIN_SRC emacs-lisp
-(use-package ox-hugo
-  :ensure t
-  :after ox
-  :custom
-  (org-hugo--tag-processing-fn-replace-with-hyphens-maybe t)
-(require 'ox-hugo)
-  )
-#+END_SRC
-
-#+RESULTS:
 ** STABLE Pinboard [1/2]
 CLOSED: [2020-01-19 Sun 14:33]
 :PROPERTIES:
@@ -5845,6 +5743,118 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
 
 These are packages and snippets that disabled from tangling and execution and placed here for general reference. Some of them have been explored and discarded for various reasons. The rest are packages / features I could not get working satisfactorily.
 
+** Old Hugo export functions
+I was using these functions earlier to generate the essential properties
+and export a post to hugo. My current workflow is using
+ox-hugo. THe functions are slightly modified from where I picked them up
+(Holger Scheurig, whose URL seems to be down).
+*** Defining content directory
+:PROPERTIES:
+:ID:       3a7485ab-33cf-4e94-ac93-7063db94a094
+:END:
+- Note taken on [2019-02-07 Thu 08:06]  \\
+  Need to check if this is still required since I have switche to ox-hugo
+
+#+BEGIN_SRC emacs-lisp
+(defvar hugo-content-dir "~/my_gits/hugo-sr/content/post/"
+  "Path to Hugo's content directory")
+#+END_SRC
+
+*** Ensuring properties exist and creating if they dont exist
+:PROPERTIES:
+:ID:       e5a99a03-c3da-420c-ae9c-9ac6e50ecbdf
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun hugo-ensure-property (property)
+  "Make sure that a property exists. If not, it will be created.
+Returns the property name if the property has been created, otherwise nil."
+  (org-id-get-create)
+  (if (org-entry-get nil property)
+      nil
+    (progn (org-entry-put nil property "")
+           property)))
+
+(defun hugo-ensure-properties ()
+
+  (require 'dash)
+  (let ((current-time (format-time-string
+                       (org-time-stamp-format t t) (org-current-time)))
+        first)
+    (save-excursion
+      (setq first (--first it (mapcar #'hugo-ensure-property
+                                      '("HUGO_TAGS" "HUGO_CATEGORIES"))))
+      (unless (org-entry-get nil "HUGO_DATE")
+        (org-entry-put nil "EXPORT_DATE" current-time)))
+    (org-entry-put nil "EXPORT_FILE_NAME" (org-id-get-create))
+    (org-entry-put nil "EXPORT_HUGO_CUSTOM_FRONT_MATTER" ":profile false")
+    (when first
+      (goto-char (org-entry-beginning-position))
+      ;; The following opens the drawer
+      (forward-line 1)
+      (beginning-of-line 1)
+      (when (looking-at org-drawer-regexp)
+        (org-flag-drawer nil))
+      ;; And now move to the drawer property
+      (search-forward (concat ":" first ":"))
+      (end-of-line))
+    first))
+#+END_SRC
+
+#+RESULTS:
+: hugo-ensure-properties
+
+*** Hugo function calling the above
+:PROPERTIES:
+:ID:       c677537c-c70b-4be9-b91a-40bc283d5f40
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun hugo ()
+  (interactive)
+  (unless (hugo-ensure-properties)
+    (let* ((type    (concat "type = \"" (org-entry-get nil "HUGO_TYPE") "\"\n"))
+           (date     (concat "date = \""
+                             (format-time-string "%Y-%m-%d"
+                                                 (apply 'encode-time
+                                                        (org-parse-time-string
+                                                         (org-entry-get nil "HUGO_DATE"))) t) "\"\n"))
+           (tags     (concat "tags = [ \""
+                             (mapconcat 'identity
+                                        (split-string
+                                         (org-entry-get nil "HUGO_TAGS")
+                                         "\\( *, *\\)" t) "\", \"") "\" ]\n"))
+           (fm (concat "+++\n"
+                       title
+		       type
+                       date
+                       tags
+                       topics
+                       "+++\n\n"))
+           (coding-system-for-write buffer-file-coding-system)
+           (backend  'md)
+           (blog))
+      ;; try to load org-mode/contrib/lisp/ox-gfm.el and use it as backend
+      (if (require 'ox-gfm nil t)
+          (setq backend 'gfm)
+        (require 'ox-md))
+      (setq blog (org-export-as backend t))
+      ;; Normalize save file path
+      (unless (string-match "^[/~]" file)
+        (setq file (concat hugo-content-dir file))
+        (unless (string-match "\\.md$" file)
+          (setq file (concat file ".md")))
+        ;; save markdown
+        (with-temp-buffer
+          (insert fm)
+          (insert blog)
+          (untabify (point-min) (point-max))
+          (write-file file)
+          (message "Exported to %s" file))))))
+#+END_SRC
+
+#+RESULTS:
+: hugo
 ** Earlier mu4e config
 - Note taken on [2020-04-01 Wed 11:49] \\
   All this content has been transferred to the use package hook.
