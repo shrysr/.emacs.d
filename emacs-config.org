@@ -1343,7 +1343,11 @@ This sequence will include a note as to why the state is being set.
   (org-journal-enable-agenda-integration t)
   (org-journal-date-format "%A, %d %B %Y")
   (org-journal-file-type 'daily) ;; Set this explicitly, even though the default is daily.
-  (org-journal-file-header 'org-journal-file-header-func))
+  (org-journal-file-header 'org-journal-file-header-func)
+  ;; Carrying over items though useful, sometimes results in duplication
+  ;; and a loss of items, especially if journalling is carried out at
+  ;; 12PM or when the day is changing.
+  (org-journal-carryover-items nil))
 #+end_src
 
 #+RESULTS:
