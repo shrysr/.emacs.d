@@ -2122,7 +2122,7 @@ As such most of these
 
 #+RESULTS:
 
-* Selection, search, bookmarks and jumps
+* Selection, search, navigation and jumps
 ** smex
 :PROPERTIES:
 :ID:       09F22945-25AA-4DAE-B1E0-AD309E6FA1DD
@@ -2425,8 +2425,38 @@ This is an indispensable tool. The additional options of showing the timestamp a
 :ID:       B4E26FDE-BA84-4BDB-AA94-B4706E47C64B
 :END:
 
+- [ ] [[https://emacs.stackexchange.com/questions/30204/how-to-tell-helm-to-ignore-certain-files][How to tell Helm to ignore certain files? - Emacs Stack Exchange]]
+  - This needs to be explored further for code project files and the
+    specific options needed for different situations. I need to expand
+    on this with more clarity.
+  - One method of ignoring certain patterns is using --ignore=*.csv
+    - Some specific patterns could be saved as prefixed options and
+      added as optional search functions depending on the occassion. 
+
+#+BEGIN_QUOTE
+I'm not sure when this functionality was introduced, but you can exclude
+files from helm-find-files by setting helm-ff-skip-boring-files to t and
+making sure the ignored pattern is on helm-boring-file-regexp-list. From
+its documentation:
+
+
+   > Non--nil to skip files matching regexps in
+   helm-boring-file-regexp-list. This take effect in helm-find-files and
+   file completion used by helm-mode i.e helm-read-file-name.
+
+And the documentation for helm-boring-file-regexp-list says that by
+default it is built from completion-ignored-extensions.
+#+END_QUOTE
+
+
+Another option is to use [[https://github.com/emacsorphanage/helm-ag#helm-ag-use-agignoredefault-nil][.agignore]] at the project root. This is set to
+nil by default. This kind of ignore option needs to be used carefully,
+or it will exclude important results. 
+
+
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-ag)
+(setq helm-ag-use-agignore 1)
 #+END_SRC
 
 *** helm-org-rifle 
