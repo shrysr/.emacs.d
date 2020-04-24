@@ -2151,7 +2151,8 @@ This configuration is picked up from scimax.
     :init
     (require 'ivy)
     (require 'smex)
-    (setq projectile-completion-system 'ivy)
+    ;; switching to using helm for projectile completion
+    ;;(setq projectile-completion-system 'ivy)
     (setq ivy-use-virtual-buffers t)
     (define-prefix-command 'counsel-prefix-map)
     (global-set-key (kbd "H-c") 'counsel-prefix-map)
@@ -2160,7 +2161,7 @@ This configuration is picked up from scimax.
     (setf (cdr (assoc t ivy-re-builders-alist))
           'ivy--regex-ignore-order)
     :bind
-    (("M-x" . counsel-M-x)
+    (;; ("M-x" . counsel-M-x)
      ;; ("C-x b" . ivy-switch-buffer)
      ;; ("C-x C-f" . counsel-find-file)
      ("C-x l" . counsel-locate)
@@ -2381,6 +2382,10 @@ This is an indispensable tool. The additional options of showing the timestamp a
 #+END_SRC
 ** Helm packages and functions
 
+I am of the opinion that both helm and counsel/ivy have their advantages
+for different workflows and mindsets. My configuration will attempt to
+use both based on what I find useful.
+
 *** Setting helm for some basic functions
 :PROPERTIES:
 :ID:       BC827A7A-D190-4CC6-95D5-0C80740CB94C
@@ -2405,12 +2410,21 @@ This is an indispensable tool. The additional options of showing the timestamp a
 
 *** General settings for helm
 
+There are some useful tips in the reddit thread [[https://www.reddit.com/r/emacs/comments/bsc8pc/why_did_you_stop_using_helm/][Why did you stop using Helm? :
+emacs]]. 
+
 #+BEGIN_SRC emacs-lisp
 ;; Don't have helm do window management for me
 (setq helm-display-function 'pop-to-buffer)
 
 ;; optimising highlight speed of token matches
 (setq helm-mp-highlight-delay 0.3)
+
+;; from the reddit thread above
+(setq helm-use-undecorated-frame-option t)
+(setq helm-display-buffer-reuse-frame t)
+(helm-autoresize-mode 1)
+
 #+END_SRC
 
 *** Helm bibtex and projectile
@@ -2498,7 +2512,27 @@ or it will exclude important results.
 #+END_SRC
 
 : helm-multi-swoop
-** ace-isearch
+** TODO Projectile and helm
+Since implementing the Doom GC optimisation, the slight lag I
+experienced while typing really fast in helm commands has
+subsided. /However, there seems to be a slight lag in calling
+describe-variable and describe-functions, which was not there
+earlier/. The solution I am currently using is to switch to
+=helm-appropos=, which apparently has some kind of mechanism to concat
+large lists of commands, variables, functions. I think there is some
+benefit in switching over to Helm for general options. This is an
+experimental section to try this out. The article [[https://tuhdo.github.io/helm-projectile.html][Exploring large
+projects with Projectile and Helm Projectile]] contains a large number of
+tips in setting up projectile with helm.
+
+#+BEGIN_SRC emacs-lisp
+(setq projectile-completion-system 'helm)
+(setq projectile-indexing-method 'alien)
+(setq projectile-switch-project-action 'helm-projectile)
+(helm-projectile-on)
+#+END_SRC
+
+** COMMENT ace-isearch
 - Note taken on [2020-04-04 Sat 16:46] \\
   While the concept is clear, I am not yet sure how the function is
   getting activated or whether it will work as I think it might. I am
