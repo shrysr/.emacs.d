@@ -3584,10 +3584,11 @@ With ARG, swap them instead."
 (nougat-hydra hydra-journal (:color blue)
 ("Journal"
 (("j"  org-journal-new-entry "Entry")
-("n" org-journal-open-next-entry "Next entry" :color red)
-("p" org-journal-open-previous-entry "Previous entry" :color red)
-("S" org-journal-new-scheduled-entry "Future scheduled")
-("s" sr/fun/org-journal-search "Journal search"))))
+ ("n" org-journal-open-next-entry "Next entry" :color red)
+ ("p" org-journal-open-previous-entry "Previous entry" :color red)
+ ("F" org-journal-new-scheduled-entry "Future scheduled")
+ ("s" sr/fun/org-journal-search "Journal search")
+ ("S" sr/fun/org-search "Org directory search"))))
 
 (global-set-key (kbd "H-j") (lambda () (interactive) (hera-start 'hydra-journal/body)))
 #+END_SRC
