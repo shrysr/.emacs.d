@@ -5198,6 +5198,10 @@ and then have the visual line mode to
 | visual-fill-column-mode | visual-line-mode-set-explicitly |
 
 ** Doom modeline
+- Note taken on [2020-04-24 Fri 20:16] \\
+  The doom modeline possibly adds some extra seconds to the load
+  time. This has to be investigated. However, the aesthetics would seem to
+  make it well worth it.
 
 - [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
 
@@ -5209,6 +5213,9 @@ and then have the visual line mode to
   (doom-modeline-icon t)
   (doom-modeline-major-mode-icon nil)
   (doom-modeline-minor-modes nil)
+  (doom-modeline-lsp t)
+  (doom-modeline-mu4e t)
+  (doom-modeline-env-version t)
   :hook
   (after-init . doom-modeline-mode)
   :config
