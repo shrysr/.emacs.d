@@ -1368,6 +1368,18 @@ This sequence will include a note as to why the state is being set.
 (global-set-key (kbd "M-s s") 'org-save-all-org-buffers)
 #+END_SRC
 
+** TODO org-ql
+- Note taken on [2020-04-24 Fri 09:59] \\
+  This is an interesting package that I want to master using
+  effectively.
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-ql
+:straight t)
+
+#+END_SRC
+
+
 * Temporary package list
 - Note taken on [2020-03-30 Mon 07:58] \\
   A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
