@@ -1179,10 +1179,105 @@ buffer.
 #+END_SRC
 
 ** Clocking mechanics
+*** Continuous clocking + punch in/out approach
+This approach and code snippets are adapted (and shamelessly borrowed)
+from [[http://doc.norang.ca/org-mode.html][Bernt Hansen's approach]]. While Bernt follows a complex approach of
+clocking into parent tasks - my current workflow favors clocking in
+directly to set clocking headlines within projects, which are placed in
+my org-projectile todo task file.
+
+I have a default continuous clock after punching in (defined by org-id)
+which will cater to general re-organisation, including capturing notes,
+refiling , email etc. Other tasks or even mini projects can be directly
+clocked into when required. These mini-projets are often just located
+within my org-agenda files and not as a separate git repositoy. Every
+time I am on my computer, whether on Emacs or not, I would like the
+automatic clock to capture time, unless it is being clocked to a
+specific project.
+
+**** Defining default Task
+
+#+BEGIN_SRC emacs-lisp
+(defvar sr/var/organization-task-id "a8712a47-a648-477f-bdbf-d6004a0cc70b")
+
+(defun sr/clock-in-organization-task-as-default ()
+  (interactive)
+  (org-with-point-at (org-id-find sr/var/organization-task-id 'marker)
+    (org-clock-in '(16))))
+#+END_SRC
+
+#+RESULTS:
+: sr/clock-in-organization-task-as-default
+
+**** Punch in
+
+Bernt Hansen shares that he has a default punch in and punch out task that keeps the clock on all day. I think this will work for me as well. Other than work and projects, most of the time I am tinkering with Emacs, or writing a journal note or trying to re-organise my stuff. By using a punch in and out, I can track how much time I am engaged with a computer, other than specific projects.
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/punch-in (arg)
+    (interactive "p")
+  (setq sr/keep-clock-running t)
+  (sr/clock-in-organization-task-as-default))
+#+END_SRC
+
+#+RESULTS:
+: sr/punch-in
+
+**** Punch Out
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/punch-out ()
+  (interactive)
+  (setq sr/keep-clock-running nil)
+  (when (org-clock-is-active)
+    (org-clock-out)))
+#+END_SRC
+
+#+RESULTS:
+: sr/punch-out
+**** Advising clock Out
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/clock-out-maybe ()
+  (when (and sr/keep-clock-running
+             (not org-clock-clocking-in)
+             (marker-buffer org-clock-default-task)
+             (not org-clock-resolving-clocks-due-to-idleness))
+    (sr/clock-in-organization-task-as-default)))
+
+(add-hook 'org-clock-out-hook 'sr/clock-out-maybe 'append)
+#+END_SRC
+
+#+RESULTS:
+| org-clock-remove-empty-clock-drawer | sr/clock-out-maybe |
+**** Shortcuts for punch in and punch out
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-<f9>") 'sr/punch-in)
+(global-set-key (kbd "M-<f9>") 'sr/punch-out)
+#+END_SRC
+
+*** set idle timer for clocked task
+
+#+BEGIN_SRC emacs-lisp
+;; setting idle timer to 15 minutes
+(setq org-clock-idle-time 15)
+#+END_SRC
 *** No zero clocks
 
 #+BEGIN_SRC emacs-lisp
 (setq org-clock-out-remove-zero-time-clocks t)
+#+END_SRC
+*** Clocking accuracy
+
+This is borrowed off Bernt Hansen's method.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-clock-consistency-checks
+      (quote (:max-duration "4:00"
+              :min-duration 0
+              :max-gap 0
+              :gap-ok-around ("4:00"))))
 #+END_SRC
 
 *** org-mru-clock 
