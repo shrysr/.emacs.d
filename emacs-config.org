@@ -2338,6 +2338,24 @@ This configuration is picked up from scimax.
 #+RESULTS:
 : counsel-pt
 
+** ripgrep
+
+The ripgrep package for the system can be installed via brew or possibly
+apt-get on Linux systems.
+
+#+BEGIN_SRC sh :tangle no
+brew install ripgrep
+#+END_SRC
+
+However, it appears an emacs package is required to interface with the
+system installed ripgrep package via Emacs. In addition, there is a
+separate helm-rg package to use helm for the interface. The latter is
+preferred.
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'ripgrep)
+#+END_SRC
+
 ** Expand region package
    :PROPERTIES:
    :ID:       046c8e8c-a6c0-451e-9e7e-61de54ab0945
@@ -2585,6 +2603,12 @@ or it will exclude important results.
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-ag)
 (setq helm-ag-use-agignore 1)
+#+END_SRC
+
+*** helm-rg
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'helm-rg)
 #+END_SRC
 
 *** helm-org-rifle 
