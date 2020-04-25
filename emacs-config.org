@@ -4998,6 +4998,33 @@ scimax-ipython upstream
 
 #+RESULTS:
 * Aesthetics
+- Note taken on [2020-04-24 Fri 20:06] \\
+  I've tried quite a few themes over the years, and have even had phases
+  where I was constantly changing themes. One caveat I've noticed is that
+  not all themes are designed to work well with the terminal as
+  well. After yet another quick foray into the Doom themes today - I will
+  settle down on the following themes to be the best for me (note that
+  relatively minor customisations like the font, proportional headings and
+  so on are made to all)
+  
+  1. Modus operandi: well designed light theme that does not hurt my eyes
+     and offers a good basic configuration. This theme appears to work
+     well with terminal emacs as well.
+  2. Zenburn : As many say, this theme is definitely the easiest on my
+     eyes and will be a preferred dark theme. There are a tonne of
+     configuration options out of the box.
+  3. Modus vivendi: This is a good dark theme that I prefer since it is
+     based on similar design principles as the modus operandi. However,
+     the contrast is jarring as compared to the mute nature of the Zenburn
+     theme. I would not want to use the Modus vivendi theme for long
+     durations in low light.
+  4. Leuven: I used this theme for a long time when I was on
+     Scimax. Undoubtedly this light theme has its advantages, however, it
+     seems a little too opinionated on a lot of things, and I would prefer
+     a lighter theme that also plays well on terminals.
+  5. Doom's solarized dark theme: this is an honorable mention. As a dark theme
+     that does not hurt the themes - this is similar to zenburn, but not
+     as good looking.
 ** Setting custom themes to be safe
 :PROPERTIES:
 :ID:       E7FEA82C-0CCD-40D2-842A-E6797A9BB3BF
