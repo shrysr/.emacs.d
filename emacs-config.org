@@ -2465,9 +2465,12 @@ This is an indispensable tool. The additional options of showing the timestamp a
   (use-package yasnippet
     :straight t
     :config
+    (setq yas-snippet-dirs (append yas-snippet-dirs
+                               '("~/.emacs.d/private-snippets/")))
   (yas-global-mode 1))
-    (use-package ivy-yasnippet
-          :bind ("M-s i" . ivy-yasnippet))
+
+(use-package ivy-yasnippet
+  :bind ("M-s i" . ivy-yasnippet))
 #+END_SRC
 
 #+RESULTS:
