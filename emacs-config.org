@@ -2518,6 +2518,26 @@ I am of the opinion that both helm and counsel/ivy have their advantages
 for different workflows and mindsets. My configuration will attempt to
 use both based on what I find useful.
 
+*** Helm notes
+
+Despite using these command frequently, I find that I forget some of
+them. This is an attempt to note down useful commands for ready
+reference.
+
+=C-u C-c C-k= using helm-find-file will copy the absolute path of the
+file to the kill ring. Not using the modifier will copy only the
+filename. =C-c C-i= or =C-c TAB= for copying the path to the current
+buffer.
+
+While browsing directories, use =C-j= to go into a directory and =C-l= to
+move up.
+
+=C-space= to select multiple files and open them with =RET=. This is useful when
+switching to a project. Add a modifier =C-u RET= to open the files in an
+alternate vertically split buffers. 
+
+Find file as root =C-c r= does not require the Tramp syntax!
+
 *** Setting helm for some basic functions
 :PROPERTIES:
 :ID:       BC827A7A-D190-4CC6-95D5-0C80740CB94C
@@ -2542,8 +2562,9 @@ use both based on what I find useful.
 
 *** General settings for helm
 
-There are some useful tips in the reddit thread [[https://www.reddit.com/r/emacs/comments/bsc8pc/why_did_you_stop_using_helm/][Why did you stop using Helm? :
-emacs]]. 
+There are some useful tips in the reddit thread [[https://www.reddit.com/r/emacs/comments/bsc8pc/why_did_you_stop_using_helm/][Why did you stop using
+Helm? : emacs]]. The [[https://tuhdo.github.io/helm-intro.html][helm-intro]] is a good resource. The documentation is
+the best guide as always.
 
 #+BEGIN_SRC emacs-lisp
 ;; Don't have helm do window management for me
