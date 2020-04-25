@@ -1428,15 +1428,15 @@ This sequence will include a note as to why the state is being set.
 (use-package org-journal
   :ensure t
   :defer t
-:config
-(defun org-journal-file-header-func (time)
-  "Custom function to create journal header."
-  (concat
-    (pcase org-journal-file-type
-      (`daily "#+TITLE: Daily Journal\n#+STARTUP: showeverything")
-      (`weekly "#+TITLE: Weekly Journal\n#+STARTUP: folded")
-      (`monthly "#+TITLE: Monthly Journal\n#+STARTUP: folded")
-      (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded"))))
+  :config
+  (defun org-journal-file-header-func (time)
+    "Custom function to create journal header."
+    (concat
+     (pcase org-journal-file-type
+       (`daily "#+TITLE: Daily Journal\n#+STARTUP: showeverything")
+       (`weekly "#+TITLE: Weekly Journal\n#+STARTUP: folded")
+       (`monthly "#+TITLE: Monthly Journal\n#+STARTUP: folded")
+       (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded"))))
   :custom
   (org-journal-dir "~/my_org/journal/")
   (org-journal-file-format "%Y/%m/%Y-%m-%d.org")
@@ -1447,7 +1447,9 @@ This sequence will include a note as to why the state is being set.
   ;; Carrying over items though useful, sometimes results in duplication
   ;; and a loss of items, especially if journalling is carried out at
   ;; 12PM or when the day is changing.
-  (org-journal-carryover-items nil))
+  ;; New idea: Do not carry over clocked items. The remaining can be carried over
+  ;; (org-journal-carryover-items "TODO")
+  (org-journal-skip-carryover-drawers (list "LOGBOOK")))
 #+end_src
 
 #+RESULTS:
