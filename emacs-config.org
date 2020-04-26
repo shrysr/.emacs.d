@@ -2054,9 +2054,9 @@ This package contains a bunch of useful tools which can cut down a lot of work
 #+BEGIN_SRC emacs-lisp
 (use-package org-web-tools
 :defer 5
-:ensure nil
-:config
-(global-set-key (kbd "H-y") 'org-web-tools-insert-link-for-url))
+:bind (("H-y" . org-web-tools-insert-link-for-url)
+       ("H-a" . org-web-tools-insert-web-page-as-entry)))
+
 #+END_SRC
 
 ** org-download
