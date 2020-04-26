@@ -4148,6 +4148,9 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 
 *** TODO Open specific browser depending on the URL
 
+- Note taken on [2020-04-26 Sun 06:46] \\
+  The idea here is to gather the websites and links which work fine on eww
+  and have the remaining links open directly on the default web browser.
 - Note taken on [2019-03-07 Thu 11:59] \\
   This is worth setting up. It would be convenient for frequently visited websites like reddit and others, to open in the external browser, especially as they do not render well within w3m.
 
@@ -4162,6 +4165,8 @@ Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
   ("wiktionary\\.org" . eww-browse-url)
   ("github" . eww-browse-url)
   ("thefreedictionary\\.com" . eww-browse-url)
+  ("link\\.wired\\.com" . eww-browse-url)
+  ("links\\.gatesnotes\\.com" . eww-browse-url)
   ("." . browse-url-default-browser)
   ("youtube" . browse-url-default-macosx-browser)))
 #+END_SRC
