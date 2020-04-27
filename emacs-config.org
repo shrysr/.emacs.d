@@ -726,10 +726,13 @@ Note that this must be set first and then the agenda files specified.
 
 #+RESULTS:
 
-*** TEST Expanding search locations
+*** COMMENT Expanding search locations
     :PROPERTIES:
     :ID:       63a20a98-6090-4087-889d-7398df5b6bb9
     :END:
+    - Note taken on [2020-04-15 Wed 07:58] \\
+      I do not really use this as I am able to use ag/grep for these
+      locations, which is much faster than using the agenda search.
 
 I initially included my journal location to the agenda search. However it is very slow compared to using grep/rgrep/ag. Therefore, the agenda full text search is now limited to the project directory and the org-brain directory. The snippet below enables searching recursively within folders.
 
@@ -1379,7 +1382,6 @@ This sequence will include a note as to why the state is being set.
 
 #+END_SRC
 
-
 * Temporary package list
 - Note taken on [2020-03-30 Mon 07:58] \\
   A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
@@ -1434,7 +1436,6 @@ This sequence will include a note as to why the state is being set.
   have a bunch of nifty features that I want to try and port to scimax.
 
 ** Base config
-
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-journal
@@ -2567,7 +2568,8 @@ Find file as root =C-c r= does not require the Tramp syntax!
 
 There are some useful tips in the reddit thread [[https://www.reddit.com/r/emacs/comments/bsc8pc/why_did_you_stop_using_helm/][Why did you stop using
 Helm? : emacs]]. The [[https://tuhdo.github.io/helm-intro.html][helm-intro]] is a good resource. The documentation is
-the best guide as always.
+the best guide as always. Another good resource is the [[https://github.com/clemera/helm-ido-like-guide][Guide to get an
+intuitive and more ido-like helm interface in Emacs.]]
 
 #+BEGIN_SRC emacs-lisp
 ;; Don't have helm do window management for me
@@ -2894,9 +2896,6 @@ tips in setting up projectile with helm.
    smtpmail-queue-dir  (expand-file-name "~/my_mail/fmail/Queue/cur")))
 
 #+END_SRC
-
-#+RESULTS:
-| (lambda nil (interactive) (setq mu4e-headers-fields `((:human-date . 25) (:flags . 6) (:from . 22) (:thread-subject , (- (window-body-width) 70)) (:size . 7)))) | (lambda nil (interactive) (setq mu4e-headers-fields (cons '(:human-date . 25) (cons '(:flags . 6) (cons '(:from . 22) (cons (cons ':thread-subject (- (window-body-width) 70)) '((:size . 7)))))))) | #[0 \301\300!\210\302\211\207 [bookmark-make-record-function make-local-variable mu4e-view-bookmark-make-record] 2] |
 
 ** COMMENT mu4e alerts
 :PROPERTIES:
@@ -5449,7 +5448,6 @@ heading, tags and so on.
 :END:
 
 This section will be the place where all new packages and their settings make an entrance. In short the test will be that they are not activated by default and if I seek out the package, that would mean I find it useful to include in my main configuration.
-
 ** Enhanced python config
 *** TODO COMMENT Adapted python config
 Source [[https://github.com/PythonNut/quark-emacs/blob/dev/modules/config-python.el][quark-emacs/config-python.el at dev · PythonNut/quark-emacs · GitHub]]
@@ -5602,7 +5600,6 @@ studying. I will be adapting this to my purposes.
 #+BEGIN_SRC sh :tangle no
 pip install numpy pandas jupyter scikitlearn black 
 #+END_SRC
-
 
 ** Org spacer
 
