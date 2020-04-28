@@ -2195,7 +2195,63 @@ This package contains a bunch of useful tools which can cut down a lot of work
   (require 'org-download)
   )
 #+END_SRC
+** oddmuse-curl
+CLOSED: [2020-01-19 Sun 14:33]
+:PROPERTIES:
+:ID:       782AB8FA-34A6-4E69-8A71-E49A0C95088F
+:END:
+- Note taken on [2020-01-21 Tue 19:23] \\
+  converted to the use package method looking at the documentation.
+- Note taken on [2020-01-19 Sun 09:25] \\
+  Current issue: Emacswiki is working as expected with oddmuse-curl. However, my own wiki is not being listed. I am able to curl the contents of pages from my wiki which indicates that curl is working for the website. Discussions are on with Alex to figure this out.
 
+#+BEGIN_SRC emacs-lisp
+
+
+;; ;; Install the oddmuse package from github
+;; (oddmuse-curl :type git :host github :repo "kensanata/oddmuse-curl")
+;; (add-to-list 'load-path "~/scimax-personal/external_packages/oddmuse-curl/")
+
+ (use-package oddmuse-curl
+ :defer t
+ :straight (:type git :host github :repo "kensanata/oddmuse-curl")
+ :ensure t
+ :config
+;; user name
+(setq oddmuse-username "shrysr")
+
+;; Wiki names
+(setq oddmuse-wikis
+      '(("EmacsWiki" "https://www.emacswiki.org/emacs" utf-8 "abcd" nil)
+	("sr" "https://shrysr.ragavan.co" utf-8 nil nil)))
+
+;; Directory where files will be downloaded from the wiki for editing.
+(setq oddmuse-directory "~/my_org/01_wiki/oddmuse/")
+
+;; adding an oddmuse-odd for files in the fiki directory
+(add-to-list 'auto-mode-alist '("~/my_org/01_wiki/oddmuse" . oddmuse-mode))
+
+;; autoload modes
+(autoload 'oddmuse-edit "oddmuse-curl"
+  "Edit a page on an Oddmuse wiki." t)
+
+;; Not yet sure what this does and how it related to version control.
+(add-to-list 'vc-handled-backends 'oddmuse)
+(defun vc-oddmuse-registered (file)
+  "Handle files in `oddmuse-directory'."
+  (string-match (concat "^" (expand-file-name oddmuse-directory))
+                (file-name-directory file))))
+
+;; Since I work primarily with org before the wiki - I would rather not have the mode initialised.
+;; (oddmuse-mode-initialize)
+
+;; I would like to be able to call the wiki when desired and so the curl package is initialised.
+;;(require 'oddmuse-curl)
+
+#+END_SRC
+
+#+RESULTS:
+: vc-oddmuse-registered
 ** COMMENT Epubs in emacs 
 
 #+BEGIN_SRC emacs-lisp
