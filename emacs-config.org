@@ -2123,6 +2123,46 @@ components.
 #+RESULTS:
 : deflayer-activate-episteme
 
+** pinboard [2/2]
+CLOSED: [2020-01-19 Sun 14:33]
+:PROPERTIES:
+:ID:       B1A6F6F9-0713-456A-826E-DCE6E83E2AFF
+:END:
+
+- [X] Figure out the auth file settings from before
+- [X] Checkout the org mode snippet [[https://gist.github.com/khinsen/7ed357eed9b27f142e4fa6f5c4ad45dd][link]]
+
+To get started, visit your password settings page on Pinboard and get the API token that's displayed there.
+
+Then edit ~/.authinfo and add a line like this:
+
+#+BEGIN_SRC sh
+machine api.pinboard.in password foo:8ar8a5w188l3
+#+END_SRC
+
+
+This snippet seems to enable storing a pinboard link using the
+org-store-link function. I find this very useful. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package pinboard
+  :straight t
+  :config
+  (defun org-pinboard-store-link ()  
+    "Store a link taken from a pinboard buffer."  
+    (when (eq major-mode 'pinboard-mode)  
+      (pinboard-with-current-pin pin  
+	(org-store-link-props  
+	 :type "pinboard"  
+	 :link (alist-get 'href pin)  
+	 :description (alist-get 'description pin)))))  
+  
+  (org-link-set-parameters "pinboard"  
+			   :follow #'browse-url  
+			   :store #'org-pinboard-store-link))
+#+END_SRC
+
+#+RESULTS:
 ** org-web-tools
 :PROPERTIES:
 :ID:       CE6402C3-BDF9-4B59-A01A-DC7EF461CC5A
