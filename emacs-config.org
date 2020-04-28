@@ -3732,7 +3732,6 @@ Entrypoint Hydra
 ;; ("p" (hera-push 'hydra-projectile/body) "projectile")
 ("c" (org-capture) "capture")
 ("t" (hera-push 'hydra-treemacs/body))
-("b" (hera-push 'hydra-bookmarks/body) "bookmarks")
 ("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
 ("m" (hera-push 'hydra-mu4e/body) "mail")
 ("w" (hera-push 'hydra-window/body) "windows")
@@ -3745,7 +3744,8 @@ Entrypoint Hydra
 ("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
 ("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
 ("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
-("l" (hera-push 'hydra-links/body) "Links"))
+("l" (hera-push 'hydra-links/body) "Links")
+("b" (hera-push 'hydra-brain/body) "brain"))
 
 #+END_SRC
 
@@ -3942,6 +3942,16 @@ With ARG, swap them instead."
 ("d" define-word "define word" :color red)
 ("D" lookup-word "wiktionary lookup" :color red)
 ("m" mw-thesaurus-lookup-at-point "Merriam-webster thesaurus" :color red))))
+#+END_SRC
+
+** hydra-brain
+
+#+BEGIN_SRC emacs-lisp  
+(nougat-hydra hydra-brain (:color blue)
+("brain"
+(("b" helm-brain "helm-brain" :color blue)
+("s" helm-org-rifle-brain "helm rifle brain" :color blue)
+("r" org-brain-refile "refile to brain" :color blue))))
 #+END_SRC
 
 * Pastes
