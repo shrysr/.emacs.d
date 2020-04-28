@@ -1836,39 +1836,117 @@ Starting off with the basic configuration posted in org-projectile github repo.
 #+END_SRC
 
 * Knowledge management
-** COMMENT org-brain
+** org-brain
+*** Main configuration
 
 #+begin_src emacs-lisp 
-  (use-package org-brain
-    :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain")
-    ;; :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
-    ;; 			 :fork (:host github :repo "dustinlacewell/org-brain"))
-    :after org
-    :bind ("M-s v" . org-brain-visualize)
-    :config
-    ;; this unbinds all default org-brain bindings
-    (setcdr org-brain-visualize-mode-map nil)
-    (setq
-     ;; org-brain-path (f-join path-of-this-repo "brain")
-     org-brain-visualize-default-choices 'all
-     org-brain-include-file-entries t
-     org-brain-scan-for-header-entries t
-     org-brain-file-entries-use-title t
-     org-brain-show-full-entry t
-     org-brain-show-text t
-     org-id-track-globally t
-     org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
-     org-brain-title-max-length 24)
-    ;; (push '("b" "Brain" plain (function org-brain-goto-end)
-    ;;         "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
-    ;;       org-capture-templates))
-)
-    ;; (add-hook 'org-brain-refile 'org-id-get-create)))
+(use-package org-brain
+  :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain")
+  ;; :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
+  ;; 			 :fork (:host github :repo "dustinlacewell/org-brain"))
+  :after org
+  :bind ("M-s v" . helm-brain)
+  :config
+  ;; this unbinds all default org-brain bindings
+  ;; (setcdr org-brain-visualize-mode-map nil)
+  (setq
+   ;; org-brain-path (f-join path-of-this-repo "brain")
+   org-brain-visualize-default-choices 'all
+   org-brain-include-file-entries t
+   org-brain-scan-for-header-entries t
+   org-brain-file-entries-use-title t
+   org-brain-show-full-entry t
+   org-brain-show-text t
+   org-id-track-globally t
+   org-brain-vis-current-title-append-functions '(org-brain-entry-tags-string)
+   org-brain-title-max-length 24)
+  ;; (push '("b" "Brain" plain (function org-brain-goto-end)
+  ;;         "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:ID: [%(org-id-get-create)]\n:END:" :empty-lines 1
+  ;;         org-capture-templates))
+
+  (defun org-brain-cliplink-resource ()
+    "Add a URL from the clipboard as an org-brain resource.
+Suggest the URL title as a description for resource."
+    (interactive)
+    (let ((url (org-cliplink-clipboard-content)))
+      (org-brain-add-resource
+       url
+       (org-cliplink-retrieve-title-synchronously url)
+       t)))
+
+  (define-key org-brain-visualize-mode-map (kbd "L") #'org-brain-cliplink-resource))
+;; (add-hook 'org-brain-refile 'org-id-get-create)))
 #+end_src
 
 #+RESULTS:
 : org-brain-visualize
+*** org-cliplink function
 
+#+BEGIN_SRC emacs-lisp
+(defun org-brain-cliplink-resource ()
+  "Add a URL from the clipboard as an org-brain resource.
+Suggest the URL title as a description for resource."
+  (interactive)
+  (let ((url (org-cliplink-clipboard-content)))
+    (org-brain-add-resource
+     url
+     (org-cliplink-retrieve-title-synchronously url)
+     t)))
+
+(define-key org-brain-visualize-mode-map (kbd "L") #'org-brain-cliplink-resource)
+#+END_SRC
+
+*** Chronological entries
+
+#+BEGIN_SRC emacs-lisp
+;; Setup org-expiry and define a org-agenda function to compare timestamps
+(require 'org-expiry)
+(setq org-expiry-inactive-timestamps t)
+(defun org-expiry-created-comp (a b)
+  "Compare `org-expiry-created-property-name' properties of A and B."
+  (let ((ta (ignore-errors
+              (org-time-string-to-seconds
+               (org-entry-get (get-text-property 0 'org-marker a)
+                              org-expiry-created-property-name))))
+        (tb (ignore-errors
+              (org-time-string-to-seconds
+               (org-entry-get (get-text-property 0 'org-marker b)
+                              org-expiry-created-property-name)))))
+    (cond ((if ta (and tb (< ta tb)) tb) -1)
+          ((if tb (and ta (< tb ta)) ta) +1))))
+
+;; Add CREATED property when adding a new org-brain headline entry
+(add-hook 'org-brain-new-entry-hook #'org-expiry-insert-created)
+
+;; Finally add a function which lets us watch the entries chronologically
+(defun org-brain-timeline ()
+  "List all org-brain headlines in chronological order."
+  (interactive)
+  (let ((org-agenda-files (org-brain-files))
+        (org-agenda-cmp-user-defined #'org-expiry-created-comp)
+        (org-agenda-sorting-strategy '(user-defined-down)))
+    (org-tags-view nil (format "+%s>\"\"" org-expiry-created-property-name))))
+#+END_SRC
+
+*** helm-org-rifle brain
+
+#+BEGIN_SRC emacs-lisp
+(defun helm-org-rifle-brain ()
+  "Rifle files in `org-brain-path'."
+  (interactive)
+  (let ((helm-org-rifle-close-unopened-file-buffers nil))
+    (helm-org-rifle-directories (list org-brain-path))))
+
+(defun helm-org-rifle-open-in-brain (candidate)
+  (-let (((buffer . pos) candidate))
+    (with-current-buffer buffer
+      (goto-char pos)
+      (org-brain-visualize-entry-at-pt))))
+
+(add-to-list 'helm-org-rifle-actions
+             (cons "Show entry in org-brain" 'helm-org-rifle-open-in-brain)
+             t)
+#+END_SRC
 
 *** Navigation Helpers
 
