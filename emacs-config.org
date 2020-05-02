@@ -2252,6 +2252,16 @@ CLOSED: [2020-01-19 Sun 14:33]
 
 #+RESULTS:
 : vc-oddmuse-registered
+** ox-oddmuse
+I'm building an oddmuse wiki to use for my blogging and as a repository for my braindump. A wiki driven blog is much more useful in inviting collaboration, and any technical note or article is always worth updating. There are many more advantages in using Oddmuse.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-oddmuse
+  :defer t
+ :straight (:type git :host github :repo "mbork/ox-oddmuse")
+ :init (require 'ox-oddmuse))
+#+END_SRC
+
 ** COMMENT Epubs in emacs 
 
 #+BEGIN_SRC emacs-lisp
