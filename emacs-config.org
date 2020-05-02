@@ -6841,49 +6841,6 @@ git clone https://github.com/Kungsgeten/org-brain-export.git
 #+END_SRC
 
 #+RESULTS:
-** STABLE ox-oddmuse
-CLOSED: [2020-01-18 Sat 08:39]
-:PROPERTIES:
-:ID:       23CA002A-D195-4503-A3A4-F8DDAD1763A2
-:END:
-
-I'm building an oddmuse wiki to use for my blogging and as a repository for my braindump. A wiki driven blog is much more useful in inviting collaboration, and any technical note or article is always worth updating. There are many more advantages in using Oddmuse.
-
-This package is not on MELPA, so lets clone to the external packages folder.
-
-#+BEGIN_SRC sh
-cd ~/scimax-personal/external_packages/
-git clone https://github.com/mbork/ox-oddmuse.git
-#+END_SRC
-
-#+RESULTS:
-
-Lets add the specific path to Emacs for the package to be available.
-#+BEGIN_SRC sh
-ls -l ~/scimax-personal/external_packages/
-#+END_SRC
-
-#+RESULTS:
-| total      | 168 |        |       |       |    |     |       |                       |
-| -rw-r--r-- |   1 | shrysr | staff | 10273 | 24 | Sep | 15:55 | better-breadcrumbs.el |
-| drwxr-xr-x |   2 | shrysr | staff |    64 | 24 | Sep | 15:55 | frog-jump-buffer      |
-| drwxr-xr-x |  20 | shrysr | staff |   640 | 24 | Sep | 15:55 | icicle_packages        |
-| -rw-r--r-- |   1 | shrysr | staff | 10701 | 24 | Sep | 15:55 | icicles-install.el    |
-| drwxr-xr-x |   8 | shrysr | staff |   256 | 15 | Jan | 17:22 | oddmuse-curl          |
-| drwxr-xr-x |   2 | shrysr | staff |    64 | 24 | Sep | 15:55 | org-recipes           |
-| drwxr-xr-x |   7 | shrysr | staff |   224 | 18 | Jan | 08:34 | ox-oddmuse            |
-| -rw-r--r-- |   1 | shrysr | staff | 57348 | 24 | Sep | 15:55 | ox-reveal.el          |
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/scimax-personal/external_packages/ox-oddmuse/")
-(require 'ox-oddmuse)
-#+END_SRC
-
-#+RESULTS:
-: ox-oddmuse
-
-Okay. The above works. It occurs to me that I could include the paths as a list of variables and just update from a single location.
-
 ** yanking links in org format
    :PROPERTIES:
    :ID:       8fa6f610-3dcf-40ab-96f4-7d1d6e975f72
