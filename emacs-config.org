@@ -3251,6 +3251,33 @@ tips in setting up projectile with helm.
 : sr/org-msg-style
 
 * Programming customisations
+** Common editing modes
+
+Source: [[https://github.com/zakandrewking/.emacs.d/blob/master/init.el][.emacs.d/init.el at master · zakandrewking/.emacs.d · GitHub]]
+
+This is defined here so that settings specific to these modes could be
+added more easily. For exmaple electric-pair mode. 
+
+#+BEGIN_SRC emacs-lisp
+(defvar common-editing-modes
+    (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode 'matlab-mode
+    'sh-mode 'js2-mode 'markdown-mode 'haskell-mode 'org-mode 'c-mode 'css-mode
+    'web-mode 'typescript-mode 'plantuml-mode))
+#+END_SRC
+
+** Electic pair mode only for specified modes
+
+Source: [[https://github.com/zakandrewking/.emacs.d/blob/master/init.el][.emacs.d/init.el at master · zakandrewking/.emacs.d · GitHub]]
+
+#+BEGIN_SRC emacs-lisp
+;; parens. automatically pair parens, but make it buffer local
+;; http://emacs.stackexchange.com/questions/5981/how-to-make-electric-pair-mode-buffer-local
+(defun my-inhibit-electric-pair-mode (char)
+  (not (member major-mode common-editing-modes)))
+(setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
+(electric-pair-mode 1)
+#+END_SRC
+
 ** emmet-mode 
 :PROPERTIES:
 :ID:       8BB48A4C-E7D2-4167-B210-5B732A0280E9
