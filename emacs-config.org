@@ -3565,6 +3565,28 @@ Source: [[https://superuser.com/questions/495912/how-to-customize-the-eshell-pro
                 (if (= (user-uid) 0) " # " " $ "))))
 #+END_SRC
 
+** orgit 
+I would like to be able to create links to specific commits in
+repos. Using orgit, I need to open the particular commit buffer and then
+use an org-store-link command to store the link to the particular
+revision. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package orgit
+     :straight (orgit :type git :host github :repo "magit/orgit"))
+
+#+END_SRC
+
+** TODO realgud
+
+Apparently this packages enhances the debuggers of many languages. Yet
+to check out how this will help me. Elpy by itself has a bunch of
+shortcuts with respect to python.
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'realgud)
+#+END_SRC
+
 ** emmet-mode 
 :PROPERTIES:
 :ID:       8BB48A4C-E7D2-4167-B210-5B732A0280E9
