@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: pyfun-insert-app-header 
+# key: pyfun-appheader
+# --
+def print_header(app_name):
+    print("----------------!!-----------------")
+    print(f"\t{app_name")
+    print("----------------!!-----------------")
+

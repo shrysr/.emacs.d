@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: oddmuse-tag
+# key: ota
+# --
+[[tag:$0 ]]

@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: pyfun-insert-app-header 
+# key: pyfun-appheader
+# --
+Header
+
+#+BEGIN_SRC ipython
+def print_header(app_name):
+    print("----------------!!-----------------")
+    print(f"{app_name")
+    print("----------------!!-----------------")
+
+#+END_SRC
