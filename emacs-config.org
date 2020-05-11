@@ -2359,7 +2359,7 @@ To get started, visit your password settings page on Pinboard and get the API to
 
 Then edit ~/.authinfo and add a line like this:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 machine api.pinboard.in password foo:8ar8a5w188l3
 #+END_SRC
 
@@ -2446,7 +2446,8 @@ CLOSED: [2020-01-19 Sun 14:33]
 ;; Wiki names
 (setq oddmuse-wikis
       '(("EmacsWiki" "https://www.emacswiki.org/emacs" utf-8 "abcd" nil)
-	("sr" "https://shrysr.ragavan.co" utf-8 nil nil)))
+	("sr" "https://shrysr.ragavan.co" utf-8 nil nil)
+	("jobs" "https://wikijobs.ragavan.co" utf-8 nil nil)))
 
 ;; Directory where files will be downloaded from the wiki for editing.
 (setq oddmuse-directory "~/my_org/01_wiki/oddmuse/")
