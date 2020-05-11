@@ -3956,14 +3956,14 @@ Adapted from ldlework
         (goto-char (+ (car minmax) adjusted-point))))))(require 'f)
 #+END_SRC
 
-** Projects search [0/6]
+** Projects search [1/6]
 :PROPERTIES:
 :ID:       8351BECB-609E-4D19-9DAE-C03728380FCB
 :END:
 - [ ] Exclude git files
 - [ ] Exclude csv files
 - [ ] Exclude html and related files 
-- [ ] decide between helm-ag and counsel-ag and the method to jump between files.
+- [X] decide between helm-ag and counsel-ag and the method to jump between files.
 - [ ] Decide about plugging in arguments to activate different kinds of search.
 - [ ] Find if multiple paths can be included or not. 
 
@@ -4130,7 +4130,7 @@ Entrypoint Hydra
 ;; ("p" (hera-push 'hydra-projectile/body) "projectile")
 ("c" (org-capture) "capture")
 ("t" (hera-push 'hydra-treemacs/body))
-("h" (hera-push 'hydra-help/body) "help" :column "Emacs")
+("f" (hera-push 'hydra-functions/body) "Functions" :column "Emacs")
 ("m" (hera-push 'hydra-mu4e/body) "mail")
 ("w" (hera-push 'hydra-window/body) "windows")
 ("z" (hera-push 'hydra-zoom/body) "zoom")
@@ -4349,8 +4349,39 @@ With ARG, swap them instead."
 ("brain"
 (("b" helm-brain "helm-brain" :color blue)
 ("s" helm-org-rifle-brain "helm rifle brain" :color blue)
-("r" org-brain-refile "refile to brain" :color blue))))
+("r" org-brain-refile "refile to brain" :color blue)
+("v" org-brain-visualize "Org brain visualize" :color blue))))
 #+END_SRC
+
+** hydra-functions
+
+This is an attempt to collect some functions that I presume to use on a
+frequent basis, to the extent that having a hydra is reasonably less
+typing on finding the command with M-x.
+
+It is worth noting here that while some keys may be long, but the virtue
+of head color the hydra commands can then be repeated as many times as
+required.
+
+Another benefit for example, is disabling the other keymaps for
+eyebrowse and restoring the org-refile command 
+
+
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-functions (:color blue)
+("functions"
+(("j" helm-org-rifle "helm org rifle" :color blue)
+("en" eyebrowse-rename-window-config "eyebrowse rename :color red)
+("ec" eyebrowse-create-window-config "eyebrowse create" :color red)
+("es" eyebrowse-switch-to-window-config "eyebrowse switch" :color blue)
+("[" winner-undo "winner UNDO" :color red)
+("]" winner-redo "winner REDO" :color red)
+("sp" sr/fun/proj-search "Ag PROJECTS directory" :color blue)
+("so" sr/fun/org-search "Ag ORG directory" :color blue))))
+#+END_SRC
+
+
 
 * Pastes
 ** Webpaste
