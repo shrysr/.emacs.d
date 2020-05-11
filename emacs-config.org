@@ -1915,7 +1915,8 @@ This package makes it easy to switch between frames, and is particularly useful 
   (global-set-key (kbd "C-7") 'winum-select-window-7)
   (global-set-key (kbd "C-8") 'winum-select-window-8)
   (setq
-   window-numbering-scope            'global
+   winum-scope                       'frame-local
+   window-numbering-scope            'frame-local
    winum-ignored-buffers             '(" *which-key*")
    winum-ignored-buffers-regexp      '(" \\*Treemacs-.*"))
   (winum-mode))
