@@ -3220,7 +3220,7 @@ tips in setting up projectile with helm.
    mu4e-compose-dont-reply-to-self t
    mu4e-headers-auto-update t
    message-kill-buffer-on-exit t
-   mu4e-update-interval 300
+   mu4e-update-interval 500
    )
 
   ;; mu4e email refiling loations
