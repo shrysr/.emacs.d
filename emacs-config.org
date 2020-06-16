@@ -1,4 +1,4 @@
-#+PROPERTY: header-args :results silent :tangle ./dotemacs.el 
+#+PROPERTY: header-args :results silent :tangle ./dotemacs.el
 #+toc: t
 #+hugo_base_dir: ~/hugo-sr/
 #+hugo_section: docs
@@ -56,7 +56,7 @@ comment out Org headings. It should also be possible to have a setup
 wherein headings with specific tags are not tangled, similar to the
 noexport tag option with typical org exports. The caveat of using this
 option is that these headings will be neglected in an export to say,
-something like a Hugo document. 
+something like a Hugo document.
 
 Package management is done via the interesting straight.el. There are
 other approaches like borg, using quelpa and so on that I have not
@@ -78,7 +78,7 @@ General notes:
   loading emacs.
 - I would prefer not using git hooks for the tangling because my commit
   workflow is still erratic. Sometimes, there is no change in code, but
-  just some additional notes to the configuration. 
+  just some additional notes to the configuration.
 
 ** Inspirations (and other literate configurations)
 
@@ -147,6 +147,9 @@ construct.
    #+END_SRC
 
 ** Garbage collection
+:PROPERTIES:
+:ID:       B38F4BDA-37C8-412E-B892-851A2176CFD0
+:END:
 - Note taken on [2020-04-09 Thu 18:09] \\
   As the doom emacs FAQ states - the GC collection has to be set back to
   normal as well.
@@ -233,7 +236,7 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 
  #+RESULTS:
 
-** Some basic directory definitions 
+** Some basic directory definitions
 :PROPERTIES:
 :ID:       52D8055A-D99B-463C-8F97-056C068EDACD
 :END:
@@ -273,7 +276,10 @@ It is infuriating that this is not a default in emacs. Therefore this minor snip
 (load (sr/fun/emacs-dir "dotemacs.el"))
 #+END_SRC
 
-* .gitignore 
+* .gitignore
+:PROPERTIES:
+:ID:       3BBFF3C0-D494-4988-A450-22662D15E5FE
+:END:
 - Note taken on [2020-03-26 Thu 11:38] \\
   In this process, I realised that as long as there is a .gitignore file present (and not in a commit) and the specified files have never been in a commit - git automatically ignores these files. i.e there is no need to commit a .gitignore file.
 
@@ -301,7 +307,7 @@ var/
 .lsp-session*
 #+END_SRC
 
-* Tangle Emacs config on save 
+* Tangle Emacs config on save
 :PROPERTIES:
 :ID:       EE52585C-C1D6-4759-94AE-CCECA01E5D41
 :END:
@@ -310,7 +316,7 @@ var/
 :ID:       47CCBB72-667B-4710-AF6F-32B9DEA32E89
 :END:
 
-As such the tangling hardly takes any time. [[https://thewanderingcoder.com/2015/02/literate-emacs-configuration/][Literate Emacs Configuration | Sean Miller: The Wandering Coder]] provides an example of setting up a function. This uses the buffer file name to tangle for the emacs config file. A hook is added to the save function to check. 
+As such the tangling hardly takes any time. [[https://thewanderingcoder.com/2015/02/literate-emacs-configuration/][Literate Emacs Configuration | Sean Miller: The Wandering Coder]] provides an example of setting up a function. This uses the buffer file name to tangle for the emacs config file. A hook is added to the save function to check.
 
 - [ ] Add a force tangle option if files do not exist. This is because, if for troubleshooting purposes, the el files are deleted, and there is no change in the org file, then the tangling does not take place at all. In general, it may be better to ensure the el files are deleted and tangled again.
 
@@ -343,7 +349,7 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 (sr/fun/async-tangle-init)
 
 #+BEGIN_SRC emacs-lisp :tangle no
-(defun sr/fun/async-tangle-init () 
+(defun sr/fun/async-tangle-init ()
   (async-start
    (lambda ()
      (org-babel-tangle))
@@ -380,15 +386,15 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 :ID:       6BBBB542-2501-4516-A138-692EC000CBC3
 :END:
 
-Copied from ldleworth's config. I think this makes sense for me at the moment. Here is a summary: 
+Copied from ldleworth's config. I think this makes sense for me at the moment. Here is a summary:
 
 - Setup auto-save for every file that is visited.
 - Set the auto-save directory explicitly to save all the auto-saves in a single location.
   - The directory will be created if not available, and will be ignored for
     git.
-- Use the autosave directory for backups as well. 
+- Use the autosave directory for backups as well.
 - [ ] Save every +20+ 60 seconds (experiment with the time frame)
-  - This causes too much lag and has been disabled. 
+  - This causes too much lag and has been disabled.
 - [ ] Backup on each save.
   - [ ] This uses a package. I am not sure whether this is necessary.
 - Backup files even if version controlled
@@ -467,13 +473,15 @@ Since I switch between a Linux machine and a Mac frequently, it is better to def
 
 * Org-mode related
 
-These have packages and settings that are mostly related to org-mode though there may be other settings that bleed in. org-babel has been given it's own section though it is org-mode related.
+These have packages and settings that are mostly related to org-mode
+though there may be other settings that bleed in. org-babel has been
+given it's own section though it is org-mode related.
 
 ** Installing org and org plus contrib via straight
 :PROPERTIES:
 :ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
 :END:
-*** COMMENT Old
+*** Old
 Reference: [[https://github.crookster.org/switching-to-straight.el-from-emacs-26-builtin-package.el/][Crookster's blog post]]
 
 #+BEGIN_SRC emacs-lisp
@@ -520,7 +528,7 @@ Inserted by installing 'org-mode' or when a release is made."
    ("C-c a" . org-agenda))
 #+END_SRC
 
-*** ldlework's alternative
+*** COMMENT ldlework's alternative
 - Note taken on [2020-03-30 Mon 20:24] \\
   The only addition is the installation of org-plus-contrib and setting the shortcuts for the agenda and link.
 **** Fix org-git version
@@ -587,23 +595,23 @@ Inserted by installing org-mode or when a release is made."
    ("C-c a" . org-agenda))
 #+END_SRC
 
-** Collection of hooks for org mode 
+** Collection of hooks for org mode
 :PROPERTIES:
 :ID:       AA8706FA-0B26-4F0A-B6F8-2E2EDA551375
 :END:
-This is intended to be a collection of hooks loaded after org mode. It may be more convenient to add such hooks in the package configurations since the hooks will not work if the package is not available. 
+This is intended to be a collection of hooks loaded after org mode. It may be more convenient to add such hooks in the package configurations since the hooks will not work if the package is not available.
 
-However, hooks have the potential to slow down search, opening multiple files like in org-agenda, tramp files and so on. Therefore, the idea is to try collect the hooks here and include logic to discard hooks if the mode or package is not installed. 
+However, hooks have the potential to slow down search, opening multiple files like in org-agenda, tramp files and so on. Therefore, the idea is to try collect the hooks here and include logic to discard hooks if the mode or package is not installed.
 
 - [ ] Maybe work on a method to switch off all the hooks after org mode since this mode is being used extensively.
 
-List of hooks 
+List of hooks
 - [ ] Org indent mode
 - [ ] Flyspell mode
-- [ ] 
+- [ ]
 
 #+BEGIN_SRC emacs-lisp
-;; Indent by header level 
+;; Indent by header level
 
 (with-eval-after-load 'org
    (add-hook 'org-mode-hook #'org-indent-mode))
@@ -637,7 +645,8 @@ List of hooks
 #+END_SRC
 
 #+RESULTS:
-** Agenda mechanics
+
+** TODO Agenda mechanics
 *** Weekday starts on Monday
     :PROPERTIES:
     :ID:       d9f341b0-ad88-40ca-a19a-9ca710b2d681
@@ -664,14 +673,19 @@ List of hooks
 #+begin_src emacs-lisp
 (setq
  org-directory "~/my_org/"
- org-agenda-files '("~/my_org/")
- )
+ org-agenda-files '("~/my_org/"))
  #+end_src
 
  #+RESULTS:
  | ~/my_org/ |
 
-*** TODO Agenda customisation
+*** COMMENT Enable a sticky agenda
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-sticky nil)
+#+END_SRC
+
+*** TODO COMMENT Agenda customisation
     :PROPERTIES:
     :ID:       0b93631b-5a2d-4764-92b0-f5cdf42fffe7
     :END:
@@ -707,10 +721,13 @@ List of hooks
       )
 #+end_src
 
-*** TEST Include gpg files in agenda generation
-    :PROPERTIES:
+*** Include gpg files in agenda generation
+:PROPERTIES:
     :ID:       4c1a0a00-d123-4b6a-a209-219872d43ca1
     :END:
+- Note taken on [2020-05-14 Thu 23:12] \\
+  This is tested to work as expected. Active date entries from the gpg
+  files are being included.
 
 Source: https://emacs.stackexchange.com/questions/36542/include-org-gpg-files-in-org-agenda
 Note that this must be set first and then the agenda files specified.
@@ -747,7 +764,7 @@ I initially included my journal location to the agenda search. However it is ver
 						 '("~/my_projects/" "~/my_org/brain/"))))
 #+end_src
 
-*** TODO Adding org archive for text search. Optimise this
+*** TODO COMMENT Adding org archive for text search. Optimise this
 :PROPERTIES:
 :CREATED:  <2019-02-07 Thu 08:29>
 :ID:       D8743646-BD5B-463C-AB4B-CAB8AF8AA535
@@ -809,8 +826,8 @@ I want to shift the org habit graph in the agenda further out right so as to lea
   archive file used to replicate the structure of the file where the entry
   was archived from. However, I have realised that the properties of
   archived entries provide all the information that I would need from an
-  archived file. 
-  
+  archived file.
+
   Projects may require a separate approach. Perhaps archived subtrees
   would help in that case. For general GTD based workflows, the simple
   approach of archiving under a 'Archive' heading seems sufficient. This
@@ -852,7 +869,7 @@ above. Some other good starting points are:
 #+RESULTS:
 : t
 
-**** doct functions 
+**** doct functions
 :PROPERTIES:
 :ID:       CC7C84DE-AFEF-4E44-9B5B-056DFA58AF5B
 :END:
@@ -866,7 +883,7 @@ above. Some other good starting points are:
   is required. This approach seems to cater to more situations in a
   standard manner.
 
-#+BEGIN_SRC emacs-lisp  
+#+BEGIN_SRC emacs-lisp
 (defun sr/fun/todo-act-today ()
 '("* %{todo-state} %?"
 ":PROPERTIES:"
@@ -919,7 +936,7 @@ above. Some other good starting points are:
 ":END:"
 "%?"))
 
-(defun sr/fun/todo-link-passive ()
+(defun sr/fun/note-link-passive ()
 '("* %a"
 ":PROPERTIES:"
 ":CREATED: %U"
@@ -938,6 +955,9 @@ above. Some other good starting points are:
 : sr/fun/note-passive
 
 **** doct templates
+:PROPERTIES:
+:ID:       A4795CBE-F6A0-42F9-86F2-FEC78870CF32
+:END:
 
 - [X] Created inactive date for all entries
 - [X] Mail : Active date + mu4e link
@@ -946,24 +966,24 @@ above. Some other good starting points are:
 - [ ] Note : With active date to be refiled or acted upon.
   - I am not sure if this makes sense. If action is required, it should
     be a task.
-- [ ] Link : 
+- [ ] Link :
 - [ ] Capture to today's journal
 - [ ] Capture to tomorrow's journal
 - [ ] Capture to current clocked task
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       (doct '(("capture" :keys "c"
                :file "~/my_org/todo-global.org"
                :prepend t
-	       :children (("inbox"  
+	       :children (("inbox"
 			   :keys "t"
 			   :type entry
 	                   :file "~/my_org/refile.org"
 			   :headline "inbox"
 			   :todo-state "TODO"
 			   :template sr/fun/todo-passive)
-			  ("mail"  
+			  ("mail"
 			   :keys "m"
 			   :type entry
 	                   :file "~/my_org/refile.org"
@@ -981,32 +1001,32 @@ above. Some other good starting points are:
 	      ("Todo" :keys "t"
                :file "~/my_org/todo-global.org"
                :prepend t
-	       :children (("inbox"  
+	       :children (("inbox"
 			   :keys "t"
 			   :type entry
 			   :headline "@inbox"
 			   :todo-state "TODO"
 			   :template sr/fun/todo-act-date)
-			  ("mail"  
+			  ("mail"
 			   :keys "m"
 			   :type entry
 			   :headline "@mail"
 			   :todo-state "TODO"
 			   :template sr/fun/todo-link-act-date)
-			  ("article"  
+			  ("article"
 			   :keys "r"
 			   :type entry
 			   :headline "@reading"
 			   :todo-state "TODO"
 			   :template sr/fun/todo-link-act-date)
-			  ("File link"  
+			  ("File link"
 			   :keys "f"
 			   :type entry
 			   :headline "@inbox"
 			   :todo-state "TODO"
 			   :clock-in t
 			   :template sr/fun/todo-file-link-act-date)
-			  ("External link"  
+			  ("External link"
 			   :keys "e"
 			   :type entry
 			   :headline "@reading"
@@ -1016,17 +1036,24 @@ above. Some other good starting points are:
                :file "~/my_org/notes.org"
                :prepend t
                :template sr/fun/note-passive
-               :children (("Fast note"  
+               :children (("Fast note"
 			   :keys "n"
-			   :type entry	                       
-			   :headline   "@Notes"
-			   )
-			  ("Mail note"
-			   :template sr/fun/todo-link-passive
+			   :type entry
+			   :headline   "@Notes")
+			  ("Emacs note"
+			   :keys "e"
+			   :file "~/my_org/emacs.org"
+			   :type entry)
+			  ("Mail Archive"
+			   :template sr/fun/note-link-passive
 			   :keys "m"
 			   :type entry
-			   :headline "@Mail archive"
-			   :file "~/my_org/notes.org")
+			   :headline "@mail archive")
+			  ("Read Archive"
+			   :template sr/fun/note-link-passive
+			   :keys "r"
+			   :type entry
+			   :headline "@read archive")
 			  ("DS Link note"  :keys "d"
 			         :file "~/my_org/datascience.org"
                            :headline   "@Datascience @Notes"
@@ -1165,6 +1192,9 @@ buffer.
 ** TODO Refile mechanics
 
 *** Refile target level
+:PROPERTIES:
+:ID:       CA519BE8-36B0-42E4-AAA2-9FB6E0550C0E
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-refile-targets
@@ -1173,6 +1203,9 @@ buffer.
 #+END_SRC
 
 *** General refiling settings
+:PROPERTIES:
+:ID:       FFCC1781-C5C5-4A3C-9ED1-7E6424E958C2
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-refile-use-outline-path 'file)
@@ -1199,6 +1232,9 @@ automatic clock to capture time, unless it is being clocked to a
 specific project.
 
 **** Defining default Task
+:PROPERTIES:
+:ID:       391EC3C2-323A-4E39-8281-B5C4CD6C093E
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defvar sr/var/organization-task-id "a8712a47-a648-477f-bdbf-d6004a0cc70b")
@@ -1213,6 +1249,9 @@ specific project.
 : sr/clock-in-organization-task-as-default
 
 **** Punch in
+:PROPERTIES:
+:ID:       05072AC4-8A12-44B6-8BC4-53A012AA05EE
+:END:
 
 Bernt Hansen shares that he has a default punch in and punch out task that keeps the clock on all day. I think this will work for me as well. Other than work and projects, most of the time I am tinkering with Emacs, or writing a journal note or trying to re-organise my stuff. By using a punch in and out, I can track how much time I am engaged with a computer, other than specific projects.
 
@@ -1227,6 +1266,9 @@ Bernt Hansen shares that he has a default punch in and punch out task that keeps
 : sr/punch-in
 
 **** Punch Out
+:PROPERTIES:
+:ID:       4FCAA0D2-152B-4B3B-A460-8778D419BB2B
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun sr/punch-out ()
@@ -1239,6 +1281,9 @@ Bernt Hansen shares that he has a default punch in and punch out task that keeps
 #+RESULTS:
 : sr/punch-out
 **** Advising clock Out
+:PROPERTIES:
+:ID:       5A0C48D0-72C6-4D5A-8216-0F3D4D2B98A0
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun sr/clock-out-maybe ()
