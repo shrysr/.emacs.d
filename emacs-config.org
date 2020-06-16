@@ -4993,60 +4993,51 @@ of head color the hydra commands can then be repeated as many times as
 required.
 
 Another benefit for example, is disabling the other keymaps for
-eyebrowse and restoring the org-refile command 
+eyebrowse and restoring the org-refile command
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-functions (:color blue)
 ("functions"
 (("j" helm-org-rifle "helm org rifle" :color blue)
-("hp" helm-multi-swoop-projectile "helm multi swoop projectile" :color red)
-("hb" helm-multi-swoop "helm multi swoop" :color blue)
+("r" org-refile "org refile" :color blue)
+("hb" helm-org-rifle-current-buffer "helm org rifle current buffer" :color red)
+("hsp" helm-multi-swoop-projectile "helm multi swoop projectile" :color red)
+("hsm" helm-multi-swoop "helm multi swoop" :color blue)
 ("en" eyebrowse-rename-window-config "eyebrowse rename" :color red)
 ("ec" eyebrowse-create-window-config "eyebrowse create" :color red)
 ("es" eyebrowse-switch-to-window-config "eyebrowse switch" :color blue)
 ("[" winner-undo "winner UNDO" :color red)
 ("]" winner-redo "winner REDO" :color red)
 ("sp" sr/fun/proj-search "Ag PROJECTS directory" :color blue)
-("so" sr/fun/org-search "Ag ORG directory" :color blue))))
+("so" sr/fun/org-search "Ag ORG directory" :color blue)
+("og" oddmuse-go "oddmuse go" :color red)
+("on" oddmuse-new "oddmuse new" :color blue)
+("or" oddmuse-rc "oddmuse rc" :color red)
+("os" oddmuse-search "oddmuse search" :color red)
+("oi" oddmuse-insert-link "oddmuse insert lnk" :color blue)
+("on" oddmuse-insert-page-name "oddmuse inser page name" :color red))))
+
 #+END_SRC
 
-
-
-* Pastes
-** Webpaste
-- Note taken on [2020-03-29 Sun 11:18] \\
-  This package is useful to use multiple paste services with a fallback. dpaste has a pleasant format and therefore chosen as the first priority. The advantage of using github gists is that org mode exports can be directly rendered. This package can also be configured to use a custom paste service.
-
-#+BEGIN_SRC emacs-lisp
-(use-package webpaste
-  :ensure t
-  :config
-  (progn
-    (setq webpaste-provider-priority '("dpaste.org" "ix.io"))))
-#+END_SRC
-
-#+RESULTS:
-: t
-
-** github gists
-:PROPERTIES:
-:ID:       E33FD48A-4049-464E-B956-9BEA3A48B07E
-:END:
-Gists posted right from emacs. 
+** TODO hydra-gists and pastes
+- Note taken on [2020-05-23 Sat 11:02] \\
+  The paste region does not seem to work as expected. The mistake seems to
+  be that the region is not being supplied via the hydra. However, the
+  command works as expected when accessed via M-x.
 
 #+BEGIN_SRC emacs-lisp
-(use-package gist
-:straight (gist :type git :host github :repo "defunkt/gist.el"))
-
-
 (nougat-hydra hydra-gist (:color blue)
-("Gist" (("p" (gist-region-or-buffer) "public")
-("P" (gist-region-or-buffer-private) "private")
-("b" (browse-url "https://gist.github.com/shrysr") "browse"))))
+("Gist and Pastes" (("g" (gist-region-or-buffer) "public gist")
+("G" (gist-region-or-buffer-private) "private gist")
+("b" (browse-url "https://gist.github.com/shrysr") "browse gists")
+("pb" (webpaste-paste-buffer) "webpaste buffer")
+("pr" (webpaste-paste-buffer-or-region) "webpaste selected region"))))
 #+END_SRC
 
-#+RESULTS:
-* TODO org-id
+* TODO org-id setup
+:PROPERTIES:
+:ID:       C88DA3CD-41CF-4B14-8B25-1E554CE49422
+:END:
 
 Using the org-id for reference to headings ensures that even if the
 heading changes, the links will still work.
