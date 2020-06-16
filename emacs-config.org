@@ -3781,8 +3781,20 @@ added more easily. For exmaple electric-pair mode.
     'sh-mode 'js2-mode 'markdown-mode 'haskell-mode 'org-mode 'c-mode 'css-mode
     'web-mode 'typescript-mode 'plantuml-mode))
 #+END_SRC
+** exec-path-from-shell
+
+#+BEGIN_SRC emacs-lisp
+    (use-package exec-path-from-shell
+    :straight t
+    :config
+      (when (memq window-system '(mac ns x))
+        (exec-path-from-shell-initialize)))
+#+END_SRC
 
 ** Electic pair mode only for specified modes
+:PROPERTIES:
+:ID:       365B6C3A-C9D4-4ACE-BD56-026DE22A75D1
+:END:
 
 Source: [[https://github.com/zakandrewking/.emacs.d/blob/master/init.el][.emacs.d/init.el at master · zakandrewking/.emacs.d · GitHub]]
 
