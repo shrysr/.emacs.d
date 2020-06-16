@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: odm-tags-jd
+# key: odmtagsjd
+# --
+Tags: [[tag:jd]] [[tag:$0]] [[tag:DataAnalyst]] 
