@@ -207,20 +207,19 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
  By bootsrapping, this means that the straight package is downloaded to the user's emacs directory and compiled and installed. Unless set otherwise, the user's emacs directory is =~/.emacs.d=
 
  #+BEGIN_SRC emacs-lisp
- (let ((bootstrap-file (concat user-emacs-directory "straight/repos/straight.el/bootstrap.el"))
- (bootstrap-version 3))
- (unless (file-exists-p bootstrap-file)
- (with-current-buffer
- (url-retrieve-synchronously
- "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
- 'silent 'inhibit-cookies)
- (goto-char (point-max))
- (eval-print-last-sexp)))
- (load bootstrap-file nil 'nomessage))
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
  #+END_SRC
-
- #+RESULTS:
- : t
 
 *** Use-package integration with straight
 :PROPERTIES:
