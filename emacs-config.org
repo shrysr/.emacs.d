@@ -661,7 +661,7 @@ List of hooks
     :END:
 
 #+BEGIN_SRC emacs-lisp
-(setq org-agenda-tags-column -150)
+(setq org-agenda-tags-column -130)
 #+end_src
 
 *** Default org directory and agenda file directory
