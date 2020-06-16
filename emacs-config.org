@@ -1353,6 +1353,9 @@ Bernt Hansen shares that he has a default punch in and punch out task that keeps
 #+RESULTS:
 | org-clock-remove-empty-clock-drawer | sr/clock-out-maybe |
 **** Shortcuts for punch in and punch out
+:PROPERTIES:
+:ID:       26357B49-2E4F-461C-857C-A72C75C9EE8E
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-<f9>") 'sr/punch-in)
@@ -1360,17 +1363,26 @@ Bernt Hansen shares that he has a default punch in and punch out task that keeps
 #+END_SRC
 
 *** set idle timer for clocked task
+:PROPERTIES:
+:ID:       E7AFDD59-B791-4B41-81B6-740158ADF8AF
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; setting idle timer to 15 minutes
 (setq org-clock-idle-time 15)
 #+END_SRC
 *** No zero clocks
+:PROPERTIES:
+:ID:       F42F6474-78E2-430F-B9A1-A47D23FA68DF
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-clock-out-remove-zero-time-clocks t)
 #+END_SRC
 *** Clocking accuracy
+:PROPERTIES:
+:ID:       5D990989-3F82-41F9-B28F-577AF99D1C84
+:END:
 
 This is borrowed off Bernt Hansen's method.
 
@@ -1382,7 +1394,10 @@ This is borrowed off Bernt Hansen's method.
               :gap-ok-around ("4:00"))))
 #+END_SRC
 
-*** org-mru-clock 
+*** org-mru-clock
+:PROPERTIES:
+:ID:       956D3AC9-7E24-4D9B-BA88-C8180558430C
+:END:
 - [ ] use the functions included to capture to the current clocked tasks.
 - [ ] method to jump to recent clocked task instead of starting the clock
 
@@ -1398,6 +1413,9 @@ This is a handy package to quickly select past tasks which have been clocked in.
 #+END_SRC
 
 *** counsel-org-clock
+:PROPERTIES:
+:ID:       AFCC3254-EBCB-4C63-971B-371687470AEB
+:END:
 
 Here is a comparison of counsel-org-clock and org-mru-clock: [[http://mbork.pl/2018-04-28_org-mru-clock][Marcin
 Borkowski: 2018-04-28 org-mru-clock]]. As mentioned, one main advantage of
@@ -1413,6 +1431,9 @@ clocked tasks from the agenda.
 #+END_SRC
 
 ** Task state sequences
+:PROPERTIES:
+:ID:       ECFD3C43-FA17-414C-A6F4-8676F99936A3
+:END:
 
 The difference between cancelled and failed would be that -
 
@@ -1425,17 +1446,17 @@ been repeated failures in the past.
 Cancelled tasks - these are tasks that do not require to be done. The
 reason could be that they were pre-emptive tasks that were superceded by
 events, or simply deemed unnecessary at all levels. Such tasks would not
-warrant a detailed review in general. 
+warrant a detailed review in general.
 
 Looking at Bernt Hansen's documentation - it also makes sense to have
 some more key words for filtering. Summary of sequences that make sense
-at this point: 
+at this point:
 
 - TODO
 - Next
 - Done
 
-This sequence will include a note as to why the state is being set. 
+This sequence will include a note as to why the state is being set.
 
 - Waiting
 - Hold
@@ -1458,12 +1479,18 @@ This sequence will include a note as to why the state is being set.
 #+END_SRC
 
 ** Log done
+:PROPERTIES:
+:ID:       420C6490-8982-4D5C-90E8-001EF6025C1E
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq org-log-done 'time)
 #+END_SRC
 
 ** TODO Shortcuts (to be replaced via hydra)
+:PROPERTIES:
+:ID:       DCF53C2E-3C3B-4FC1-BDD9-ED8D6017A771
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c d") 'org-time-stamp)
@@ -1471,6 +1498,9 @@ This sequence will include a note as to why the state is being set.
 #+END_SRC
 
 ** TODO org-ql
+:PROPERTIES:
+:ID:       36253952-2078-4DC2-B284-D9992E453DAF
+:END:
 - Note taken on [2020-04-24 Fri 09:59] \\
   This is an interesting package that I want to master using
   effectively.
@@ -1489,13 +1519,16 @@ particular commit. This also works well while referring to links in
 conversations.
 
 Open the particular commit and then use the org link function. The exact
-commit link will be saved. 
+commit link will be saved.
 
 - [ ] perhaps this should be stored as a package and therefore byte
-  compiled rather than loaded for each start up. 
+  compiled rather than loaded for each start up.
 
 
 *** script
+:PROPERTIES:
+:ID:       216D9A94-024D-4FFC-9C30-0B5D9C280731
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;;; org-git-link.el --- Provide org links to specific file version
@@ -1724,6 +1757,9 @@ commit link will be saved.
 #+END_SRC
 
 * Temporary package list
+:PROPERTIES:
+:ID:       75AABB86-BB3D-417F-8043-4ACA11AE8759
+:END:
 - Note taken on [2020-03-30 Mon 07:58] \\
   A lot of these are borrowed from scimax and will be slowly whittled down to the essentials.
 
@@ -1777,6 +1813,9 @@ commit link will be saved.
   have a bunch of nifty features that I want to try and port to scimax.
 
 ** Base config
+:PROPERTIES:
+:ID:       3A6F91EB-3C33-410F-948A-88CFF1E8E6B8
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-journal
@@ -1810,7 +1849,7 @@ commit link will be saved.
 : t
 
 ** TODO org-capture template for Journal
- 
+
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun org-journal-find-location ()
   ;; Open today's journal, but specify a non-nil prefix argument in order to
@@ -1940,7 +1979,7 @@ CLOSED: [2019-10-23 Wed 09:26]
     This appears to be setup via scimax already. Disabling for now.
   - Note taken on [2019-02-18 Mon 14:30] \\
     [[https://emacs.stackexchange.com/questions/13314/install-pdf-tools-on-emacs-macosx][osx - Install Pdf-Tools on Emacs MacOSX - Emacs Stack Exchange]]
-  
+
 
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
@@ -2059,10 +2098,10 @@ This has to be combined with desktop.el or some other method to enable persisten
 :END:
 
 For the few occassions that I use the buffer-list command, I think the bufler
-package provides a more functional interface. 
+package provides a more functional interface.
 
 - [ ] explore the workspace configuration format. Can this restricted on a
-  frame basis like eyebrowse? Does that even make sense? 
+  frame basis like eyebrowse? Does that even make sense?
 
 #+BEGIN_SRC emacs-lisp
 (use-package bufler
@@ -2078,10 +2117,10 @@ package provides a more functional interface.
 I'm often running emacsclient with a daemon and have found that specific settings need to be set for each frame that is created, like the window size, and the visual fill column and line settings.
 
 1. [X] Full screen and windows on Mac OS
-2. [X] Enable global visual line mode and visual fill column mode. Apparently this was fixed without frame settings. 
+2. [X] Enable global visual line mode and visual fill column mode. Apparently this was fixed without frame settings.
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'default-frame-alist '(fullscreen . fullboth)) 
+(add-to-list 'default-frame-alist '(fullscreen . fullboth))
 #+END_SRC
 
 #+RESULTS:
@@ -2092,7 +2131,7 @@ I'm often running emacsclient with a daemon and have found that specific setting
 :ID:       BF85E4B9-231B-4FC6-BBB1-5C1A686F0E27
 :END:
 
-Crux has a handle re-open and root function that will open a file as root if the permissions are set so. 
+Crux has a handle re-open and root function that will open a file as root if the permissions are set so.
 
 #+BEGIN_SRC emacs-lisp
 (use-package crux
@@ -2129,6 +2168,9 @@ Crux has a handle re-open and root function that will open a file as root if the
 
 * Project management
 ** TODO org-projectile
+:PROPERTIES:
+:ID:       7A27A0F7-8998-437B-97DF-4821702AE10D
+:END:
 
 - Note taken on [2019-02-07 Thu 08:42]  \\
   need to optimise further and convert to use-package style. Also need a way to capture Notes from projects, in addition to tasks.
@@ -2146,13 +2188,16 @@ Starting off with the basic configuration posted in org-projectile github repo.
   ;; (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))) ;; Not necessary as my task projects are a part of the main org folder
   (setq org-projectile-capture-template "* TODO %?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:\n")
   (push (org-projectile-project-todo-entry) org-capture-templates))
-  
+
 
 #+end_src
 
 : org-capture
 
 ** projectile
+:PROPERTIES:
+:ID:       DD02A085-D48E-4085-B39A-41AD64D8CB16
+:END:
 - [ ] Add a variable for the emacs_meta directory.
 
 #+BEGIN_SRC emacs-lisp
@@ -2180,8 +2225,11 @@ Starting off with the basic configuration posted in org-projectile github repo.
 * Knowledge management
 ** org-brain
 *** Main configuration
+:PROPERTIES:
+:ID:       33249427-B582-4094-8E59-4CAF966EA934
+:END:
 
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
 (use-package org-brain
   :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain")
   ;; :straight (org-brain :type git :host github :repo "Kungsgeten/org-brain"
@@ -2239,6 +2287,9 @@ Suggest the URL title as a description for resource."
 #+END_SRC
 
 *** Chronological entries
+:PROPERTIES:
+:ID:       94C0FCDB-1CAE-49FF-A694-91A7814AA7BD
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; Setup org-expiry and define a org-agenda function to compare timestamps
@@ -2271,6 +2322,9 @@ Suggest the URL title as a description for resource."
 #+END_SRC
 
 *** Navigation Helpers
+:PROPERTIES:
+:ID:       DD789690-67CF-467A-8F58-5A7AB287D7DE
+:END:
 
 #+begin_src emacs-lisp
   (defun my/org-brain-visualize-parent ()
@@ -2344,13 +2398,19 @@ Suggest the URL title as a description for resource."
 #+RESULTS:
 : my/avy-brain-jump-sibling
 ** define-word
+:PROPERTIES:
+:ID:       50B2C2AA-D7C4-40FA-8600-138EA575C00F
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'define-word)
 #+END_SRC
 ** Wiktionary lookup
+:PROPERTIES:
+:ID:       0A2D3E61-647E-4665-8CB5-58EEE9DA8028
+:END:
 From [[https://www.reddit.com/r/emacs/comments/3yjzmu/dictionary_and_thesaurus_in_emacs/][Dictionary and thesaurus in Emacs : emacs]], this does not seem to
-work. 
+work.
 
 #+BEGIN_SRC emacs-lisp
 (defun lookup-word (word)
@@ -2358,9 +2418,12 @@ work.
   (browse-url (format "http://en.wiktionary.org/wiki/%s" word)))
 #+END_SRC
 ** merriam-webster
+:PROPERTIES:
+:ID:       59F9E4B2-F865-4DE5-9BF6-DCC9F8A4216C
+:END:
 The advantage of this is that synonyms and other definitions are shown,
 and they are apparently within Emacs. Note that it is possible and may
-even be necessary to register an API key with merriam-webster. 
+even be necessary to register an API key with merriam-webster.
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'mw-thesaurus)
@@ -2576,6 +2639,9 @@ CLOSED: [2020-01-19 Sun 14:33]
 #+RESULTS:
 : vc-oddmuse-registered
 ** ox-oddmuse
+:PROPERTIES:
+:ID:       A44CDA20-4B94-4A88-A337-16BB5DF2D759
+:END:
 I'm building an oddmuse wiki to use for my blogging and as a repository for my braindump. A wiki driven blog is much more useful in inviting collaboration, and any technical note or article is always worth updating. There are many more advantages in using Oddmuse.
 
 #+BEGIN_SRC emacs-lisp
@@ -3072,6 +3138,9 @@ Find file as root =C-c r= does not require the Tramp syntax!
 : helm-find-file
 
 *** General settings for helm
+:PROPERTIES:
+:ID:       89A1C70C-8C63-43CD-8197-D108E4CA87BD
+:END:
 
 There are some useful tips in the reddit thread [[https://www.reddit.com/r/emacs/comments/bsc8pc/why_did_you_stop_using_helm/][Why did you stop using
 Helm? : emacs]]. The [[https://tuhdo.github.io/helm-intro.html][helm-intro]] is a good resource. The documentation is
@@ -3102,6 +3171,9 @@ intuitive and more ido-like helm interface in Emacs.]]
 #+END_SRC
 
 *** Helm bibtex and projectile
+:PROPERTIES:
+:ID:       16FCC72B-7940-4B4D-A139-88B8E039511C
+:END:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-bibtex)
 
@@ -3119,7 +3191,7 @@ intuitive and more ido-like helm interface in Emacs.]]
     on this with more clarity.
   - One method of ignoring certain patterns is using --ignore=*.csv
     - Some specific patterns could be saved as prefixed options and
-      added as optional search functions depending on the occassion. 
+      added as optional search functions depending on the occassion.
 
 #+BEGIN_QUOTE
 I'm not sure when this functionality was introduced, but you can exclude
@@ -3139,7 +3211,7 @@ default it is built from completion-ignored-extensions.
 
 Another option is to use [[https://github.com/emacsorphanage/helm-ag#helm-ag-use-agignoredefault-nil][.agignore]] at the project root. This is set to
 nil by default. This kind of ignore option needs to be used carefully,
-or it will exclude important results. 
+or it will exclude important results.
 
 
 #+BEGIN_SRC emacs-lisp
@@ -3148,12 +3220,15 @@ or it will exclude important results.
 #+END_SRC
 
 *** helm-rg
+:PROPERTIES:
+:ID:       223F6137-6B43-4FBB-A501-D62F29F439FD
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'helm-rg)
 #+END_SRC
 
-*** helm-org-rifle 
+*** helm-org-rifle
 :PROPERTIES:
 :ID:       510AB91F-1520-487B-9CE3-FF4C69AC09FA
 :END:
@@ -3209,6 +3284,9 @@ This includes functions for org-brain
 
 : helm-multi-swoop
 ** TODO Projectile and helm
+:PROPERTIES:
+:ID:       CEEF5675-26B7-4EEF-8F07-62383E9614EE
+:END:
 Since implementing the Doom GC optimisation, the slight lag I
 experienced while typing really fast in helm commands has
 subsided. /However, there seems to be a slight lag in calling
@@ -3242,6 +3320,9 @@ tips in setting up projectile with helm.
 (global-ace-isearch-mode +1))
 #+END_SRC
 ** Copy simple without breaks
+:PROPERTIES:
+:ID:       BC6DEF7C-F884-47AC-9A48-04D748C172B1
+:END:
 
 #+BEGIN_SRC emacs-lisp
 ;; http://emacs.stackexchange.com/questions/1051/copy-region-from-emacs-without-newlines
@@ -3598,11 +3679,14 @@ tips in setting up projectile with helm.
 
 * Programming customisations
 ** Common editing modes
+:PROPERTIES:
+:ID:       A655C868-0A42-4F78-80FA-163B15FFA14B
+:END:
 
 Source: [[https://github.com/zakandrewking/.emacs.d/blob/master/init.el][.emacs.d/init.el at master · zakandrewking/.emacs.d · GitHub]]
 
 This is defined here so that settings specific to these modes could be
-added more easily. For exmaple electric-pair mode. 
+added more easily. For exmaple electric-pair mode.
 
 #+BEGIN_SRC emacs-lisp
 (defvar common-editing-modes
@@ -3653,6 +3737,9 @@ functions are commented out since I do not use ruby.
 #+END_SRC
 
 *** Aliases
+:PROPERTIES:
+:ID:       969C250D-E271-4F34-BE3A-D7B9067DE6D4
+:END:
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eshell-mode-hook (lambda ()
     (eshell/alias "e" "find-file $1")
@@ -3672,6 +3759,9 @@ functions are commented out since I do not use ruby.
 #+END_SRC
 
 *** Find file and edit
+:PROPERTIES:
+:ID:       998329EC-A965-438F-946E-8F16DF458B14
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun eshell/f (filename &optional dir try-count)
@@ -3712,8 +3802,10 @@ file to edit."
     (find-file file)))
 #+END_SRC
 
-
 *** git repo
+:PROPERTIES:
+:ID:       CAB118D1-B571-4A3E-BC17-44C013F607F4
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun curr-dir-git-branch-string (pwd)
@@ -3733,6 +3825,9 @@ PWD is not in a git repo (or the git command is not found)."
 #+END_SRC
 
 *** Replacing $HOME with tilde
+:PROPERTIES:
+:ID:       BECBB9D9-F980-4EC1-B1E1-ED8CA6B90A19
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun pwd-replace-home (pwd)
@@ -3748,6 +3843,9 @@ PWD is not in a git repo (or the git command is not found)."
 #+END_SRC
 
 *** shorter directory names
+:PROPERTIES:
+:ID:       EC001E70-CC8B-4A1F-A6A4-7E2D72B6BB78
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun pwd-shorten-dirs (pwd)
@@ -3767,6 +3865,9 @@ PWD is not in a git repo (or the git command is not found)."
 #+END_SRC
 
 *** break up directory into parent and base
+:PROPERTIES:
+:ID:       2D7F243C-3DEB-4ED7-8973-846BB1434970
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun split-directory-prompt (directory)
@@ -3776,6 +3877,9 @@ PWD is not in a git repo (or the git command is not found)."
 #+END_SRC
 
 *** virtual environments
+:PROPERTIES:
+:ID:       467E6FCD-B300-4509-9EF9-466527B213F0
+:END:
 
 This below is for working with pyenv.
 
@@ -3793,6 +3897,9 @@ This below is for working with pyenv.
 #+END_SRC
 
 *** Tie up
+:PROPERTIES:
+:ID:       10BD3DEF-6326-4EAE-838B-F64601F33F73
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun eshell/eshell-local-prompt-function ()
@@ -3807,7 +3914,7 @@ more-helpful local prompt."
          (parent (car directory))
          (name   (cadr directory))
          (branch (curr-dir-git-branch-string pwd))
-         
+
 
 	 ;; (ruby   (when (not (file-remote-p pwd)) (ruby-prompt)))
          (python (when (not (file-remote-p pwd)) (python-prompt)))
@@ -3842,7 +3949,10 @@ more-helpful local prompt."
 (setq-default eshell-prompt-function #'eshell/eshell-local-prompt-function)
 #+END_SRC
 
-*** shell here
+*** eshell here
+:PROPERTIES:
+:ID:       600E67FA-B009-40E9-8E2B-396C270C029A
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun eshell-here ()
@@ -3866,7 +3976,10 @@ directory to make multiple eshell windows easier."
 (bind-key "C-!" 'eshell-here)
 #+END_SRC
 
-*** C-d behavior 
+*** C-d behavior
+:PROPERTIES:
+:ID:       E947745F-CB5C-489F-8273-45B048F194F1
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
@@ -3933,7 +4046,7 @@ shortcuts with respect to python.
 (straight-use-package 'realgud)
 #+END_SRC
 
-** emmet-mode 
+** emmet-mode
 :PROPERTIES:
 :ID:       8BB48A4C-E7D2-4167-B210-5B732A0280E9
 :END:
@@ -4136,6 +4249,9 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 - [ ] blacken
 
 *** EIN notebooks
+:PROPERTIES:
+:ID:       B1F4434B-0D69-401D-AF08-84FBB4089149
+:END:
 
 - [ ] enable visual line mode?
 - [ ] Enable pictures by default
@@ -4149,11 +4265,14 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 (package-initialize)
 (require 'ein)
 (require 'ein-notebook)
-(require 'ein-subpackages)
-)
+(require 'ein-subpackages))
 #+END_SRC
 
-*** emacs-lsp
+*** emacs-lsp : =lsp-python-ms=
+:PROPERTIES:
+:ID:       89C3133D-6C43-42FC-B0B9-9B3A34458AD3
+:END:
+
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-python-ms
   :ensure t
@@ -4165,6 +4284,9 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 | (lambda nil (require 'lsp-python-ms) (lsp)) | er/add-python-mode-expansions | blacken-mode | elpy-mode |
 
 *** pyvenv, pydoc and elpy
+:PROPERTIES:
+:ID:       7708D432-4E0E-47D0-B294-73CA27520E82
+:END:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'pyvenv)
 (straight-use-package 'pydoc)
@@ -4331,6 +4453,9 @@ Adapted from ldlework
 #+END_SRC
 
 ** Journal files search
+:PROPERTIES:
+:ID:       8C603D99-7741-448F-91A4-3787F3454628
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun sr/fun/org-journal-search ()
@@ -4349,7 +4474,7 @@ especially in a stack.
 :ID:       E6516FB9-DC4A-44EC-98F9-8A2420F2B219
 :END:
 
-ldlework's package that provides an API for defining a stack of hydras. 
+ldlework's package that provides an API for defining a stack of hydras.
 
 #+BEGIN_SRC emacs-lisp
 (use-package hera
@@ -4554,13 +4679,16 @@ Entrypoint Hydra
 	       ("a" (call-interactively 'pyvenv-activate)	"activate")
 	       ("d" (call-interactively 'pyvenv-deactivate) "deactivate")
 	       ("t" (call-interactively 'pyvenv-tracking-mode) "tracking mode")
-	       ("r" (call-interactively 'pyvenv-restart-python) "restart python") 
+	       ("r" (call-interactively 'pyvenv-restart-python) "restart python")
 	       )))
 #+END_SRC
 
 #+RESULTS:
 
 ** hydra-window
+:PROPERTIES:
+:ID:       57D86E22-C409-46CF-982F-8397622B125C
+:END:
 
 - Note taken on [2020-04-08 Wed 12:34] \\
   For some reason, ace commands for windows ask for a 2nd number even with
@@ -4632,6 +4760,9 @@ With ARG, swap them instead."
 #+END_SRC
 
 ** hydra-treemacs
+:PROPERTIES:
+:ID:       CE1CE162-60B6-40A9-AF09-31E5807F7E6E
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-treemacs (:color red)
@@ -4645,6 +4776,9 @@ With ARG, swap them instead."
 #+END_SRC
 
 ** hydra-journal
+:PROPERTIES:
+:ID:       571B0402-C81E-457D-994F-80F98ECAC4B3
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-journal (:color blue)
@@ -4660,6 +4794,9 @@ With ARG, swap them instead."
 #+END_SRC
 
 ** hydra-clock
+:PROPERTIES:
+:ID:       693EC203-0897-4032-9873-62FC71277584
+:END:
 
 - [ ] I will need to integrate this down the line with shortcuts for org mode.
 
@@ -4674,8 +4811,15 @@ With ARG, swap them instead."
 #+END_SRC
 
 ** hydra-links
+:PROPERTIES:
+:ID:       598D93F4-CD40-49D4-AA10-275F45148AD2
+:END:
 
-#+BEGIN_SRC emacs-lisp  
+- [ ] [[https://beepb00p.xyz/pkm-search.html#web][Building personal search infrastructure for your knowledge and
+  code | beepb00p]] has  great list of search terms for different search
+  engines. This is worth implementing directly.
+
+#+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-links (:color blue)
 ("links"
 (("y" yt "youtube music playlist" :color blue)
@@ -4689,8 +4833,11 @@ With ARG, swap them instead."
 #+END_SRC
 
 ** hydra-brain
+:PROPERTIES:
+:ID:       A99388A9-D6F7-4379-ABA4-AE061BDC5AC6
+:END:
 
-#+BEGIN_SRC emacs-lisp  
+#+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-brain (:color blue)
 ("brain"
 (("b" helm-brain "helm-brain" :color blue)
@@ -4700,6 +4847,9 @@ With ARG, swap them instead."
 #+END_SRC
 
 ** hydra-functions
+:PROPERTIES:
+:ID:       367212A1-1091-49C5-865D-44E6A128C872
+:END:
 
 This is an attempt to collect some functions that I presume to use on a
 frequent basis, to the extent that having a hydra is reasonably less
@@ -5041,6 +5191,9 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 : hn
 
 *** Youtube music playlist
+:PROPERTIES:
+:ID:       1096CA91-D712-42FE-A7D9-9FBED45F2EEC
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (defun yt ()
@@ -5049,7 +5202,13 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 #+END_SRC
 
 *** TODO Open specific browser depending on the URL
+:PROPERTIES:
+:ID:       19C305A8-367F-4BD8-9D3F-AF87CEDC910B
+:END:
 
+- Note taken on [2020-05-11 Mon 20:57] \\
+  I find that it is better to use eww as the default browser to maximise
+  my use. From eww it is easier to access other websites.
 - Note taken on [2020-04-26 Sun 06:46] \\
   The idea here is to gather the websites and links which work fine on eww
   and have the remaining links open directly on the default web browser.
@@ -5881,7 +6040,7 @@ Use a prefix arg to get regular RET. "
 (use-package scimax-notebook
   :straight (scimax-notebook :local-repo "scimax-subset" :files ("scimax-notebook.el"))
   :bind ("M-s n" . 'nb-hydra/body)
-  :config 
+  :config
 (setq nb-notebook-directory "~/my_projects/"))
 ;; (global-set-key (kbd "M-s n") 'nb-hydra/body))
 (require 'scimax-notebook)
@@ -5930,7 +6089,7 @@ Use a prefix arg to get regular RET. "
       :config
       (require 'ob-ipython))
 
-  ;;; * Applying John's customisations and monkeypatches 
+  ;;; * Applying John's customisations and monkeypatches
   ;;; These are related to ipython kernel management
   ;;; * These  are related mostly to org-babel customisations
     (use-package scimax-ob
@@ -5953,7 +6112,7 @@ scimax-ipython upstream
 
 #+RESULTS:
 : scimax-ob
-** COMMENT scimax-elfeed 
+** COMMENT scimax-elfeed
 
 #+BEGIN_SRC emacs-lisp
 (use-package scimax-elfeed
@@ -5970,7 +6129,7 @@ scimax-ipython upstream
   settle down on the following themes to be the best for me (note that
   relatively minor customisations like the font, proportional headings and
   so on are made to all)
-  
+
   1. Modus operandi: well designed light theme that does not hurt my eyes
      and offers a good basic configuration. This theme appears to work
      well with terminal emacs as well.
@@ -6004,6 +6163,9 @@ scimax-ipython upstream
 :END:
 
 *** modus operandi
+:PROPERTIES:
+:ID:       4353F3D3-6528-49E2-B9A3-16F98A490FF1
+:END:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'modus-operandi-theme)
 
@@ -6030,7 +6192,7 @@ scimax-ipython upstream
 
 *** COMMENT modus vivendi
 
-#+BEGIN_SRC emacs-lisp  
+#+BEGIN_SRC emacs-lisp
 (straight-use-package 'modus-vivendi-theme)
 
 (use-package modus-vivendi-theme
@@ -6072,15 +6234,15 @@ scimax-ipython upstream
 (custom-theme-set-faces
  'user
  '(variable-pitch ((t (:family "iA Writer Mono V"))))
- '(fixed-pitch ((t ( :family "Iosevka term" 
-			     :slant normal 
-			     :weight normal 
+ '(fixed-pitch ((t ( :family "Iosevka term"
+			     :slant normal
+			     :weight normal
 			     :height 1.1
 			     :width normal)))))
 
-;; Setting the default general font 
-(set-face-attribute 'default nil 
-		    :family "iA Writer Mono V" 
+;; Setting the default general font
+(set-face-attribute 'default nil
+		    :family "iA Writer Mono V"
 		    :height 130
 		    )
 
@@ -6114,6 +6276,9 @@ scimax-ipython upstream
 #+RESULTS:
 
 ** Fill column and auto fill
+:PROPERTIES:
+:ID:       3A60EF9B-1308-44B9-B7D4-009370687D38
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (setq-default fill-column 72)
@@ -6121,7 +6286,7 @@ scimax-ipython upstream
 (add-hook 'text-mode-hook 'auto-fill-mode)
 #+END_SRC
 
-** COMMENT Visual Fill Column and global visual line   
+** COMMENT Visual Fill Column and global visual line
 :PROPERTIES:
 :ID:       5113A22F-D29A-4AAD-A1CE-937983FCF06C
 :END:
@@ -6161,7 +6326,14 @@ and then have the visual line mode to
 #+RESULTS:
 | visual-fill-column-mode | visual-line-mode-set-explicitly |
 
-** Doom modeline
+** COMMENT Doom modeline
+:PROPERTIES:
+:ID:       84F55D71-F357-4DD7-A322-BF7B726AD5F2
+:END:
+- Note taken on [2020-05-17 Sun 00:18] \\
+  Apparently, this is consuming a lot of CPU cycles in the org agenda
+  buffer and preventing a speedy navigation. The same behavior is seen on
+  enabling the spaceline package as well. This is not nice.
 - Note taken on [2020-04-24 Fri 20:16] \\
   The doom modeline possibly adds some extra seconds to the load
   time. This has to be investigated. However, the aesthetics would seem to
@@ -6195,7 +6367,7 @@ and then have the visual line mode to
 - Note taken on [2020-03-28 Sat 19:56] \\
   These are not required for the modus theme, as inbuilt options exist upto level 4.
 
-#+BEGIN_SRC emacs-lisp  
+#+BEGIN_SRC emacs-lisp
 
 (custom-set-faces
  '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight bold))))
@@ -6219,7 +6391,7 @@ This package is useful in centering the text in a buffer, and is particularly he
 (olivetti-mode 1))
 
 #+END_SRC
-** COMMENT Spaceline : modeline configuration
+** Spaceline : modeline configuration
    :PROPERTIES:
    :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
    :END:
@@ -6275,23 +6447,29 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+BEGIN_SRC emacs-lisp
 (set-face-attribute 'org-todo nil
                     :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    :inverse-video t
-                    )
+				       :color "red"
+				       :style released-button)
+                    :inverse-video t)
+
 (set-face-attribute 'org-done nil
                     :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
+				       :color "lightgreen"
+				       :style released-button)
                     :inverse-video t
                     )
 (set-face-attribute 'org-priority nil
                     :inherit font-lock-keyword-face
                     :inverse-video t
                     :box '(:line-width 2
-                           :color "black"
-                           :style released-button)
-                    )
+				       :color "black"
+				       :style released-button))
+(set-face-attribute 'org-checkbox
+		    nil
+		    :inherit font-lock-keyword-face
+		    :inverse-video t
+		    :box '(:line-width 2
+				       :color "black"
+				       :style released-button))
 #+END_SRC
 
 #+RESULTS:
@@ -6302,7 +6480,7 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 :END:
 
 #+BEGIN_SRC emacs-lisp
-;; Removing all the bars 
+;; Removing all the bars
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -6312,6 +6490,9 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+END_SRC
 * Hugo
 ** ox-hugo setup
+:PROPERTIES:
+:ID:       9551342B-2FC5-425A-BBFA-3D7F34ABD15F
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package ox-hugo
@@ -6324,14 +6505,44 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 #+END_SRC
 
 #+RESULTS:
-** TODO Auto-generate some properties 
+** TODO Auto-generate some properties
 
 The earlier procedure by choice was to use the org-id to name
 posts. This ensured that the post URL's would remain unique and
 indifferent to a title. However, this does not make for a human-friendly
 url to quickly distinguish which post is being referred to. Even so, I
 would like to generate some properties and attributes based on the
-heading, tags and so on. 
+heading, tags and so on.
+
+* TODO COMMENT Bare minimum Emacs Config
+** Option as Meta for Misuharu Emacs
+
+I have decided to try the Mitsuharu version of Emacs to check whether
+the performance on my mac is better, particularly for larger and
+multiple screens.
+
+Some caveats here are that - an old version of Emacs is being used and
+there are issues in calling multi-tty or emacsclient. This is a serious
+problem for me since I use Emacs daemon and client all the time.
+
+#+BEGIN_SRC emacs-lisp
+(setq mac-option-modifier 'meta)
+#+END_SRC
+** Server
+
+With the Mitsuharu build
+(https://github.com/railwaycat/homebrew-emacsmacport/issues/52#issuecomment-572271448),
+this workaround is necessary.
+
+#+BEGIN_SRC emacs-lisp
+(use-package mac-pseudo-daemon
+ :straight (:type git :host github :repo "DarwinAwardWinner/mac-pseudo-daemon")
+ :config
+(mac-pseudo-daemon-mode 1))
+
+(server-start)
+
+#+END_SRC
 
 * Loading secret config
 :PROPERTIES:
@@ -6346,17 +6557,44 @@ heading, tags and so on.
 #+RESULTS:
 : Loaded /Users/shrysr/.emacs.d/sr-secrets.org.el
 
-* COMMENT Testing Area
+* COMMENT #Testing Area
 :PROPERTIES:
 :END:
 
 This section will be the place where all new packages and their settings make an entrance. In short the test will be that they are not activated by default and if I seek out the package, that would mean I find it useful to include in my main configuration.
+** org-id-cleanup
+
+- Note taken on [2020-05-11 Mon 21:46] \\
+  I am not sure if this will erase mail links of mu4e. I have to find a
+  way to control the list of files. The jds server file has to be removed
+  from the org file list.
+#+BEGIN_SRC emacs-lisp
+(use-package org-id-cleanup
+  :straight (org-id-cleanup :type git :host github :repo "marcIhm/org-id-cleanup"))
+#+END_SRC
+** org-roam
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory (sr/fun/org-dir ""))
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-show-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))))
+#+END_SRC
+
+
 ** Enhanced python config
 *** TODO COMMENT Adapted python config
 Source [[https://github.com/PythonNut/quark-emacs/blob/dev/modules/config-python.el][quark-emacs/config-python.el at dev · PythonNut/quark-emacs · GitHub]]
 
 This is a nice and detailed configuration for python that is worth
-studying. I will be adapting this to my purposes. 
+studying. I will be adapting this to my purposes.
 
 **** Find local virtualenv
 - Note taken on [2020-04-05 Sun 15:16] \\
@@ -6375,122 +6613,122 @@ studying. I will be adapting this to my purposes.
   (autoload 'savehist-autosave "savehist")
   (autoload 'savehist-uninstall "savehist"))
 
-(defun my/python-find-virtualenv (&optional dir)  
-  "Find a virtualenv corresponding to the current buffer.  
-   Return either a string or nil."  
-  (message "Searching for Python virtual environment at %s" default-directory)  
-  (let* ((default-directory (or dir default-directory))  
-	 (path  
-	  (cl-block nil  
-	    (when (and (my/local-executable-find "poetry")  
-		       (locate-dominating-file default-directory  
-					       "pyproject.toml"))  
-	      ;; First, we try poetry env, which is safe and a bit  
-	      ;; faster, but only works in poetry versions 1.0 and up  
-	      (cl-destructuring-bind (return-code . output)  
-		  (my/process-file-to-string "poetry" nil '(t nil) nil  
-					     "env"  
-					     "info"  
-					     "-p")  
-		(when (= 0 return-code)  
-		  (cl-return output)))  
-	      ;; Fall back to poetry <1.0 check TODO: This code  
-	      ;; will become stale over time, so get rid of it  
-	      ;; after a while.  
-	      ;; Radon: May create virtualenv, but whatever.  
-	      (cl-destructuring-bind (return-code . output)  
-		  (my/process-file-to-string "poetry" nil '(t nil) nil  
-					     "run"  
-					     "which"  
-					     "python")  
-		(when (and (= 0 return-code)  
-			   (string-match (rx bol  
-					     (group (1+ any))  
-					     "/bin/python\n")  
-					 output))  
-		  (cl-return (match-string 1 output)))))  
-	    (when (and (my/local-executable-find "pipenv")  
-		       (locate-dominating-file default-directory  
-					       "Pipfile"))  
-	      (cl-destructuring-bind (return-code . output)  
-		  (my/process-file-to-string "pipenv" nil '(t nil) nil  
-					     "--venv")  
-		(when (= 0 return-code)  
-		  (cl-return (string-trim output)))))))  
-	 (universal-path (if (tramp-tramp-file-p default-directory)  
-			     (my/tramp-build-name-from-localname path)  
-			   path)))  
-    (when (file-directory-p universal-path)  
-      (substring-no-properties universal-path))))  
+(defun my/python-find-virtualenv (&optional dir)
+  "Find a virtualenv corresponding to the current buffer.
+   Return either a string or nil."
+  (message "Searching for Python virtual environment at %s" default-directory)
+  (let* ((default-directory (or dir default-directory))
+	 (path
+	  (cl-block nil
+	    (when (and (my/local-executable-find "poetry")
+		       (locate-dominating-file default-directory
+					       "pyproject.toml"))
+	      ;; First, we try poetry env, which is safe and a bit
+	      ;; faster, but only works in poetry versions 1.0 and up
+	      (cl-destructuring-bind (return-code . output)
+		  (my/process-file-to-string "poetry" nil '(t nil) nil
+					     "env"
+					     "info"
+					     "-p")
+		(when (= 0 return-code)
+		  (cl-return output)))
+	      ;; Fall back to poetry <1.0 check TODO: This code
+	      ;; will become stale over time, so get rid of it
+	      ;; after a while.
+	      ;; Radon: May create virtualenv, but whatever.
+	      (cl-destructuring-bind (return-code . output)
+		  (my/process-file-to-string "poetry" nil '(t nil) nil
+					     "run"
+					     "which"
+					     "python")
+		(when (and (= 0 return-code)
+			   (string-match (rx bol
+					     (group (1+ any))
+					     "/bin/python\n")
+					 output))
+		  (cl-return (match-string 1 output)))))
+	    (when (and (my/local-executable-find "pipenv")
+		       (locate-dominating-file default-directory
+					       "Pipfile"))
+	      (cl-destructuring-bind (return-code . output)
+		  (my/process-file-to-string "pipenv" nil '(t nil) nil
+					     "--venv")
+		(when (= 0 return-code)
+		  (cl-return (string-trim output)))))))
+	 (universal-path (if (tramp-tramp-file-p default-directory)
+			     (my/tramp-build-name-from-localname path)
+			   path)))
+    (when (file-directory-p universal-path)
+      (substring-no-properties universal-path))))
 
-(defvar my/python-virtualenv-cache nil)  
-(add-to-list 'savehist-additional-variables 'my/python-virtualenv-cache)  
+(defvar my/python-virtualenv-cache nil)
+(add-to-list 'savehist-additional-variables 'my/python-virtualenv-cache)
 
-(defun my/python-find-virtualenv-cached (&optional dir)  
-  (let* ((dir (or dir default-directory))  
-	 (pyproject (locate-dominating-file dir "pyproject.toml")))  
-    (unless my/python-virtualenv-cache  
-      (setq my/python-virtualenv-cache (make-hash-table :test #'equal)))  
-    (if (and (my/local-executable-find "poetry")  
-	     dir  
-	     (not (file-exists-p (expand-file-name ".venv" dir))))  
-	(let ((cached (or (gethash dir my/python-virtualenv-cache)  
-			  (puthash dir  
-				   (my/python-find-virtualenv dir)  
-				   my/python-virtualenv-cache))))  
-	  (if (file-exists-p cached)  
-	      cached  
-	    (my/python-find-virtualenv dir)))  
-      (my/python-find-virtualenv dir))))  
+(defun my/python-find-virtualenv-cached (&optional dir)
+  (let* ((dir (or dir default-directory))
+	 (pyproject (locate-dominating-file dir "pyproject.toml")))
+    (unless my/python-virtualenv-cache
+      (setq my/python-virtualenv-cache (make-hash-table :test #'equal)))
+    (if (and (my/local-executable-find "poetry")
+	     dir
+	     (not (file-exists-p (expand-file-name ".venv" dir))))
+	(let ((cached (or (gethash dir my/python-virtualenv-cache)
+			  (puthash dir
+				   (my/python-find-virtualenv dir)
+				   my/python-virtualenv-cache))))
+	  (if (file-exists-p cached)
+	      cached
+	    (my/python-find-virtualenv dir)))
+      (my/python-find-virtualenv dir))))
 #+END_SRC
 
 **** Remote python
 
 #+BEGIN_SRC emacs-lisp
-   (with-eval-after-load 'pythonic  
-   (eval-when-compile  
-   (with-demoted-errors "Load error: %s"  
-   (require 'tramp)))  
-     
-   (defvar my/pythonic-remote-host-cache nil)  
-   (defun nadvice/pythonic-remote-host ()  
-   "Get host of the connection to the remote python interpreter."  
-   (unless my/pythonic-remote-host-cache  
-   (setq my/pythonic-remote-host-cache (make-hash-table :test #'equal)))  
-     
-   (with-parsed-tramp-file-name default-directory parsed  
-   (let ((hostname (replace-regexp-in-string "#.*\\'" "" parsed-host)))  
-   (if (member parsed-method '("ssh"  
-   "scp"  
-   "scpx"  
-   "sshx"  
-   "rsync"))  
-   (or (gethash hostname my/pythonic-remote-host-cache)  
-   (puthash hostname  
-   (with-temp-buffer  
-   (call-process "ssh" nil t nil "-G" hostname)  
-   (goto-char (point-min))  
-   (search-forward "\nhostname ")  
-   (buffer-substring-no-properties (point) (line-end-position)))  
-   my/pythonic-remote-host-cache))  
-   hostname))))  
-   (advice-add 'pythonic-remote-host :override #'nadvice/pythonic-remote-host))  
-     
+   (with-eval-after-load 'pythonic
+   (eval-when-compile
+   (with-demoted-errors "Load error: %s"
+   (require 'tramp)))
+
+   (defvar my/pythonic-remote-host-cache nil)
+   (defun nadvice/pythonic-remote-host ()
+   "Get host of the connection to the remote python interpreter."
+   (unless my/pythonic-remote-host-cache
+   (setq my/pythonic-remote-host-cache (make-hash-table :test #'equal)))
+
+   (with-parsed-tramp-file-name default-directory parsed
+   (let ((hostname (replace-regexp-in-string "#.*\\'" "" parsed-host)))
+   (if (member parsed-method '("ssh"
+   "scp"
+   "scpx"
+   "sshx"
+   "rsync"))
+   (or (gethash hostname my/pythonic-remote-host-cache)
+   (puthash hostname
+   (with-temp-buffer
+   (call-process "ssh" nil t nil "-G" hostname)
+   (goto-char (point-min))
+   (search-forward "\nhostname ")
+   (buffer-substring-no-properties (point) (line-end-position)))
+   my/pythonic-remote-host-cache))
+   hostname))))
+   (advice-add 'pythonic-remote-host :override #'nadvice/pythonic-remote-host))
+
 #+END_SRC
 
 **** pyvenv
 
 #+BEGIN_SRC emacs-lisp
-(use-package pyvenv  
-  :config  
-  (defun nadvice/pyvenv-activate (&optional arg)  
-    (interactive "P")  
-    (let ((default-venv (my/python-find-virtualenv-cached)))  
-      (if (or (not default-venv) (consp (car arg)))  
-	  (list (read-directory-name "Activate venv: "))  
-	(list default-venv))))  
-  
-  (advice-add 'pyvenv-activate :filter-args #'nadvice/pyvenv-activate))  
+(use-package pyvenv
+  :config
+  (defun nadvice/pyvenv-activate (&optional arg)
+    (interactive "P")
+    (let ((default-venv (my/python-find-virtualenv-cached)))
+      (if (or (not default-venv) (consp (car arg)))
+	  (list (read-directory-name "Activate venv: "))
+	(list default-venv))))
+
+  (advice-add 'pyvenv-activate :filter-args #'nadvice/pyvenv-activate))
 #+END_SRC
 
 **** TODO ms-lsp detailed config
@@ -6501,7 +6739,7 @@ studying. I will be adapting this to my purposes.
   as required.
 
 #+BEGIN_SRC sh :tangle no
-pip install numpy pandas jupyter scikitlearn black 
+pip install numpy pandas jupyter scikitlearn black
 #+END_SRC
 ** Org spacer
 
@@ -6509,7 +6747,7 @@ pip install numpy pandas jupyter scikitlearn black
 This simple package allows you to enforce the number of blanks lines after elements in an org-mode document.
 #+END_QUOTE
 
-Perhaps this package can extended as some tool belt of org utilities. Some ideas: 
+Perhaps this package can extended as some tool belt of org utilities. Some ideas:
 
 1. [ ] Addressing duplicate org-id headlines
 2. [ ] Clearing all the values of a specified property from an org file or perhaps multiple org files.
@@ -6538,17 +6776,17 @@ Perhaps this package can extended as some tool belt of org utilities. Some ideas
 
 ** Python source block tests
 - Syntax highlighting is taking place
-- 
+-
 
 #+BEGIN_SRC ipython
-# THis is a comment 
+# THis is a comment
 import numpy as np
 print(np.array([5,4]))
 #+END_SRC
 
 #+RESULTS:
 :results:
-# Out [1]: 
+# Out [1]:
 # output
 [5 4]
 
@@ -6641,9 +6879,9 @@ pipx inject numpy jupyter
 
 #+BEGIN_SRC emacs-lisp
 (use-package linkmarks
-  :straight (linkmarks 
-	     :type git 
-	     :host github 
+  :straight (linkmarks
+	     :type git
+	     :host github
 	     :repo "dustinlacewell/linkmarks")
   :config
 (setq linkmarks-file "~/my_org/emacs_meta/bookmarks.org"))
@@ -6708,7 +6946,7 @@ nil 'make-it-local))))
 - Note taken on [2020-03-22 Sun 08:59] \\
   The poet theme seems a better candidate for hacking, primarily from the point
   of view of a better base to begin from, and also that there are light and
-  dark themes available out of the box. 
+  dark themes available out of the box.
 
 Found this theme thanks to Dustin. It feels therapeutic, though Leuven and Zenburn are great themes in their own right. Maybe I'll consider using zenburn as my dark theme and org-beautify as the light version. It may even be worth creating a darker version of teh org-beautify theme.
 
@@ -6725,6 +6963,9 @@ Found this theme thanks to Dustin. It feels therapeutic, though Leuven and Zenbu
  #+RESULTS:
  : t
 ** TODO Theme : Zenburn
+:PROPERTIES:
+:ID:       F7BFD50A-F0A9-4107-BE53-80D8A7EFDFB6
+:END:
 For a long period, I was using the zenburn theme and had started customising it for my needs. However, I think leuven with a greyish background is really quite suitable. Even so, it's nice to have a dark theme available when required. I'm keeping this around for tinkering down the line.
 
 *** Disabling leuven and loading other theme
@@ -6885,7 +7126,7 @@ Since I work a lot with org babel for my mixed code notebooks, this gets it's ow
   (setq org-confirm-elisp-link-function nil))
 #+END_SRC
 
-* COMMENT Disabled
+* COMMENT #Disabled
 :PROPERTIES:
 :ID:       50D44546-9A06-4F1D-A582-FAD07286D962
 :LINK:     [[nb:.emacs.d::emacs-config.org::c154188]]
@@ -7167,7 +7408,7 @@ Returns the property name if the property has been created, otherwise nil."
   method. However, over time, as the structure of files change, there is
   no real point in preserving the structure as it is. In any case the
   properties of archived entries generally contain enough information to
-  re-construct the org entry. 
+  re-construct the org entry.
 
 Archive organised by Top level headings in the original file and with Tag preservation
 
@@ -7227,20 +7468,20 @@ Archive organised by Top level headings in the original file and with Tag preser
 (use-package poet-theme
   :straight t
   :config
-  (set-face-attribute 'default nil 
-		      :family "iA Writer Mono V" 
+  (set-face-attribute 'default nil
+		      :family "iA Writer Mono V"
 		      :height 130)
   (set-face-attribute 'fixed-pitch nil :family "Iosevka term")
   (set-face-attribute 'variable-pitch nil :family "iA Writer Duo S")
 
   (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 
+   '(org-level-1 ((t (:inherit outline-1
 			       :height 1.5
 			       :weight bold))))
-   '(org-level-2 ((t (:inherit outline-2 
+   '(org-level-2 ((t (:inherit outline-2
 			       :height 1.3
 			       :weight bold))))
-   '(org-level-3 ((t (:inherit outline-3 
+   '(org-level-3 ((t (:inherit outline-3
 			       :height 1.2
 			       :weight bold))))
    '(org-level-4 ((t (:inherit outline-4
@@ -7330,7 +7571,8 @@ The same font is named differently in Antergos (Linux) and in the Mac OS.
                    user-emacs-directory))
 #+END_SRC
 
-** org-brain
+** Earlier Brain                                                   :archive:
+*** org-brain
 :PROPERTIES:
 :header-args: :tangle no
 :END:
@@ -7343,7 +7585,7 @@ You can think of org-brain as a combination of a wiki and a mind map, where each
 [[https://github.com/Kungsgeten/org-brain][org-brain on github]]
 #+END_QUOTE
 
-*** STABLE Basic setup along with org-id
+**** STABLE Basic setup along with org-id
 CLOSED: [2019-04-11 Thu 08:52]
 :PROPERTIES:
 :ID:       ae3c3f14-d570-4fc0-b3b2-156020ba7c61
@@ -7357,7 +7599,7 @@ Further streamlining is necessary as such.
   (use-package org-brain
     :after org
     :ensure t
-    :bind  ("M-s v" . org-brain-visualize)
+    :bind  ("M-s v" . helm-brain)
     :init
     ;; (setq org-brain-path "~/my_org/brain/")
     ;; ;; for Evil users
@@ -7376,8 +7618,9 @@ Further streamlining is necessary as such.
 #+END_SRC
 
 #+RESULTS:
-** Polybrain 
-*** Dustin's forked org-brain
+: helm-brain
+*** Polybrain
+**** Dustin's forked org-brain
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-brain
@@ -7406,7 +7649,7 @@ Further streamlining is necessary as such.
 ;; (global-set-key (kbd "M-s v") #'org-brain-visualize)
 #+END_SRC
 
-*** polybrain navigation helpers
+**** polybrain navigation helpers
 :PROPERTIES:
 :ID:       097E6DB9-79E7-4AFB-9533-E625603B60F4
 :END:
@@ -7431,7 +7674,7 @@ Further streamlining is necessary as such.
     (org-brain-visualize child))))
 
 #+END_SRC
-*** polybrain package
+**** polybrain package
 :PROPERTIES:
 :ID:       DC735D2F-8395-4C5E-BB66-5918110B02BD
 :END:
@@ -8366,11 +8609,11 @@ packages being used by scimax-org are :
 - [ ] Bind the org-babel autocomplete to a convenient key. The function is
   =scimax-ob-ipython-complete-ivy=. Possibly =s-=.
 - [ ] fix the ob-ipython straight build to symlink the client.py file as
-  well. Wonder if this is going to be an issue for others. 
+  well. Wonder if this is going to be an issue for others.
 
 Summary of scimax's ipython customisations:
 1. John is currently using the upstream ob-ipython.
-2. John's earlier ob-ipython fork is likely to be depreciated in the future. 
+2. John's earlier ob-ipython fork is likely to be depreciated in the future.
 3. John has integrated the upstream ob-ipython with several patches of his
    own. These are contained in two pacakges: scimax-ob.el and
    scimax-org-babel-ipython-upstream. The latter monkeypatches over the
@@ -8383,7 +8626,7 @@ Summary of scimax's ipython customisations:
       :config
       (require 'ob-ipython))
 
-  ;;; * Applying John's customisations and monkeypatches 
+  ;;; * Applying John's customisations and monkeypatches
   ;;; These are related to ipython kernel management
     (use-package scimax-org-babel-ipython-upstream
           :straight (scimax-org-babel-ipython-upstream :host github :repo "jkitchin/scimax"))
@@ -8393,7 +8636,7 @@ Summary of scimax's ipython customisations:
       :straight (scimax-ob :host github :repo "jkitchin/scimax"))
 
 
-;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client. 
+;;; Apparently the ob-ipython build process does not symlink the client.py file which is necessary to start the client.
 ;;; THis is unlikely to work on a windows machine and perhaps some conditional has to be built in
 ;;; It would also be nice ot have a clear method to take care of the path expansion
  #+end_SRC
@@ -8941,7 +9184,7 @@ Here is a function you can use to interactively search files by pattern. For exa
 (nb-search ".org$" "xref")
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (use-package ivy-xref
   :ensure t
   :init (if (< emacs-major-version 27)
@@ -9011,7 +9254,7 @@ Here is a function you can use to interactively search files by pattern. For exa
 
 Issue [[https://github.com/jkitchin/scimax/issues/332][332]] requested a way to make something like a table of contents for the org files in a notebook. This function builds a list of candidates that show the title, date and filename for selection.
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (defun nb-search-title ()
   "Select a notebook file by title, date or filename."
   (interactive)
@@ -9081,7 +9324,7 @@ Issue [[https://github.com/jkitchin/scimax/issues/332][332]] requested a way to 
 :ID:       25BA9C42-C628-4BDF-A568-F3345938B640
 :END:
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (defun nb-help ()
   "Open the org-file describing the notebook."
   (interactive)
@@ -9307,7 +9550,7 @@ We may want to open this link with a system program, e.g. if it is an ipynb or s
 	(error "no match found"))))))
 #+END_SRC
 
-***** Store a project link
+***** COMMENT Store a project link
 :PROPERTIES:
 :ID:       A199F5C6-456E-4C79-928F-6800D563ABC6
 :END:
@@ -9336,7 +9579,7 @@ This adds a capability for using C-c l to store a link in org-mode. It creates a
 
 #+END_SRC
 
-***** Link completion
+***** COMMENT Link completion
 :PROPERTIES:
 :ID:       E58F341D-C42D-48E0-9A4F-52311B1FFAFC
 :END:
@@ -9363,7 +9606,7 @@ This makes it easy to type C-c C-l then type nb <enter> and then get to choose a
 
 #+END_SRC
 
-***** Link face
+***** COMMENT Link face
 :PROPERTIES:
 :ID:       B0FE7314-280B-4AE3-96C4-6BAD41C205E4
 :END:
@@ -9406,7 +9649,7 @@ If we can't find a project or file, it will be red."
 
 #+END_SRC
 
-***** Tooltips for the link
+***** COMMENT Tooltips for the link
 :PROPERTIES:
 :ID:       ABAB4E52-161A-455B-92FD-9E6EE62C3016
 :END:
@@ -9452,7 +9695,7 @@ The links have a tooltip that tells you the path that will be opened, or helpful
 
 #+END_SRC
 
-***** Activating the link
+***** COMMENT Activating the link
 :PROPERTIES:
 :ID:       04FF49A9-2BB5-4A8C-92A9-F8F0EB752FE8
 :END:
@@ -9515,7 +9758,7 @@ BRACKETP is non-nil for bracketed links."
 #+RESULTS:
 : nb-activate-link
 
-***** A keymap
+***** TODO A keymap
 :PROPERTIES:
 :ID:       1FB5C9EE-D345-4FBA-893D-6368570042A9
 :END:
@@ -9697,7 +9940,7 @@ prj:students::README.org
 - Note taken on [2020-03-18 Wed 08:14] \\
   Adding a shortcut to the function to clone a git repo and create a notebook.
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (defhydra nb-hydra (:hint nil :color blue)
   "
 navigation      search              utilities                link
@@ -9747,11 +9990,8 @@ _D_: open root  _sb_: search bufs  _n_: new notebook         _y_: open with sys
   :config
   (require 'ob-ipython))
 
-;;; * The customisations pertaining to the old ob-ipython fork are: 
+;;; * The customisations pertaining to the old ob-ipython fork are:
 (use-package scimax-org-babel-ipython
   :straight (scimax-org-babel-ipython :host github :repo "jkitchin/scimax"))
 
 #+END_SRC
-
-
-
