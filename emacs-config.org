@@ -4562,6 +4562,40 @@ Adapted from ldlework
   (helm-do-ag (sr/fun/org-dir "journal")))
 #+END_SRC
 
+** Downloads and Desktop search
+
+* Pastes and gists
+** Webpaste
+:PROPERTIES:
+:ID:       A784F369-9BD2-4A7F-B895-3F38F361D3FE
+:END:
+- Note taken on [2020-03-29 Sun 11:18] \\
+  This package is useful to use multiple paste services with a fallback. dpaste has a pleasant format and therefore chosen as the first priority. The advantage of using github gists is that org mode exports can be directly rendered. This package can also be configured to use a custom paste service.
+
+#+BEGIN_SRC emacs-lisp
+(use-package webpaste
+  :ensure t
+  :config
+  (progn
+    (setq webpaste-provider-priority '("dpaste.org" "ix.io"))))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** github gists 
+:PROPERTIES:
+:ID:       E33FD48A-4049-464E-B956-9BEA3A48B07E
+:END:
+Gists posted right from emacs.
+
+#+BEGIN_SRC emacs-lisp
+(use-package gist
+:straight (gist :type git :host github :repo "defunkt/gist.el"))
+
+#+END_SRC
+
+#+RESULTS:
 * TODO Hydra Hera and nougat
 
 This hydra setup is based off hera and nougat, which are packages
