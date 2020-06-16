@@ -2527,23 +2527,23 @@ machine api.pinboard.in password foo:8ar8a5w188l3
 
 
 This snippet seems to enable storing a pinboard link using the
-org-store-link function. I find this very useful. 
+org-store-link function. I find this very useful.
 
 #+BEGIN_SRC emacs-lisp
 (use-package pinboard
   :straight t
   :config
-  (defun org-pinboard-store-link ()  
-    "Store a link taken from a pinboard buffer."  
-    (when (eq major-mode 'pinboard-mode)  
-      (pinboard-with-current-pin pin  
-	(org-store-link-props  
-	 :type "pinboard"  
-	 :link (alist-get 'href pin)  
-	 :description (alist-get 'description pin)))))  
-  
-  (org-link-set-parameters "pinboard"  
-			   :follow #'browse-url  
+  (defun org-pinboard-store-link ()
+    "Store a link taken from a pinboard buffer."
+    (when (eq major-mode 'pinboard-mode)
+      (pinboard-with-current-pin pin
+	(org-store-link-props
+	 :type "pinboard"
+	 :link (alist-get 'href pin)
+	 :description (alist-get 'description pin)))))
+
+  (org-link-set-parameters "pinboard"
+			   :follow #'browse-url
 			   :store #'org-pinboard-store-link))
 #+END_SRC
 
