@@ -813,11 +813,66 @@ I want to shift the org habit graph in the agenda further out right so as to lea
 #+BEGIN_SRC emacs-lisp
 (require 'org-habit)
 (setq org-habit-graph-column 90)
+;; Setting this startup with nil so that it can be toggled off.
+;; This seems to speed up agenda slightly.
+;; toggle habits using the 'K' in org agenda
+(setq org-habit-toggle-habits nil)
 #+end_src
 
 #+RESULTS:
 : 90
+
+*** COMMENT Hide done scheduled and deadline tasks
+:PROPERTIES:
+:ID:       2F89C9CA-E75D-4EF3-BD0B-F28CDEBD10D8
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+#+END_SRC
+
+*** TODO COMMENT Org super agenda
+I need to find a way to make org agenda more useful to my purposes
+since my agenda is getting cluttered as I add more items. Org super
+agenda helps with this and there are other nifty customisations like the
+font and background color which are worth adding.
+
+Since individual commands have to be called for the org-super-agenda to
+work, it seems that it would make sense if the necessary views are
+consolidated into a hydra that can be called whenever required.
+
+**** Installation
+#+BEGIN_SRC emacs-lisp
+(use-package org-super-agenda
+:straight t
+:config
+(require 'org-super-agenda))
+#+END_SRC
+
+**** Auto grouping
+
+Executing this provides an org agenda for the week or the day and tasks
+on each day are grouped according to the headline property set for
+=agenda-group=.
+
+#+BEGIN_SRC emacs-lisp
+(let ((org-super-agenda-groups
+       '((:auto-group t))))
+  (org-agenda-list))
+#+END_SRC
+
+*** COMMENT Inhibit startup status of org files
+This should help with the generation of the org-agenda.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-inhibit-startup t)
+#+END_SRC
+
 ** Archiving mechanics
+:PROPERTIES:
+:ID:       BC8CD91A-8BD2-44A0-8715-7564881D89FF
+:END:
 
 - Note taken on [2020-04-06 Mon 23:27] \\
   I prefer to keep my archived files in a separate folder to promote a
