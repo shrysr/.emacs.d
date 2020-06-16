@@ -3102,6 +3102,19 @@ This is an indispensable tool. The additional options of showing the timestamp a
 
 #+RESULTS:
 : t
+
+** TODO Setting undo limits
+
+[[https://stackoverflow.com/questions/40793325/emacs-diagnosis-org-mode-unbearably-slow-and-often-stalls/50437758][performance - Emacs diagnosis: Org-mode unbearably slow and often
+stalls - Stack Overflow]] talks abou the undo limit being rather large on
+the Mac (ipto 80000) and that some people have had success in day long Emacs with
+this option. I am starting with an undo of 10,000 and can increase this
+based on the performance.
+
+#+BEGIN_SRC emacs-lisp
+(setq undo-limit 50000)
+#+END_SRC
+
 ** yasnippet and ivy-yasnippet
 :PROPERTIES:
 :ID:       2BEDC957-9D0A-4BEC-AE97-CCD186A98724
