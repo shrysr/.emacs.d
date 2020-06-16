@@ -2818,13 +2818,87 @@ As such most of these
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'smex)
 #+END_SRC
+** Abbrev definitions
+:PROPERTIES:
+:ID:       6124D83B-6158-4D8F-AA80-407447CDE19E
+:END:
 
-** Counsel 
+There are a number of terms and words that I use regularly in all my
+writing, for example, Org mode, Emacs, DevonThink, and so on. These
+words should be auto corrected to the correct intention considering the
+frequency of their use. 
+
+These definitions should be synced across machines.
+
+References:
+- http://ergoemacs.org/emacs/emacs_abbrev_mode_tutorial.html.
+- https://jimmenard.com/emacs_tips.html#abbrev-mode
+- https://sachachua.com/blog/2015/01/developing-emacs-micro-habits-text-automation/
+  which contains a deeper discussion about practices and the need to
+  have a limit to the number of such abbreviations defined.
+- Nevertheless for heavy Emacs driven workflows, for example, a lot of
+  repetitive emails and Org and Latex based document creation, these
+  kind of expansions do make a difference. For example, it is nice to
+  have a auto replace for Emacs and handy expansions for Org mode. These
+  combinations have to then be burned into muscle memory and actually
+  used. This should also be used in moderation or combination with
+  snippets which are more flexible with ivy-yasnippet.
+
+#+BEGIN_SRC emacs-lisp
+;; Setting abbrev file location specifically
+(setq abbrev-file-name "~/my_org/emacs_meta/emacs-abbrev.el")
+(read-abbrev-file abbrev-file-name t)
+
+;;  save abbrevs silently on exit
+(setq save-abbrevs 'silently)
+
+;;  Abbrev mode on by default
+(setq-default abbrev-mode t)
+#+END_SRC
+
+Defining my abbrevs with a z in front to differentiate from day to day
+typing. 
+
+#+BEGIN_SRC emacs-lisp :tangle ~/my_org/emacs_meta/emacs-abbrev.el
+;;-*-coding: utf-8;-*-
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("bg" "background" nil :count 0)
+    ("zww" "https://shreyas.ragavan.co" nil :count 0)
+    ("zbtw" "by the way" nil :count 0)
+    ("zdt" "DevonThink" nil :count 0)
+    ("zme" "sr@eml.cc" nil :count 0)
+    ("zor" "Org mode" nil :count 1)
+    ("zpyc" "PyCharm" nil :count 0)
+    ("zhwe" "However, " nil :count 0)
+    ("zitt" "I think that " nil :count 0)
+    ("zrst" "RStudio" nil :count 0)
+    ("zd2d" "day to day " nil :count 0)
+    ("emacs" "Emacs" nil :count 0)
+    ("zbc" "because " nil :count 0)
+    ("zwo" "without " nil :count 0)
+    ("zsm" "sometimes  " nil :count 0)
+    ("org mode" "Org mode" nil :count 0)))
+
+
+#+END_SRC
+
+** Counsel
 :PROPERTIES:
 :ID:       4F05CB2A-C98A-433E-AF50-D120F4376192
 :END:
 - Note taken on [2020-03-30 Mon 18:08] \\
-  Apparently, swiper, counsel, ivy are contained in the same repository and not as separate packages. Though I would prefer using counsel for everything with the minibuffer style, rather than helm - there are undoubtedly several advantages and built-in features in helm whereas counsel would need these carefully constructed. For example, it appears that the multiple select and action operation has to be separately defined for =counsel-find-file= and =counsel-switch-buffer=. While =counsel-M-x= seems generally more responsive than =helm-M-x=, helm offers a useful partition of the results in general based on recent commands/files and others. =helm-apropos= offers a list of commands and variables 
+  Apparently, swiper, counsel, ivy are contained in the same repository
+  and not as separate packages. Though I would prefer using counsel for
+  everything with the minibuffer style, rather than helm - there are
+  undoubtedly several advantages and built-in features in helm whereas
+  counsel would need these carefully constructed. For example, it
+  appears that the multiple select and action operation has to be
+  separately defined for =counsel-find-file= and
+  =counsel-switch-buffer=. While =counsel-M-x= seems generally more
+  responsive than =helm-M-x=, helm offers a useful partition of the
+  results in general based on recent commands/files and
+  others. =helm-apropos= offers a list of commands and variables
 
 This configuration is picked up from scimax.
 
