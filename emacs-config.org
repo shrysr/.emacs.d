@@ -4739,6 +4739,7 @@ Entrypoint Hydra
 ("w" (hera-push 'hydra-window/body) "windows")
 ("z" (hera-push 'hydra-zoom/body) "zoom")
 ("R" (hera-push 'hydra-registers/body) "registers")
+("e" (hera-push 'hydra-eyebrowse/body) "eyebrowse")
 ("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
 ("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
@@ -5015,8 +5016,31 @@ eyebrowse and restoring the org-refile command
 ("or" oddmuse-rc "oddmuse rc" :color red)
 ("os" oddmuse-search "oddmuse search" :color red)
 ("oi" oddmuse-insert-link "oddmuse insert lnk" :color blue)
-("on" oddmuse-insert-page-name "oddmuse inser page name" :color red))))
+("om" oddmuse-insert-page-name "oddmuse insert page name" :color red))))
 
+#+END_SRC
+
+** hydra-eyebrowse
+
+It is time to have a faster hydra for eyebrowse. The common functions that I
+use are renaming are captured below. These enable me to quickly switch
+between window configurations and thus projects. Examples would having
+an agenda, email, Emacs configuration and then other project buffers in
+their own views.
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-eyebrowse (:color blue)
+("eyebrowse"
+(("r" eyebrowse-rename-window-config "rename" :color red)
+("c" eyebrowse-create-window-config "create" :color red)
+("s" eyebrowse-switch-to-window-config "switch" :color blue)
+("l" eyebrowse-last-window-config "last window config" :color rede)
+("<" eyebrowse-previous-window-config "previous window config" :color red)
+(">" eyebrowse-next-window-config "previous window config" :color red)
+("[" winner-undo "winner UNDO" :color red)
+("]" winner-redo "winner REDO" :color red)
+("ps" sr/fun/proj-search "Ag PROJECTS directory" :color blue)
+("os" sr/fun/org-search "Ag ORG directory" :color blue))))
 #+END_SRC
 
 ** TODO hydra-gists and pastes
