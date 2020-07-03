@@ -646,6 +646,15 @@ List of hooks
 #+RESULTS:
 
 ** TODO Agenda mechanics
+*** Set org agenda window to be the only window 
+
+Thanks to jamzattack on #Emacs for this one. This is very convenient, as
+I always want the agenda launched with a full window. 
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-window-setup 'only-window)
+#+END_SRC
+
 *** Weekday starts on Monday
     :PROPERTIES:
     :ID:       d9f341b0-ad88-40ca-a19a-9ca710b2d681
