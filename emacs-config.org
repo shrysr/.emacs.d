@@ -3439,6 +3439,47 @@ tips in setting up projectile with helm.
         (fill-region (point-min) (point-max)))
       (kill-region (point-min) (point-max)))))
 #+END_SRC
+** TODO Perspective and persp-projectile
+
+- [X] Start with [[https://github.com/nex3/perspective-el][perspective minor mode]]
+- [X] [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#perspective][Refer Howard's config snippet]] to setup a test.
+- [X] Figure out how this can be leveraged.
+
+Essentially with persp-projectile, I get a clean buffer list to choose from when I look for files, in a new perspective. This would be especially convenient when working with multiple projects having similar filenames.
+
+To create a perspective, just switch and add a new name. The persp-projectile function just makes sure that the buffers available only belong to that particular project.
+
+Note that all the commands are prefixed with the =C-x x= prefix.
+
+- [ ] Create a hydra to add to Scimax's existing list, with options.
+
+#+BEGIN_SRC emacs-lisp
+(use-package perspective
+  :ensure t
+
+  :bind ("C-x x x" . persp-switch-last)
+  :init (persp-mode +1)
+
+  (use-package persp-projectile
+    :ensure t
+    :bind ("C-x x P" . projectile-persp-switch-project))
+
+  :config
+    (setq persp-interactive-completion-function #'ido-completing-read)
+    (persp-turn-off-modestring))
+
+#+END_SRC
+
+#+RESULTS:
+: persp-switch-last
+
+Results :
+I restarted Emacs in order to close all the buffers, and then started from a fresh slate with perspective, in order to save the state. This was probably unnecessary as such - I could have simply started with a new perspective.
+
+I am now able to switch perspectives when I switch projects. I presume that within projects, I should use eyebrowse only when I want temporary buffer configurations. The perspective state can be saved, and perhaps I do not have to redo buffer configurations after a complete restart.
+
+In addition, I combine the above with Treemacs, which gives me access to the tags and functions in various files.
+
 
 
 * Email
