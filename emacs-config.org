@@ -5000,8 +5000,9 @@ Entrypoint Hydra
 ("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
-("p" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
+("v" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
 ("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
+("p" (hera-push 'hydra-perspective/body) "pyvenv" :column "Daily")
 ("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
 ("l" (hera-push 'hydra-links/body) "Links")
 ("b" (hera-push 'hydra-brain/body) "brain"))
@@ -5297,6 +5298,28 @@ their own views.
 ("]" winner-redo "winner REDO" :color red)
 ("ps" sr/fun/proj-search "Ag PROJECTS directory" :color blue)
 ("os" sr/fun/org-search "Ag ORG directory" :color blue))))
+#+END_SRC
+
+** hydra-perspective
+
+This is a hydra for accessing perspective-el. 
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-perspective (:color red)
+("perspective-el"
+(("l" persp-prev "previous perspective" :color red)
+ (";" persp-next "next perspective" :color red)
+ ("j" persp-switch "switch perspective" :color blue)
+ ("x" persp-state-save "save perspective state"  red)
+ ("r" persp-rename "rename persp" :color red)
+ ("k" persp-remove-buffer "remove buffer from perspective" :color red)
+ ("o" persp-state-load "Load perspective" :color red)
+ ("p" projectile-persp-switch-project "Project: persp switch" :color blue)
+ ("e" hydra-eyebrowse/body "hydra eyebrowse" :color blue)
+ ("i" persp-import "import perspective" :color blue)
+  ("a" persp-add-buffer "Add buffer to persp" :color blue)
+ ("b" persp-ivy-switch-buffer "switch persp buffer" :color red))))
+
 #+END_SRC
 
 ** TODO hydra-gists and pastes
@@ -6966,6 +6989,7 @@ this workaround is necessary.
 :END:
 
 This section will be the place where all new packages and their settings make an entrance. In short the test will be that they are not activated by default and if I seek out the package, that would mean I find it useful to include in my main configuration.
+
 ** org-id-cleanup
 
 - Note taken on [2020-05-11 Mon 21:46] \\
@@ -7342,7 +7366,6 @@ nil 'make-it-local))))
    #+RESULTS:
    | (lambda nil (add-hook (quote before-save-hook) (quote org-mode--ensure-one-blank-line) nil (quote make-it-local))) | org-bullets-mode | org-indent-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-block-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes |
 
-** TEST Perspective and persp-projectile
 ** Theme : org-beautify
 :PROPERTIES:
 :ID:       C93143D4-EEC8-4D14-A008-1E74BF447D63
