@@ -3814,6 +3814,17 @@ In addition, I combine the above with Treemacs, which gives me access to the tag
 #+RESULTS:
 : sr/org-msg-style
 
+** TODO COMMENT mu4e-conversation
+
+#+BEGIN_SRC emacs-lisp
+(use-package mu4e-conversation
+  :after mu4e
+  :straight t
+  :config
+  (require 'mu4e-conversation))
+#+END_SRC
+
+
 * Programming customisations
 ** Common editing modes
 :PROPERTIES:
