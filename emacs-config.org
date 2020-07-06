@@ -4184,11 +4184,189 @@ Source: [[https://superuser.com/questions/495912/how-to-customize-the-eshell-pro
                 (if (= (user-uid) 0) " # " " $ "))))
 #+END_SRC
 
-** orgit 
+** TODO lsp mode setup
+
+References: 
+- [[Sandeep Nambiar][Sandeep Nambiar]].
+- [[https://www.youtube.com/watch?v=zg6JJI-kwhE][YouTube]] video of Mike Zamansky showing his lsp configuration. 
+
+*** lsp-mode
+
+- [ ] enable the experimental org mode integration 
+
+#+BEGIN_SRC emacs-lisp
+;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+(setq lsp-keymap-prefix "s-l")
+
+(use-package lsp-mode
+    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+            (XXX-mode . lsp)
+            ;; if you want which-key integration
+            (lsp-mode . lsp-enable-which-key-integration))
+    :commands lsp lsp-deferred
+    :config
+  (add-hook 'c++-mode-hook #'lsp)
+  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'rust-mode-hook #'lsp))
+
+;; (use-package lsp-mode
+;;   :straight t
+;;   :config
+;;   (add-hook 'c++-mode-hook #'lsp)
+;;   (add-hook 'python-mode-hook #'lsp)
+;;   (add-hook 'rust-mode-hook #'lsp))
+#+END_SRC
+
+*** Also note [[id:89C3133D-6C43-42FC-B0B9-9B3A34458AD3][Emacs python lsp configuration]]
+*** helm-lsp
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+#+END_SRC
+
+*** lsp-ivy
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+#+END_SRC
+
+*** COMMENT lsp-ui
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-ui :commands lsp-ui-mode :straight t)
+#+END_SRC
+
+*** COMMENT company-lsp
+#+BEGIN_SRC emacs-lisp  
+(use-package company-lsp
+  :straight t
+  :commands company-lsp
+  :config (push 'company-lsp company-backends)) ;; add company-lsp as a backend
+#+END_SRC
+
+*** ccls with flymake disabled
+
+#+BEGIN_SRC emacs-lisp
+(use-package ccls
+  :straight t
+  :config
+  (setq ccls-executable "ccls")
+  (setq lsp-prefer-flymake nil)
+  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+  :hook ((c-mode c++-mode objc-mode) .
+         (lambda () (require 'ccls) (lsp))))
+#+END_SRC
+
+*** COMMENT setting the path to ccls executable
+
+#+BEGIN_SRC emacs-lisp
+(setq ccls-executable "/path/to/ccls/Release/ccls")
+(setq ccls-args '("--log-file=/tmp/ccls.log"))
+#+END_SRC
+
+*** emacs-cquery
+
+#+BEGIN_SRC emacs-lisp
+(use-package cquery
+  :straight t
+  :config
+  (setq cquery-executable "/path/to/cquery/build/release/bin/cquery"))
+#+END_SRC
+
+** COMMENT C IDE 
+This borrows heavily from [[https://tuhdo.github.io/c-ide.html][C/C++ Development Environment for Emacs]] which
+is an excellent guide as always. All the features shared in that blog
+post are those that I desire in my environment.
+
+Note here that the ctags and gtags libraries are available in the global
+package and via brew. 
+
+#+BEGIN_SRC sh :tangle no
+brew install global
+#+END_SRC
+
+*** COMMENT helm-ggtags
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-gtags
+  :straight t
+  :config
+  (require 'setup-helm-gtags))
+
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t)
+
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+#+END_SRC
+
+*** COMMENT Optional gtags setup
+#+BEGIN_SRC emacs-lisp  
+
+;; (require 'ggtags)
+;; (add-hook 'c-mode-common-hook
+;;           (lambda ()
+;;             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+;;               (ggtags-mode 1))))
+
+;; (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+;; (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+;; (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+;; (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+;; (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+;; (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+
+;; (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
+
+
+#+END_SRC
+
+** shell-pop - ansi term
+
+Found this [[http://pragmaticemacs.com/emacs/pop-up-a-quick-shell-with-shell-pop/][on a pragmatic emacs blog post]]. The issue at the moment is
+the hijacking of the C-t shortcut, and also that once popped, the shell
+buffer does not close. 
+
+Eshell is useful for many purposes, however at times, there are commands
+and operations which work better on an emulator. =ansi-term= seems to be
+more useful than =term=.
+
+#+BEGIN_SRC emacs-lisp
+(use-package shell-pop
+  :bind (("C-s-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/bin/zsh")
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
+#+END_SRC
+
+** orgit
+:PROPERTIES:
+:ID:       258A45F4-EE8E-4836-A47A-93225178E316
+:END:
+
 I would like to be able to create links to specific commits in
 repos. Using orgit, I need to open the particular commit buffer and then
 use an org-store-link command to store the link to the particular
-revision. 
+revision.
 
 #+BEGIN_SRC emacs-lisp
 (use-package orgit
@@ -4378,15 +4556,24 @@ Forcing django engine for now
 (straight-use-package 'flycheck)
 #+END_SRC
 
-** TODO Python [0/7]
+** TODO Python [0/1]
 - Note taken on [2020-03-23 Mon 18:10] \\
-  For now I will disable this as it appears logical to use pyenv and other packages to set the correct interpreter. However, since shims are being used, one would assume that the correct environment will be used anyway.
+  For now I will disable this as it appears logical to use pyenv and
+  other packages to set the correct interpreter. However, since shims
+  are being used, one would assume that the correct environment will be
+  used anyway.
 
 At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] require pydoc, elpy and jedi, which are already installed. These packages have to be grouped here.
 
-[[https://realpython.com/emacs-the-best-python-editor/][Emacs: The Best Python Editor? Real Python]] is a good guide towards setting up Emacs and python. [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment in Emacs - Analytics Vidhya - Medium]] provides a satisfyingly detailed configuration with customisations for python. The latter guide is worth following. 
+[[https://realpython.com/emacs-the-best-python-editor/][Emacs: The Best Python Editor? Real Python]] is a good guide towards
+setting up Emacs and python. [[https://medium.com/analytics-vidhya/managing-a-python-development-environment-in-emacs-43897fd48c6a][Managing a Python development environment
+in Emacs - Analytics Vidhya - Medium]] provides a satisfyingly detailed
+configuration with customisations for python. The latter guide is worth
+following.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+*** TODO COMMENT Earlier settings
+
+#+BEGIN_SRC emacs-lisp
 ;; Enabling python 3 to be the default interpreter.
 (setq python-shell-interpreter "python3")
 (setq org-babel-python-command "python3")
@@ -4433,12 +4620,20 @@ At the moment, [[nb:.emacs.d::init.org::#MY Scimax packages][Scimax packages]] r
 :ID:       89C3133D-6C43-42FC-B0B9-9B3A34458AD3
 :END:
 
+- Note taken on [2020-07-05 Sun 18:18] \\
+  It may be so that that the lsp-mode is separately required to enable
+  this server to run successfully.
+- Note taken on [2020-07-03 Fri 11:00] \\
+  This seems to be causing memory utilisation problems, as well as
+  problems in using launching multiple emacsclients when the lsp server
+  is running. Further investigation is required.
+
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-python-ms
   :ensure t
   :hook (python-mode . (lambda ()
                           (require 'lsp-python-ms)
-                          (lsp))))  ; or lsp-deferred
+                          (lsp-deferred))))  ; or lsp-deferred
 #+END_SRC
 
 | (lambda nil (require 'lsp-python-ms) (lsp)) | er/add-python-mode-expansions | blacken-mode | elpy-mode |
