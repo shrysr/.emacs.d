@@ -3444,6 +3444,8 @@ tips in setting up projectile with helm.
 - [X] Start with [[https://github.com/nex3/perspective-el][perspective minor mode]]
 - [X] [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#perspective][Refer Howard's config snippet]] to setup a test.
 - [X] Figure out how this can be leveraged.
+- [X] A hydra is required to use perspective in a rapid and streamlined
+  manner. 
 
 Essentially with persp-projectile, I get a clean buffer list to choose from when I look for files, in a new perspective. This would be especially convenient when working with multiple projects having similar filenames.
 
@@ -3465,8 +3467,8 @@ Note that all the commands are prefixed with the =C-x x= prefix.
     :bind ("C-x x P" . projectile-persp-switch-project))
 
   :config
-    (setq persp-interactive-completion-function #'ido-completing-read)
-    (persp-turn-off-modestring))
+  (setq persp-interactive-completion-function #'ido-completing-read)
+  (setq persp-state-default-file "~/my_org/emacs_meta/sr-standard.persp"))
 
 #+END_SRC
 
