@@ -6632,7 +6632,10 @@ scimax-ipython upstream
 
   1. Modus operandi: well designed light theme that does not hurt my eyes
      and offers a good basic configuration. This theme appears to work
-     well with terminal emacs as well.
+     well with terminal emacs as well. [2020-07-08 Wed] The theme now
+     offers color highlighting for source code blocks and overall
+     becomes very similar to the Leuven theme, but without the jarring
+     colors. 
   2. Zenburn : As many say, this theme is definitely the easiest on my
      eyes and will be a preferred dark theme. There are a tonne of
      configuration options out of the box.
@@ -6666,31 +6669,71 @@ scimax-ipython upstream
 :PROPERTIES:
 :ID:       4353F3D3-6528-49E2-B9A3-16F98A490FF1
 :END:
+- Note taken on [2020-07-08 Wed 21:52] \\
+  The settings are now directly borrowed from the package readme.
+
 #+BEGIN_SRC emacs-lisp
-(straight-use-package 'modus-operandi-theme)
+;; (straight-use-package 'modus-operandi-theme)
 
 (use-package modus-operandi-theme
-:straight t
-:config
-(setq modus-operandi-theme-scale-headings t)
-(setq modus-operandi-theme-proportional-fonts t)
-(setq modus-operandi-theme-slanted-constructs t)
-(setq modus-operandi-theme-visible-fringes t)
-(setq modus-operandi-theme-distinct-org-blocks t)
-(load-theme 'modus-operandi t))
-
-;; These are placed here for ready reference
-;; (setq modus-operandi-theme-scale-1 1.05)
-;; (setq modus-operandi-theme-scale-2 1.1)
-;; (setq modus-operandi-theme-scale-3 1.15)
-;; (setq modus-operandi-theme-scale-4 1.2)
-
+  :straight t
+  :init
+  (setq modus-operandi-theme-slanted-constructs t
+        modus-operandi-theme-bold-constructs t
+        modus-operandi-theme-visible-fringes t
+        modus-operandi-theme-3d-modeline t
+        modus-operandi-theme-subtle-diffs t
+        modus-operandi-theme-intense-standard-completions t
+        ;; modus-operandi-theme-distinct-org-blocks nil
+        modus-operandi-theme-rainbow-org-src-blocks t
+        modus-operandi-theme-proportional-fonts t
+        modus-operandi-theme-rainbow-headings t
+        modus-operandi-theme-section-headings nil
+        modus-operandi-theme-scale-headings t
+	modus-operandi-theme-intense-standard-completions t
+        ;; modus-operandi-theme-scale-1 1.05
+        ;; modus-operandi-theme-scale-2 1.1
+        ;; modus-operandi-theme-scale-3 1.15
+        ;; modus-operandi-theme-scale-4 1.2
+        ;; modus-operandi-theme-scale-5 1.3
+	)
+  :config
+  (load-theme 'modus-operandi t))
 #+END_SRC
 
 #+RESULTS:
 : t
-
 *** COMMENT modus vivendi
+
+#+BEGIN_SRC emacs-lisp  
+
+(use-package modus-vivendi-theme
+  :straight t
+  :init
+  (setq modus-vivendi-theme-slanted-constructs t
+        modus-vivendi-theme-bold-constructs t
+        modus-vivendi-theme-visible-fringes t
+        modus-vivendi-theme-3d-modeline t
+        modus-vivendi-theme-subtle-diffs t
+        modus-vivendi-theme-intense-standard-completions t
+        ;; modus-vivendi-theme-distinct-org-blocks nil
+        modus-vivendi-theme-rainbow-org-src-blocks t
+        modus-vivendi-theme-proportional-fonts t
+        modus-vivendi-theme-rainbow-headings t
+        modus-vivendi-theme-section-headings nil
+        modus-vivendi-theme-scale-headings t
+	modus-vivendi-theme-intense-standard-completions t
+        ;; modus-vivendi-theme-scale-1 1.05
+        ;; modus-vivendi-theme-scale-2 1.1
+        ;; modus-vivendi-theme-scale-3 1.15
+        ;; modus-vivendi-theme-scale-4 1.2
+        ;; modus-vivendi-theme-scale-5 1.3
+	)
+  :config
+  (load-theme 'modus-vivendi t))
+#+END_SRC
+
+
 
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'modus-vivendi-theme)
