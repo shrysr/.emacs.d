@@ -5730,6 +5730,9 @@ Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
 :PROPERTIES:
 :ID:       07625F90-FBFE-46A1-8FDE-2E4D0B664B9D
 :END:
+- Note taken on [2020-07-12 Sun 18:50] \\
+  This is no longer necessary, and also introduces errors, unless the
+  upstream code is included without modifications, especially packages.el
 
 #+BEGIN_SRC emacs-lisp :results silent
 ;; (add-to-list 'load-path (sr/fun/scimax-ref-dir "scimax-stuff"))
@@ -6460,20 +6463,17 @@ Use a prefix arg to get regular RET. "
 
 *** TODO Numbered headings and overlays
 *** TODO PDF and EPS images in org mode
-** COMMENT scimax-yas
+** scimax-yas
 :PROPERTIES:
 :ID:       259205AA-4D49-4917-B79D-0A785822C33F
 :END:
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp  
   (use-package scimax-yas
     :init (setq scimax-snippet-dir (sr/fun/emacs-dir "snippets"))
-    :straight (scimax-yas :local-repo "scimax-subset" :files ("scimax-yas.el")))
+    :straight (scimax-yas :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-yas.el")))
 (require 'scimax-yas)
 #+END_SRC
-
-#+RESULTS:
-: scimax-yas
 
 ** scimax-ivy
 :PROPERTIES:
@@ -6481,7 +6481,7 @@ Use a prefix arg to get regular RET. "
 :END:
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-ivy
-    :straight (scimax-ivy :local-repo "scimax-subset" :files ("scimax-ivy.el")))
+    :straight (scimax-ivy :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-ivy.el")))
 (require 'scimax-ivy)
 #+END_SRC
 
@@ -6495,7 +6495,7 @@ Use a prefix arg to get regular RET. "
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-apps
     :after scimax-org
-    :straight (scimax-apps :local-repo "scimax-subset" :files ("scimax-apps.el")))
+    :straight (scimax-apps :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-apps.el")))
 (require 'scimax-apps)
 #+END_SRC
 
@@ -6528,7 +6528,7 @@ Use a prefix arg to get regular RET. "
 #+BEGIN_SRC emacs-lisp
 
 (use-package scimax-notebook
-  :straight (scimax-notebook :local-repo "scimax-subset" :files ("scimax-notebook.el"))
+  :straight (scimax-notebook :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-notebook.el"))
   :bind ("M-s n" . 'nb-hydra/body)
   :config
 (setq nb-notebook-directory "~/my_projects/"))
@@ -6550,7 +6550,7 @@ Use a prefix arg to get regular RET. "
 (use-package scimax-journal
   :init (setq scimax-journal-root-dir "~/my_org/journal/")
   :bind ("H-j" . scimax-journal/body)
-  :straight (scimax-journal :local-repo "scimax-subset" :files ("scimax-journal.el")))
+  :straight (scimax-journal :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-journal.el")))
 (require 'scimax-journal)
 #+END_SRC
 
@@ -6560,7 +6560,7 @@ Use a prefix arg to get regular RET. "
 
 #+BEGIN_SRC emacs-lisp
   (use-package scimax-utils
-    :straight (scimax-utils :local-repo "scimax-subset" :files ("scimax-utils.el")))
+    :straight (scimax-utils :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-utils.el")))
 (require 'scimax-utils)
 #+END_SRC
 
@@ -6575,18 +6575,26 @@ Use a prefix arg to get regular RET. "
 
 #+BEGIN_SRC emacs-lisp
     (use-package ob-ipython
-      :straight (ob-ipython :host github :repo "gregsexton/ob-ipython" :files ("client.py" "ob-ipython.el"))
+      :straight (ob-ipython 
+		 :host github 
+		 :repo "gregsexton/ob-ipython" 
+		 :files ("client.py" "ob-ipython.el"))
       :config
       (require 'ob-ipython))
 
   ;;; * Applying John's customisations and monkeypatches
   ;;; These are related to ipython kernel management
   ;;; * These  are related mostly to org-babel customisations
+
     (use-package scimax-ob
-      :straight (scimax-ob :local-repo "scimax-subset" :files ("scimax-ob.el")))
+      :straight (scimax-ob 
+		 :repo "git@git.sr.ht:~shrysr/scimax-subset" 
+		 :files ("scimax-ob.el")))
 
     (use-package scimax-org-babel-ipython-upstream
-          :straight (scimax-org-babel-ipython-upstream  :local-repo "scimax-subset" :files ("scimax-org-babel-ipython-upstream.el")))
+          :straight (scimax-org-babel-ipython-upstream 
+		     :repo "git@git.sr.ht:~shrysr/scimax-subset" 
+		     :files ("scimax-org-babel-ipython-upstream.el")))
 
 
 #+END_SRC
@@ -6594,6 +6602,8 @@ Use a prefix arg to get regular RET. "
 #+RESULTS:
 
 scimax-ipython upstream
+
+- [ ] Apparently, this is not required? 
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (require 'scimax-org-babel-ipython-upstream)
@@ -6606,7 +6616,7 @@ scimax-ipython upstream
 
 #+BEGIN_SRC emacs-lisp
 (use-package scimax-elfeed
-  :straight (scimax-elfeed :local-repo "scimax-subset" :files ("scimax-elfeed.el")))
+  :straight (scimax-elfeed :repo "git@git.sr.ht:~shrysr/scimax-subset" :files ("scimax-elfeed.el")))
 #+END_SRC
 
 #+RESULTS:
