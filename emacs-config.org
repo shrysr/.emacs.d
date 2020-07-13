@@ -17,15 +17,15 @@
 :END:
 
 #+BEGIN_SRC org
-I've been using my own configuration on top of the excellent Scimax for
-the past many years. This is a reboot to reverse or study the bias, and
-create My Very Own Emacs configuration. It obviously includes massive
-snippets of code from Scimax, as well as other configurations I come
-across, not to mention the excellent advice often received from #emacs
-and other geniuses lurking in irc channels, and of course the vast
-internet.
+I've been using my own configuration on top of the excellent
+[[https://github.com/jkitchin/scimax][Scimax starter-kit]] for the past
+many years. This is a reboot to reverse or study the bias, and create My
+Very Own Emacs configuration. It obviously includes massive snippets of
+code from Scimax, as well as other configurations I come across, not to
+mention the excellent advice often received from #emacs and other
+geniuses lurking in irc channels, and of course the vast internet.
 
-#+BEGIN_QUOTE
+,#+BEGIN_QUOTE
 - Note that this config is still under a great deal of flux at the
   moment and will be for the foreseeable future. I am learning elisp
   every (other) day and am rather obsessed like most Emacsers to
@@ -36,7 +36,7 @@ internet.
   customise your tool to your needs, and discover new features. However,
   the eventual goal will also be to enable using this configuration as a
   whole for anybody interested.
-#+END_QUOTE
+,#+END_QUOTE
 
 #+END_SRC
 
@@ -45,8 +45,14 @@ internet.
 
 #+BEGIN_SRC org
 The file ~emacs-config.org~ is the source of truth for the entire
-config. The configuration is tangled into this README, and then 2 files,
-an init.el and a dotemacs.el,
+config. This file is tangled into this README, and into init.el and
+dotemacs.el. Other settings like gitignore are also tangled from the Org
+file.
+
+At the moment, around 200 source code blocks get tangled into multiple
+files almost within a second. This happens every time the
+emacs-config.org buffer is saved, and is barely noticable.
+
 
 The init.el file is included in the git commit as it will (eventually)
 enable starting up emacs with basic libraries, and loading (and if
@@ -1551,7 +1557,6 @@ commit link will be saved.
 - [ ] perhaps this should be stored as a package and therefore byte
   compiled rather than loaded for each start up.
 
-
 *** script
 :PROPERTIES:
 :ID:       216D9A94-024D-4FFC-9C30-0B5D9C280731
@@ -1824,7 +1829,7 @@ commit link will be saved.
 
 : t
 
-* Org journal
+ * Org journal
 - Note taken on [2020-04-10 Fri 17:29] \\
   Scimax journal has the benefit of being well integrated with Scimax. The
   other benefit is being able to have journal files within a
@@ -2717,7 +2722,7 @@ Note that =C-x C-q= for =dired-toggle-read= only.
 
 (advice-add 'dired-readin :after #'me/dired-directories-first)
 
-(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode) 
+(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode)
 			     (setq visual-fill-column-mode 'nil)))
 
 (setq dired-auto-revert-buffer t
@@ -2845,6 +2850,52 @@ As such most of these
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'smex)
 #+END_SRC
+
+** TODO Dumb jump
+
+I have long heard about dumb-jump. My main goal is to be able to mark a
+location and be able to jump back to that location easily. This should
+be a 2nd nature thing that I am able to do anywhere, whether a code file
+or a org document. THe seamlessness of Emacs makes such things
+better. The read me of the package has a configuration for both
+use-package as well as a handy hydra that I am converting to a
+nougat-hydra, defined in a section below. The additional change is the
+addition of the straight flag.
+
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+  :straight t
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g b" . dumb-jump-back)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config ;; (setq dumb-jump-selector 'ivy)
+  (setq dumb-jump-selector 'helm))
+ 
+#+END_SRC
+
+** Create directory while opening files if it doesnt exist
+References:
+- [[https://superuser.com/questions/131538/can-i-create-directories-that-dont-exist-while-creating-a-new-file-in-emacs][Can I create directories that don't exist while creating a new file in emacs? - Super User]]
+- [[https://stackoverflow.com/questions/24977014/emacs-dired-copy-move-files-create-directory-if-needed][elisp - Emacs -- dired copy / move files -- create directory if needed - Stack Overflow]]
+
+Though I've added the following function because I think it is a natural
+feature that should be available - it does appear that the easier method
+is to split buffer, create a folder in the desired location and enable
+the copying or any processing to happen between the open dired
+buffers. This is also in line with the opinions in the #Emacs channel.
+
+#+BEGIN_SRC emacs-lisp
+(defadvice find-file (before make-directory-maybe (filename &optional wildcards) activate)
+  "Create parent directory if not exists while visiting file."
+  (unless (file-exists-p filename)
+    (let ((dir (file-name-directory filename)))
+      (unless (file-exists-p dir)
+        (make-directory dir t)))))
+#+END_SRC
+
 ** Abbrev definitions
 :PROPERTIES:
 :ID:       6124D83B-6158-4D8F-AA80-407447CDE19E
@@ -3016,6 +3067,9 @@ This configuration is picked up from scimax.
 : counsel-pt
 
 ** ripgrep
+:PROPERTIES:
+:ID:       D94B88CA-5B4F-4AB2-AE45-9AB8C7B2255B
+:END:
 
 The ripgrep package for the system can be installed via brew or possibly
 apt-get on Linux systems.
@@ -3227,7 +3281,7 @@ move up.
 
 =C-space= to select multiple files and open them with =RET=. This is useful when
 switching to a project. Add a modifier =C-u RET= to open the files in an
-alternate vertically split buffers. 
+alternate vertically split buffers.
 
 Find file as root =C-c r= does not require the Tramp syntax!
 
@@ -3542,9 +3596,11 @@ In addition, I combine the above with Treemacs, which gives me access to the tag
 
   (setq
    mail-user-agent 'mu4e-user-agent
-   mue4e-headers-skip-duplicates  t
-   mu4e-view-show-images t
+   mue4e-headers-skip-duplicates 't
+   mu4e-view-show-images 't
    mu4e-view-show-addresses 't
+   mu4e-split-view 'vertical
+   mu4e-headers-visible-columns 100
    mu4e-compose-format-flowed t
    ;;mu4e-update-interval 200
    message-ignored-cited-headers 'nil
@@ -3659,7 +3715,6 @@ In addition, I combine the above with Treemacs, which gives me access to the tag
    smtpmail-queue-dir  (expand-file-name "~/my_mail/fmail/Queue/cur")))
 
 #+END_SRC
-
 ** COMMENT mu4e alerts
 :PROPERTIES:
 :ID:       C488CFF8-F77B-4AF6-98ED-9CF5BDC792F2
@@ -3846,7 +3901,6 @@ In addition, I combine the above with Treemacs, which gives me access to the tag
   (require 'mu4e-conversation))
 #+END_SRC
 
-
 * Programming customisations
 ** Common editing modes
 :PROPERTIES:
@@ -3889,12 +3943,21 @@ Source: [[https://github.com/zakandrewking/.emacs.d/blob/master/init.el][.emacs.
 (setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
 (electric-pair-mode 1)
 #+END_SRC
+** flyspell with markdown
+Source:  [[https://emacs.stackexchange.com/questions/17266/how-to-automatically-load-flyspell-mode-when-markdown-md-mdwn-file-is-open][How to automatically load flyspell-mode when Markdown (.md, .mdwn) file is open? - Emacs Stack Exchange]]
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'markdown-mode-hook 'flyspell-mode)
+#+END_SRC
 
 ** eshell
 The following is borrowed from [[https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org][howardabrams/dot-files · GitHub]]. The ruby
 functions are commented out since I do not use ruby.
 
 *** configuration
+:PROPERTIES:
+:ID:       0DAEFD6D-DD9C-4B07-AF28-303626C68997
+:END:
 #+BEGIN_SRC emacs-lisp
 (use-package eshell
   :init
@@ -4681,6 +4744,7 @@ following.
 #+BEGIN_SRC emacs-lisp
 (use-package pyenv
     :straight (:host github :repo "aiguofer/pyenv.el")
+    :init (setq pyenv-installation-dir "~/.pyenv/versions")
     :config
     (setq pyenv-use-alias 't)
     (setq pyenv-modestring-prefix "PyE-")
@@ -4734,14 +4798,14 @@ With this package, I can easily view the containers available and run commands o
 #+RESULTS:
 : docker
 
-*** docker-compose-mode
+*** COMMENT docker-compose-mode
 :PROPERTIES:
 :ID:       e887c7b6-5e53-49fb-ab13-a37ab7944407
 :END:
 
 Enabling syntax highlighting for docker-compose files.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package docker-compose-mode
   :ensure t
 
@@ -4754,14 +4818,14 @@ Enabling syntax highlighting for docker-compose files.
 
 #+RESULTS:
 
-*** docker-file-mode
+*** COMMENT docker-file-mode
 :PROPERTIES:
 :ID:       33fdbbf6-5e67-43e7-8c84-aa90fa6b9de6
 :END:
 
 This is required for syntax highlighting in dockerfiles.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package dockerfile-mode
   :ensure t
 
@@ -4775,12 +4839,11 @@ This is required for syntax highlighting in dockerfiles.
 
 #+RESULTS:
 
-
 * TODO Custom search functions [0/1]
 This section contains sections to search in specific directories, with customised options.
 
 - [ ] Incorporate these functions into a hydra.
-  - [ ] Explore ldlework's hera and nougat hydra packages for this. Perhaps include into scimax under the applications menu. 
+  - [ ] Explore ldlework's hera and nougat hydra packages for this. Perhaps include into scimax under the applications menu.
 
 ** Episteme search
 :PROPERTIES:
@@ -4807,10 +4870,10 @@ Adapted from ldlework
 :END:
 - [ ] Exclude git files
 - [ ] Exclude csv files
-- [ ] Exclude html and related files 
+- [ ] Exclude html and related files
 - [X] decide between helm-ag and counsel-ag and the method to jump between files.
 - [ ] Decide about plugging in arguments to activate different kinds of search.
-- [ ] Find if multiple paths can be included or not. 
+- [ ] Find if multiple paths can be included or not.
 
 #+BEGIN_SRC emacs-lisp
 (defun sr/fun/proj-search ()
@@ -5077,7 +5140,10 @@ Entrypoint Hydra
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-mu4e (:color blue)
 ("mu4e" (("m" (mu4e) "mail")
-	     ("u" (mu4e-update-mail-and-index) "Update mail and index"))))
+	 ("i" mu4e-compose-attach-captured-message "Insert captured mu4e mail in compose" :color red)
+	 ("o" switch-to-prev-buffer "Previous buffer" :color red)
+	 ("c" mu4e-compose-attach-captured-message "Capture Mail" :color red)
+	 ("u" mu4e-update-mail-and-index "Update mail and index"))))
 #+END_SRC
 
 #+RESULTS:
@@ -5282,7 +5348,7 @@ frequent basis, to the extent that having a hydra is reasonably less
 typing on finding the command with M-x.
 
 It is worth noting here that while some keys may be long, but the virtue
-of head color the hydra commands c an then be repeated as many times as
+of head color the hydra commands can then be repeated as many times as
 required.
 
 Another benefit for example, is disabling the other keymaps for
@@ -5379,16 +5445,12 @@ This is a hydra for accessing perspective-el.
     ("b" dumb-jump-back "Back"))
 #+END_SRC
 
-** COMMENT hydra-jumper
+** hydra-jumper
+
 Thanks to jamzattack on #Emacs, I was able to push the current point to
 the mark-ring. 
 
-
 #+BEGIN_SRC emacs-lisp
-(defun sr/fun/mark-unmark
-    (interactive)
-  (push (point-marker) mark-ring))
-
 (nougat-hydra hydra-jumper (:color red)
 ("jumper"
  (("b" helm-org-rifle-brain "helm org rifle brain" :color red)
@@ -5397,7 +5459,7 @@ the mark-ring.
   ("M" helm-global-mark-ring
    "helm global  mark ring" :color red)
   ("h" ivy-org-jump-to-open-headline "ivy jump to org headline" :color red)
-  ("c" hydra/org-capture-last-stored "Last captured heading" :color red)
+  ("l" hydra/org-capture-last-stored "Last captured heading" :color red)
   ("r" scimax-registers/body "scimax register hydra" :color red)
   ("," (push (point-marker) mark-ring) "Push location mark ring" :color red))))
 #+END_SRC
@@ -5516,7 +5578,7 @@ Source: [[https://punchagan.muse-amuse.in/blog/elfeed-hook-to-fetch-full-content
 - Note taken on [2020-03-28 Sat 15:50] \\
   This was my earlier configuration. However, there are issues with the save db feature and I am anyway not really syncing across computers anymore. I read feeds on my VPS. Scimax's elfeed customisations provide me the functions that I need as I can easily email an article to instapaper or anywhere else. However, these remain here for reference, as there are some useful functions here.
 
-Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][Note taking 3: Notes from elfeed entries - Heikki @ home]] 
+Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][Note taking 3: Notes from elfeed entries - Heikki @ home]]
 
 #+BEGIN_SRC emacs-lisp
 ;; Elfeed configuration source :
@@ -5725,7 +5787,7 @@ Source: [[http://heikkil.github.io/blog/2015/05/09/notes-from-elfeed-entries/][N
 
 Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 ;; use browser depending on url
 (setq
  browse-url-browser-function
@@ -5736,7 +5798,10 @@ Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
   ("thefreedictionary\\.com" . eww-browse-url)
   ("link\\.wired\\.com" . eww-browse-url)
   ("links\\.gatesnotes\\.com" . eww-browse-url)
-  ("." . browse-url-default-browser)
+  ("bitbucket\\.org\\blog*+" . eww-browse-url)
+  ("dev\\.to\*+" . eww-browse-url)
+;;  ("." . browse-url-default-browser)
+  ("." . eww-browse-url)
   ("youtube" . browse-url-default-macosx-browser)))
 #+END_SRC
 
@@ -7150,6 +7215,24 @@ This section will be the place where all new packages and their settings make an
               (("C-c n i" . org-roam-insert))))
 #+END_SRC
 
+** TODO Lighter parenthesis
+:PROPERTIES:
+:CREATED:  [2020-07-13 Mon 12:49]
+:ID:       1E97AAF4-F43A-4811-9AA2-0EDF5285FD95
+:END:
+
+Though this is an  aesthetic setting, it is somewhat more related to
+lisp. Staring at my Emacs configuration for a long makes me think that
+this could be a useful addition. 
+
+- [ ] Reference:  Gitlab issue with Modus Themes
+
+#+BEGIN_SRC emacs-lisp
+(use-package paren-face
+:straight (:type git :repo "tarsius/paren-face" )
+:config
+(global-paren-face-mode 1))
+#+END_SRC
 
 ** Enhanced python config
 *** TODO COMMENT Adapted python config
