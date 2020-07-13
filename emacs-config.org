@@ -12,33 +12,41 @@
 #+TITLE: shrysr's Dotemacs
 
 * Introduction
+:PROPERTIES:
+:header-args: :comments both :tangle ./README.org
+:END:
 
+#+BEGIN_SRC org
 I've been using my own configuration on top of the excellent Scimax for
-the past many years. This is a reboot to reverse the bias, and create my
-very own emacs configuration. It obviously includes massive snippets of
-code from scimax, as well as other configurations I come across, not to
-mention the excellent advice often received from #emacs and other
-geniuses lurking in irc channels, and of course the vast
+the past many years. This is a reboot to reverse or study the bias, and
+create My Very Own Emacs configuration. It obviously includes massive
+snippets of code from Scimax, as well as other configurations I come
+across, not to mention the excellent advice often received from #emacs
+and other geniuses lurking in irc channels, and of course the vast
 internet.
 
 #+BEGIN_QUOTE
-Note that this config is still under a great deal of flux at the
-moment and will be for the foreseeable future. I am learning elisp
-every (other) day and am rather obsessed like most Emacsers to
-optimise the entire toolset. This is an an opinionated setup.
+- Note that this config is still under a great deal of flux at the
+  moment and will be for the foreseeable future. I am learning elisp
+  every (other) day and am rather obsessed like most Emacsers to
+  optimise the entire toolset. This is an an opinionated setup.
 
-I would recommend studying the setup and using bits and pieces of it
-as you require, because one primary power of Emacs is being able to
-customise your tool to your needs. However, the eventual goal will
-also be to enable using this configuration as a whole for anybody
-interested.
-
+- I would recommend studying the setup and using bits and pieces of it
+  as you require, because one primary power of Emacs is being able to
+  customise your tool to your needs, and discover new features. However,
+  the eventual goal will also be to enable using this configuration as a
+  whole for anybody interested.
 #+END_QUOTE
+
+#+END_SRC
+
 
 ** Overall setup
 
-This file is ~emacs-config.org~. This is the source of truth for the
-entire config. It is tangled into 2 files, an init.el and a dotemacs.el.
+#+BEGIN_SRC org
+The file ~emacs-config.org~ is the source of truth for the entire
+config. The configuration is tangled into this README, and then 2 files,
+an init.el and a dotemacs.el,
 
 The init.el file is included in the git commit as it will (eventually)
 enable starting up emacs with basic libraries, and loading (and if
@@ -51,12 +59,12 @@ specifying the header arguments, even a ~:tangle yes~, will over-ride
 the file settings specified elsewhere and thus parts of the config will
 never get inserted into the el files that are loaded during init.
 
-The better method to disable tangling of specific blocks would be to
-comment out Org headings. It should also be possible to have a setup
-wherein headings with specific tags are not tangled, similar to the
-noexport tag option with typical org exports. The caveat of using this
-option is that these headings will be neglected in an export to say,
-something like a Hugo document.
+An alternate better method to disable tangling of specific blocks would
+be to comment out Org headings. It should also be possible to have a
+setup wherein headings with specific tags are not tangled, similar to
+the noexport tag option with typical org exports. The caveat of using
+this option is that these headings will be neglected in an export to
+say, something like a Hugo document.
 
 Package management is done via the interesting straight.el. There are
 other approaches like borg, using quelpa and so on that I have not
@@ -79,9 +87,11 @@ General notes:
 - I would prefer not using git hooks for the tangling because my commit
   workflow is still erratic. Sometimes, there is no change in code, but
   just some additional notes to the configuration.
+#+END_SRC
 
-** Inspirations (and other literate configurations)
+** TODO Inspirations (and other literate configurations)
 
+#+BEGIN_SRC org
 This is a growing and non-comprehensive list of configurations that I
 admire and have liberally copied from in constructing my own.
 
@@ -97,13 +107,18 @@ admire and have liberally copied from in constructing my own.
 In general - code and snippet source references are added as and when
 possible though this is a tedius task for those with configurations
 under a great rate of flux.
+#+END_SRC
+
 
 ** TODO Packages I've found very useful
 
+#+BEGIN_SRC org
 Though I'm using a huge number of packages - this list reflects the
 absolute core that I consider to be essential to my current /daily/
 workflow. This list is being formulated so that I can develop a minimal
 Emacs config that can be used for a rapid setup on a headless server.
+
+/Work in progress./
 
 1. org-download
 2. org-web-tools
@@ -117,6 +132,8 @@ Emacs config that can be used for a rapid setup on a headless server.
 10. magit
 11. hydra (and other variants)
 12. straight.el
+
+#+END_SRC
 
 * Init setup
 :PROPERTIES:
@@ -663,7 +680,6 @@ I always want the agenda launched with a full window.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-start-on-weekday 1)
 #+end_src
-
 *** Display heading tags farther to the right
     :PROPERTIES:
     :ID:       4d9c3678-f06d-49c5-9f80-184c0e2fac4e
@@ -1520,7 +1536,9 @@ This sequence will include a note as to why the state is being set.
 
 #+END_SRC
 
-** Org git link
+** COMMENT Org git link
+- Note taken on [2020-07-12 Sun 20:27] \\
+  The orgit package enables creating links to commits.
 *** Note
 
 This is very handy to save as a capture and ready reference to a
