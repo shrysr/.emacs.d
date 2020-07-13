@@ -341,7 +341,7 @@ One way to do this is via local file variables, adding the following to the init
 # end:
 #+END_EXAMPLE
 
-** TODO Async function to tangle org file on save.
+** TODO COMMENT Async function to tangle org file on save.
 
 This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchronous_tangle_and_compile_of_configorg/][Asynchronous tangle and compile of config.org(question/issue) : emacs]] on reddit and a work in progress. Since I am using straight.el, the byte compilation of packages is not necessary (or already taken care of). It is probably worth noting that the tangling process is almost instant and maybe this effort is not warranted.
 
@@ -2877,6 +2877,8 @@ typing.
     ("zbtw" "by the way" nil :count 0)
     ("zdt" "DevonThink" nil :count 0)
     ("zme" "sr@eml.cc" nil :count 0)
+    ("zli" "https://www.linkedin.com/in/shreyasragavan/" nil :count 0)
+    ("zap" "Application | " :count 0)
     ("zor" "Org mode" nil :count 1)
     ("zpyc" "PyCharm" nil :count 0)
     ("zhwe" "However, " nil :count 0)
@@ -4860,6 +4862,7 @@ This hydra setup is based off hera and nougat, which are packages
 available in [[https://dustinlacewell.github.io/emacs.d/][ldlework's init.el]]. I've adapted, modified and expanded his
 setup. These cool packages make defining hydras a little easier,
 especially in a stack.
+
 ** hera
 :PROPERTIES:
 :ID:       E6516FB9-DC4A-44EC-98F9-8A2420F2B219
@@ -5003,7 +5006,8 @@ Entrypoint Hydra
 ("s" (call-interactively 'helm-imenu) "semantic")
 ("g" (hera-push 'hydra-gist/body) "gist")
 ("v" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
-("j" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
+("j" (hera-push 'hydra-jumper/body) "Jump around" :column "Daily")
+("J" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
 ("p" (hera-push 'hydra-perspective/body) "pyvenv" :column "Daily")
 ("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
 ("l" (hera-push 'hydra-links/body) "Links")
@@ -5176,31 +5180,41 @@ With ARG, swap them instead."
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-journal (:color blue)
 ("Journal"
-(("j"  org-journal-new-entry "Entry")
- ("n" org-journal-open-next-entry "Next entry" :color red)
- ("p" org-journal-open-previous-entry "Previous entry" :color red)
+(("j"  org-journal-new-entry "Entry" :color red)
+ ("k" org-journal-open-next-entry "Next entry" :color red)
+ ("h" org-journal-open-previous-entry "Previous entry" :color red)
+ ("g" counsel-org-goto "Buffer org headings" :color red)
  ("F" org-journal-new-scheduled-entry "Future scheduled")
  ("s" sr/fun/org-journal-search "Journal search")
- ("S" sr/fun/org-search "Org directory search"))))
+ ("n" (org-speed-move-safe 'org-next-visible-heading) "Next heading" :color red)
+ ("b" (org-speed-move-safe 'org-previous-visible-heading) "Previous heading" :color red)
+ ("c" org-overview "Previous heading" :color red)
+ ("O" ivy-org-jump-to-open-headline "All Org headings - ivy" :color red)
+  ("S" sr/fun/org-search "Org directory search"))))
 
 (global-set-key (kbd "H-j") (lambda () (interactive) (hera-start 'hydra-journal/body)))
 #+END_SRC
 
-** hydra-clock
+** hydra-clock [1/2]
 :PROPERTIES:
 :ID:       693EC203-0897-4032-9873-62FC71277584
 :END:
 
 - [ ] I will need to integrate this down the line with shortcuts for org mode.
+- [X] Added the shortcuts to jump to the last captured heading and also
+  to switch back to the previous buffer. This will be useful when
+  capture buffers are dismissed by mistake. 
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-clock (:color blue)
 ("clock"
 (("j" counsel-org-clock-goto "clock go to current/last" :color red)
-("i" counsel-org-clock-history "counsel clock in/historyo" :color blue)
-("c" counsel-org-clock-context "counsel clock context" :color blue)
-("o" org-clock-out "clock out" :color red)
-("h" org-mru-clock-in "mru clock in" :color blue))))
+ ("i" counsel-org-clock-history "counsel clock in/historyo" :color blue)
+ ("c" counsel-org-clock-context "counsel clock context" :color blue)
+ ("o" org-clock-out "clock out" :color red)
+ ("l" org-capture-goto-last-stored "Go to last capture stored" :color red)
+ (";" switch-to-prev-buffer "Previous buffer" :color red)
+ ("h" org-mru-clock-in "mru clock in" :color blue))))
 #+END_SRC
 
 ** hydra-links
@@ -5222,6 +5236,7 @@ With ARG, swap them instead."
 ("G" google "Launch google" :color blue)
 ("d" define-word "define word" :color red)
 ("D" lookup-word "wiktionary lookup" :color red)
+("i" mu4e-compose-attach-captured-message "Insert captured mu4e mail in compose" :color blue)
 ("m" mw-thesaurus-lookup-at-point "Merriam-webster thesaurus" :color red))))
 #+END_SRC
 
@@ -5249,7 +5264,7 @@ frequent basis, to the extent that having a hydra is reasonably less
 typing on finding the command with M-x.
 
 It is worth noting here that while some keys may be long, but the virtue
-of head color the hydra commands can then be repeated as many times as
+of head color the hydra commands c an then be repeated as many times as
 required.
 
 Another benefit for example, is disabling the other keymaps for
@@ -5303,18 +5318,22 @@ their own views.
 #+END_SRC
 
 ** hydra-perspective
+:PROPERTIES:
+:ID:       B3144404-6F5A-47E5-A5DB-11D96BE64111
+:END:
 
 This is a hydra for accessing perspective-el. 
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-perspective (:color red)
 ("perspective-el"
-(("l" persp-prev "previous perspective" :color red)
- (";" persp-next "next perspective" :color red)
- ("j" persp-switch "switch perspective" :color blue)
+(("[" persp-prev "previous perspective" :color red)
+ ("]" persp-next "next perspective" :color red)
+ ("s" persp-switch "switch perspective" :color blue)
  ("x" persp-state-save "save perspective state"  red)
  ("r" persp-rename "rename persp" :color red)
  ("k" persp-remove-buffer "remove buffer from perspective" :color red)
+ ("k" persp-kill "kill perspective" :color red)
  ("o" persp-state-load "Load perspective" :color red)
  ("p" projectile-persp-switch-project "Project: persp switch" :color blue)
  ("e" hydra-eyebrowse/body "hydra eyebrowse" :color blue)
@@ -5323,6 +5342,48 @@ This is a hydra for accessing perspective-el.
  ("b" persp-ivy-switch-buffer "switch persp buffer" :color red))))
 
 #+END_SRC
+
+** TODO COMMENT hydra-dumb-jump
+
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-eyebrowse (:color blue)
+("dumb-jump"
+(("r" eyebrowse-rename-window-config "rename" :color red))))
+
+(defhydra dumb-jump-hydra (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
+#+END_SRC
+
+** COMMENT hydra-jumper
+Thanks to jamzattack on #Emacs, I was able to push the current point to
+the mark-ring. 
+
+
+#+BEGIN_SRC emacs-lisp
+(defun sr/fun/mark-unmark
+    (interactive)
+  (push (point-marker) mark-ring))
+
+(nougat-hydra hydra-jumper (:color red)
+("jumper"
+ (("b" helm-org-rifle-brain "helm org rifle brain" :color red)
+  ("j" helm-org-rifle "helm org rifle" :color red)
+  ("m" helm-mark-ring "helm local mark ring" :color red)
+  ("M" helm-global-mark-ring
+   "helm global  mark ring" :color red)
+  ("h" ivy-org-jump-to-open-headline "ivy jump to org headline" :color red)
+  ("c" hydra/org-capture-last-stored "Last captured heading" :color red)
+  ("r" scimax-registers/body "scimax register hydra" :color red)
+  ("," (push (point-marker) mark-ring) "Push location mark ring" :color red))))
+#+END_SRC
+
 
 ** TODO hydra-gists and pastes
 - Note taken on [2020-05-23 Sat 11:02] \\
