@@ -14,6 +14,7 @@
 * Introduction
 :PROPERTIES:
 :header-args: :comments both :tangle ./README.org
+:ID:       80A31FA5-3101-4875-BE20-03A4F640E5B5
 :END:
 
 #+BEGIN_SRC org
@@ -42,6 +43,9 @@ geniuses lurking in irc channels, and of course the vast internet.
 
 
 ** Overall setup
+:PROPERTIES:
+:ID:       F59AFE11-0E90-4784-8F85-25C19E704E70
+:END:
 
 #+BEGIN_SRC org
 The file ~emacs-config.org~ is the source of truth for the entire
@@ -96,6 +100,9 @@ General notes:
 #+END_SRC
 
 ** TODO Inspirations (and other literate configurations)
+:PROPERTIES:
+:ID:       9C707625-50A5-49D4-B222-7709568CEFD2
+:END:
 
 #+BEGIN_SRC org
 This is a growing and non-comprehensive list of configurations that I
@@ -117,6 +124,9 @@ under a great rate of flux.
 
 
 ** TODO Packages I've found very useful
+:PROPERTIES:
+:ID:       86AAE7DE-B6F3-41BC-88C3-4C530F80BD5C
+:END:
 
 #+BEGIN_SRC org
 Though I'm using a huge number of packages - this list reflects the
@@ -504,6 +514,9 @@ given it's own section though it is org-mode related.
 :ID:       1D103003-0690-4DD0-964C-2E5DCDEC1937
 :END:
 *** Old
+:PROPERTIES:
+:ID:       807D3F5C-D02C-4020-8222-F473B2FA8876
+:END:
 Reference: [[https://github.crookster.org/switching-to-straight.el-from-emacs-26-builtin-package.el/][Crookster's blog post]]
 
 #+BEGIN_SRC emacs-lisp
@@ -670,6 +683,9 @@ List of hooks
 
 ** TODO Agenda mechanics
 *** Set org agenda window to be the only window 
+:PROPERTIES:
+:ID:       48DCE365-CB7B-4AC0-B03E-3C504CC8DC72
+:END:
 
 Thanks to jamzattack on #Emacs for this one. This is very convenient, as
 I always want the agenda launched with a full window. 
@@ -703,7 +719,7 @@ I always want the agenda launched with a full window.
 #+begin_src emacs-lisp
 (setq
  org-directory "~/my_org/"
- org-agenda-files '("~/my_org/"))
+ org-agenda-files '("~/my_org/roam/private/"))
  #+end_src
 
  #+RESULTS:
@@ -2774,7 +2790,7 @@ As such most of these
           ttreemacs-no-png-images                 nil
           treemacs-no-delete-other-windows       t
           treemacs-project-follow-cleanup        nil
-          treemacs-persist-file                  "~/my_org/emacs_meta/.treemacs-persist"
+          treemacs-persist-file                  "~/my_org/roam/private/emacs_meta/.treemacs-persist"
           treemacs-recenter-distance             0.1
           treemacs-recenter-after-file-follow    nil
           treemacs-recenter-after-tag-follow     nil
@@ -2924,7 +2940,7 @@ References:
 
 #+BEGIN_SRC emacs-lisp
 ;; Setting abbrev file location specifically
-(setq abbrev-file-name "~/my_org/emacs_meta/emacs-abbrev.el")
+(setq abbrev-file-name "~/my_org/roam/private/emacs_meta/emacs-abbrev.el")
 (read-abbrev-file abbrev-file-name t)
 
 ;;  save abbrevs silently on exit
@@ -2937,7 +2953,7 @@ References:
 Defining my abbrevs with a z in front to differentiate from day to day
 typing. 
 
-#+BEGIN_SRC emacs-lisp :tangle ~/my_org/emacs_meta/emacs-abbrev.el
+#+BEGIN_SRC emacs-lisp :tangle ~/my_org/roam/private/emacs_meta/emacs-abbrev.el
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
@@ -3919,6 +3935,9 @@ added more easily. For exmaple electric-pair mode.
     'web-mode 'typescript-mode 'plantuml-mode))
 #+END_SRC
 ** exec-path-from-shell
+:PROPERTIES:
+:ID:       76ABA16A-81FA-4437-8940-5E97AF94FE4E
+:END:
 
 #+BEGIN_SRC emacs-lisp
     (use-package exec-path-from-shell
@@ -3970,8 +3989,11 @@ functions are commented out since I do not use ruby.
         eshell-destroy-buffer-when-process-dies t))
 #+END_SRC
 *** Visual executables
+:PROPERTIES:
+:ID:       7CD41883-F90E-4AD0-B97E-C92F1B01F375
+:END:
 
-#+BEGIN_SRC emacs-lisp  
+#+BEGIN_SRC emacs-lisp
 (use-package eshell
   :init
  (add-hook 'eshell-mode-hook
@@ -4276,6 +4298,9 @@ References:
 - [[https://www.youtube.com/watch?v=zg6JJI-kwhE][YouTube]] video of Mike Zamansky showing his lsp configuration. 
 
 *** lsp-mode
+:PROPERTIES:
+:ID:       1E3B3826-35C0-4BD5-BBBA-0C15D5B9B574
+:END:
 
 - [ ] enable the experimental org mode integration 
 
@@ -4304,12 +4329,18 @@ References:
 
 *** Also note [[id:89C3133D-6C43-42FC-B0B9-9B3A34458AD3][Emacs python lsp configuration]]
 *** helm-lsp
+:PROPERTIES:
+:ID:       2C4FF74E-A528-4AEC-9DCA-E4A9E92BBF45
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 #+END_SRC
 
 *** lsp-ivy
+:PROPERTIES:
+:ID:       B43E4BF6-9A0D-43BD-A324-997B250882D9
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
@@ -4330,6 +4361,9 @@ References:
 #+END_SRC
 
 *** ccls with flymake disabled
+:PROPERTIES:
+:ID:       AE4392DA-B650-4398-9B62-4CAD7E25A4B9
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package ccls
@@ -4350,6 +4384,9 @@ References:
 #+END_SRC
 
 *** emacs-cquery
+:PROPERTIES:
+:ID:       B0EF4141-877E-4CAB-95AF-ED08C1A31FB1
+:END:
 
 #+BEGIN_SRC emacs-lisp
 (use-package cquery
@@ -4424,6 +4461,9 @@ brew install global
 #+END_SRC
 
 ** shell-pop - ansi term
+:PROPERTIES:
+:ID:       47EF3E93-3085-4327-A745-B59613E662A3
+:END:
 
 Found this [[http://pragmaticemacs.com/emacs/pop-up-a-quick-shell-with-shell-pop/][on a pragmatic emacs blog post]]. The issue at the moment is
 the hijacking of the C-t shortcut, and also that once popped, the shell
@@ -4459,7 +4499,10 @@ revision.
 
 #+END_SRC
 
-** TODO realgud
+** TODO COMMENT realgud
+:PROPERTIES:
+:ID:       C5C7E842-2234-4F94-A8C0-E74068D9C5BF
+:END:
 
 Apparently this packages enhances the debuggers of many languages. Yet
 to check out how this will help me. Elpy by itself has a bunch of
@@ -7529,7 +7572,7 @@ pipx inject numpy jupyter
 	     :host github
 	     :repo "dustinlacewell/linkmarks")
   :config
-(setq linkmarks-file "~/my_org/emacs_meta/bookmarks.org"))
+(setq linkmarks-file "~/my_org/roam/private/emacs_meta/bookmarks.org"))
 
  #+END_SRC
 
@@ -8251,7 +8294,7 @@ Further streamlining is necessary as such.
    ;;   (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
     :config
     (setq org-id-track-globally t)
-    (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+    (setq org-id-locations-file "~/my_org/roam/private/emacs_meta/.org-id-locations")
     (push '("b" "Brain" plain (function org-brain-goto-end)
             "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:" :empty-lines 1)
           org-capture-templates)
@@ -8283,7 +8326,7 @@ Further streamlining is necessary as such.
    ;;   (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
     :config
     (setq org-id-track-globally t)
-    (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+    (setq org-id-locations-file "~/my_org/roam/private/emacs_meta/.org-id-locations")
     (push '("b" "Brain" plain (function org-brain-goto-end)
             "* %i%?\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:" :empty-lines 1)
           org-capture-templates)
