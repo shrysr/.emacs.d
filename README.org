@@ -1,17 +1,18 @@
 # Introduction
 # :PROPERTIES:
 # :header-args: :comments both :tangle ./README.org
+# :ID:       80A31FA5-3101-4875-BE20-03A4F640E5B5
 # :END:
 
 
-# [[nb:.emacs.d::emacs-config.org::c496][Introduction:1]]
-I've been using my own configuration on top of the excellent Scimax for
-the past many years. This is a reboot to reverse or study the bias, and
-create My Very Own Emacs configuration. It obviously includes massive
-snippets of code from Scimax, as well as other configurations I come
-across, not to mention the excellent advice often received from #emacs
-and other geniuses lurking in irc channels, and of course the vast
-internet.
+# [[id:80A31FA5-3101-4875-BE20-03A4F640E5B5][Introduction:1]]
+I've been using my own configuration on top of the excellent
+[[https://github.com/jkitchin/scimax][Scimax starter-kit]] for the past
+many years. This is a reboot to reverse or study the bias, and create My
+Very Own Emacs configuration. It obviously includes massive snippets of
+code from Scimax, as well as other configurations I come across, not to
+mention the excellent advice often received from #emacs and other
+geniuses lurking in irc channels, and of course the vast internet.
 
 #+BEGIN_QUOTE
 - Note that this config is still under a great deal of flux at the
@@ -28,12 +29,21 @@ internet.
 # Introduction:1 ends here
 
 # Overall setup
+# :PROPERTIES:
+# :ID:       F59AFE11-0E90-4784-8F85-25C19E704E70
+# :END:
 
 
-# [[nb:.emacs.d::emacs-config.org::c1586][Overall setup:1]]
+# [[id:F59AFE11-0E90-4784-8F85-25C19E704E70][Overall setup:1]]
 The file ~emacs-config.org~ is the source of truth for the entire
-config. The configuration is tangled into this README, and then 2 files,
-an init.el and a dotemacs.el,
+config. This file is tangled into this README, and into init.el and
+dotemacs.el. Other settings like gitignore are also tangled from the Org
+file.
+
+At the moment, around 200 source code blocks get tangled into multiple
+files almost within a second. This happens every time the
+emacs-config.org buffer is saved, and is barely noticable.
+
 
 The init.el file is included in the git commit as it will (eventually)
 enable starting up emacs with basic libraries, and loading (and if
@@ -77,9 +87,12 @@ General notes:
 # Overall setup:1 ends here
 
 # TODO Inspirations (and other literate configurations)
+# :PROPERTIES:
+# :ID:       9C707625-50A5-49D4-B222-7709568CEFD2
+# :END:
 
 
-# [[nb:.emacs.d::emacs-config.org::c3916][Inspirations (and other literate configurations):1]]
+# [[id:9C707625-50A5-49D4-B222-7709568CEFD2][Inspirations (and other literate configurations):1]]
 This is a growing and non-comprehensive list of configurations that I
 admire and have liberally copied from in constructing my own.
 
@@ -98,9 +111,12 @@ under a great rate of flux.
 # Inspirations (and other literate configurations):1 ends here
 
 # TODO Packages I've found very useful
+# :PROPERTIES:
+# :ID:       86AAE7DE-B6F3-41BC-88C3-4C530F80BD5C
+# :END:
 
 
-# [[nb:.emacs.d::emacs-config.org::c4938][Packages I've found very useful:1]]
+# [[id:86AAE7DE-B6F3-41BC-88C3-4C530F80BD5C][Packages I've found very useful:1]]
 Though I'm using a huge number of packages - this list reflects the
 absolute core that I consider to be essential to my current /daily/
 workflow. This list is being formulated so that I can develop a minimal
