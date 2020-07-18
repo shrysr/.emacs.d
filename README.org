@@ -104,6 +104,7 @@ admire and have liberally copied from in constructing my own.
 - [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
 - [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
 - [[https://github.com/IvanMalison/dotfiles][GitHub - IvanMalison/dotfiles: Configuration files for XMonad, Emacs, NixOS, Taffybar and more.]]
+- [[https://protesilaos.com/dotemacs/][GNU Emacs integrated computing environment | Protesilaos Stavrou]].
 
 In general - code and snippet source references are added as and when
 possible though this is a tedius task for those with configurations

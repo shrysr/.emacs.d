@@ -26,7 +26,7 @@ code from Scimax, as well as other configurations I come across, not to
 mention the excellent advice often received from #emacs and other
 geniuses lurking in irc channels, and of course the vast internet.
 
-,#+BEGIN_QUOTE
+#+BEGIN_QUOTE
 - Note that this config is still under a great deal of flux at the
   moment and will be for the foreseeable future. I am learning elisp
   every (other) day and am rather obsessed like most Emacsers to
@@ -37,7 +37,7 @@ geniuses lurking in irc channels, and of course the vast internet.
   customise your tool to your needs, and discover new features. However,
   the eventual goal will also be to enable using this configuration as a
   whole for anybody interested.
-,#+END_QUOTE
+#+END_QUOTE
 
 #+END_SRC
 
@@ -116,6 +116,7 @@ admire and have liberally copied from in constructing my own.
 - [[https://dustinlacewell.github.io/emacs.d/][Dustin Lacewell]]
 - [[https://github.com/wasamasa/dotemacs][GitHub - wasamasa/dotemacs: Literate Emacs configuration]]
 - [[https://github.com/IvanMalison/dotfiles][GitHub - IvanMalison/dotfiles: Configuration files for XMonad, Emacs, NixOS, Taffybar and more.]]
+- [[https://protesilaos.com/dotemacs/][GNU Emacs integrated computing environment | Protesilaos Stavrou]].
 
 In general - code and snippet source references are added as and when
 possible though this is a tedius task for those with configurations
@@ -397,8 +398,27 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 :ID:       252B8837-EE16-41C1-96C1-3F6C05D156BF
 :END:
 
-#+BEGIN_SRC emacs-lisp
+I am not sure if the best way to define these locations is by using a
+function. These could be set as simple variables. The idea was that the
+function could help in constructing file paths and that the variables
+could be defined using paths constructed from these functions, and that
+a cascading set of functions could be used to quickly construct access
+to any file that was required. In this way the principal locations of
+different settings could also be clearly controlled.
 
+[2020-07-17 Fri] - This is obviously the wrong way to do things. It
+means that a function is evaluated each time for a variable that hardly
+ever changes. It would be better if a ready made string was
+available. These strings could be constructed during init using the
+functions. Additionally, it seems that an extra second elapses before
+the directories are constructed.
+
+My naming convention also feels wonky, though it is useful to
+distinguish between variables and functions quickly. I would like a way
+to differentiate functions and variables, and therefore the
+=sr/fun/function-name=. Most people limit this to my/function-name.
+
+#+BEGIN_SRC emacs-lisp
 
 (defun sr/fun/project-dir (foldername)
 "Function to prepend the project directory path to any folder. Starts from the home directory."
@@ -407,6 +427,24 @@ This is inspired from [[https://www.reddit.com/r/emacs/comments/5ej8by/asynchron
 (defun sr/fun/org-dir (foldername)
 "Function to prepend the org directory path to any folder. Starts from the home directory."
   (expand-file-name foldername (sr/fun/homedir "my_org" )))
+
+(defun sr/fun/roam-private-dir (foldername)
+"Function to prepend the org directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/org-dir "roam/00_private/" )))
+
+(defun sr/fun/roam-public-dir (foldername)
+"Function to prepend the org directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/org-dir "roam/" )))
+
+
+(defun sr/fun/emacs-meta-dir (foldername)
+"Function to prepend the org directory path to any folder. Starts from the home directory."
+  (expand-file-name foldername (sr/fun/roam-private-dir "emacs_meta" )))
+
+(setq sr/project-dir (sr/fun/project-dir ""))
+(setq sr/emacs-meta-dir (sr/fun/emacs-meta-dir ""))
+(setq sr/roam-private-dir (sr/fun/roam-private-dir ""))
+(setq sr/roam-public-dir (sr/fun/roam-public-dir ""))
 
 #+END_SRC
 
@@ -716,10 +754,15 @@ I always want the agenda launched with a full window.
 :ID:       be1c3eed-5e7d-4f62-a5f4-127c0ee30a73
 :END:
 
+- [ ] use the roam private location function to define the org agenda
+  files.
+- [ ] it may be worth using the roam directory or the private directory
+  as the org-directory. The benefits should be evaluated. 
+
 #+begin_src emacs-lisp
-(setq
- org-directory "~/my_org/"
- org-agenda-files '("~/my_org/roam/private/"))
+(setq org-directory (sr/fun/org-dir ""))
+
+(add-to-list 'org-agenda-files (expand-file-name (sr/fun/roam-private-dir ""))) 
  #+end_src
 
  #+RESULTS:
