@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: org-export-no-toc
+# key: org-export-no-toc
+# --
+#+OPTIONS: tags:t tasks:nil tex:t timestamp:nil toc:nil
