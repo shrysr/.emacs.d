@@ -1,6 +1,6 @@
 #+PROPERTY: header-args :results silent :tangle ./dotemacs.el
 #+toc: t
-#+hugo_base_dir: ~/hugo-sr/
+#+hugo_base_dir: ~/my_org/hugo-sr/
 #+hugo_section: docs
 #+hugo_auto_set_lastmod: t
 #+author: Shreyas Ragavan
@@ -180,6 +180,9 @@ construct.
 (setq-default lexical-binding t)
    #+END_SRC
 
+   #+RESULTS:
+   : t
+
 ** Garbage collection
 :PROPERTIES:
 :ID:       B38F4BDA-37C8-412E-B892-851A2176CFD0
@@ -227,7 +230,7 @@ References:
 #+END_SRC
 
 #+RESULTS:
-| doom-restore-garbage-collection-h | pl/minibuffer-exit |
+| pl/minibuffer-exit | doom-restore-garbage-collection-h |
 
 ** Package management
 
@@ -240,6 +243,7 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 
  By bootsrapping, this means that the straight package is downloaded to the user's emacs directory and compiled and installed. Unless set otherwise, the user's emacs directory is =~/.emacs.d=
 
+#+name: straight-setup
  #+BEGIN_SRC emacs-lisp
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -255,17 +259,23 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
   (load bootstrap-file nil 'nomessage))
  #+END_SRC
 
+ #+RESULTS: straight-setup
+ : t
+
 *** Use-package integration with straight
 :PROPERTIES:
 :ID:       A970A1D7-083C-4982-A7A0-E026B9BFFE57
 :END:
 
+#+name: use-package-with-straight
 #+BEGIN_SRC emacs-lisp
 (setq straight-use-package-by-default t)
 (straight-use-package 'use-package)
 (use-package git) ;; ensure we can install from git sources
 
 #+END_SRC
+
+#+RESULTS: use-package-with-straight
 
  #+RESULTS:
 
@@ -274,6 +284,7 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 :ID:       52D8055A-D99B-463C-8F97-056C068EDACD
 :END:
 
+#+name: directory-definitions
 #+BEGIN_SRC emacs-lisp
 ;; Base function to create the home directory
 (defun sr/fun/homedir (foldername)
@@ -286,6 +297,9 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
   (expand-file-name foldername (sr/fun/homedir ".emacs.d" )))
 #+END_SRC
 
+#+RESULTS: directory-definitions
+: sr/fun/emacs-dir
+
 ** Shorten yes or no
 :PROPERTIES:
 :ID:       4A052D85-5CA0-4703-94BD-693A88D89926
@@ -293,9 +307,13 @@ This snippet essentially bootstraps straight.el, which has several advantages ov
 
 It is infuriating that this is not a default in emacs. Therefore this minor snippet is included in the init.
 
+#+name: em-shorten-yn
 #+BEGIN_SRC emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
+#+RESULTS: em-shorten-yn
+: y-or-n-p
 
 #+RESULTS:
 : y-or-n-p
@@ -308,6 +326,9 @@ It is infuriating that this is not a default in emacs. Therefore this minor snip
 #+BEGIN_SRC emacs-lisp
 (load (sr/fun/emacs-dir "dotemacs.el"))
 #+END_SRC
+
+#+RESULTS:
+: t
 
 * .gitignore
 :PROPERTIES:
@@ -472,7 +493,7 @@ Copied from ldleworth's config. I think this makes sense for me at the moment. H
   - [ ] check whether this causes any lag with operating emacs.
 - keep 10 versions of old backups and delete old backups.
 
-
+#+name: emacs-autosave-settings
 #+BEGIN_SRC emacs-lisp
 (setq auto-save-default t)
 (setq auto-save-timeout 20
@@ -510,6 +531,7 @@ delete-old-versions t)
 
 Since I switch between a Linux machine and a Mac frequently, it is better to define variables that can be used to set other variables depending on the OS.
 
+#+name: os-level-variables
 #+BEGIN_SRC emacs-lisp
 ;; Get current system's name
 (defun insert-system-name()
@@ -542,6 +564,9 @@ Since I switch between a Linux machine and a Mac frequently, it is better to def
 #+END_SRC
 
 * Org-mode related
+:PROPERTIES:
+:ID:       57711EE4-7077-4084-9513-1FEBBC016D81
+:END:
 
 These have packages and settings that are mostly related to org-mode
 though there may be other settings that bleed in. org-babel has been
@@ -557,6 +582,7 @@ given it's own section though it is org-mode related.
 :END:
 Reference: [[https://github.crookster.org/switching-to-straight.el-from-emacs-26-builtin-package.el/][Crookster's blog post]]
 
+#+name: org-installation-with-straight-1
 #+BEGIN_SRC emacs-lisp
 ;;______________________________________________________________________
 ;;;;  Installing Org with straight.el
