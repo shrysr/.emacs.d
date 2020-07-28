@@ -4013,6 +4013,40 @@ added more easily. For exmaple electric-pair mode.
     'sh-mode 'js2-mode 'markdown-mode 'haskell-mode 'org-mode 'c-mode 'css-mode
     'web-mode 'typescript-mode 'plantuml-mode))
 #+END_SRC
+** Terraform stuff
+
+These are Emacs packages to help work with [[file:../my_org/roam/20200727145440-terraform.org][terraform]] configuration
+files. 
+
+*** terraform-mode
+:PROPERTIES:
+:ID:       A439D309-5C54-47BB-A4A8-D2054B4C7BD8
+:END:
+
+This enables syntax highlighting and other goodies for terraform
+configuration files. This also works within org source blocks. 
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'terraform-mode)
+#+END_SRC
+
+*** terraform-doc
+:PROPERTIES:
+:ID:       85CDE432-8975-41FB-9F32-0C532F8F8BD8
+:END:
+
+For easy lookup of terraform docs from Emacs.
+
+https://github.com/TxGVNN/terraform-doc
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'terraform-doc)
+#+END_SRC
+
+THe first step is to choose the provider. The package will then take you
+the docs. THe AWS link does not seem to work, but choosing Google or
+Azure as the provider does work.  
+
 ** exec-path-from-shell
 :PROPERTIES:
 :ID:       76ABA16A-81FA-4437-8940-5E97AF94FE4E
