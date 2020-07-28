@@ -1873,6 +1873,16 @@ commit link will be saved.
 (require 'org-git-link)
 #+END_SRC
 
+** org-sidebar
+:PROPERTIES:
+:ID:       FD166AE3-7B57-4057-938B-F44531FAF0B0
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-sidebar
+  :straight (org-sidebar :host github :repo "alphapapa/org-sidebar"))
+#+END_SRC
+
 * Temporary package list
 :PROPERTIES:
 :ID:       75AABB86-BB3D-417F-8043-4ACA11AE8759
