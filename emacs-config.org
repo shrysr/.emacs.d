@@ -7161,16 +7161,53 @@ and then have the visual line mode to
 
 #+RESULTS:
 
-** COMMENT Olivetti mode
+** Olivetti mode
+:PROPERTIES:
+:ID:       5586B98F-3230-42B0-9CAC-3F8207990C60
+:END:
+- Note taken on [2020-07-29 Wed 10:16] \\
+  I have this available so that it can be enabled when desired. The config
+  is lifted from Prot's configuration.
 - Note taken on [2020-03-28 Sat 20:04] \\
-  The problem with this mode is that it seems to activate and deactivate constantly, especially when the buffer is saved. However it is certainly very useful with wide screens in general.
+  +The problem with this mode is that it seems to activate and deactivate constantly, especially when the buffer is saved. However it is certainly very useful with wide screens in general.+
 
 This package is useful in centering the text in a buffer, and is particularly helpful with wide screens.
 
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
-:config
-(olivetti-mode 1))
+  :straight t
+  :diminish
+  :config
+  (setq olivetti-body-width 0.65)
+  (setq olivetti-minimum-body-width 72)
+  (setq olivetti-recall-visual-line-mode-entry-state t)
+
+  (define-minor-mode prot/olivetti-mode
+    "Toggle buffer-local `olivetti-mode' with additional parameters.
+
+Fringes are disabled.  The modeline is hidden, except for
+`prog-mode' buffers (see `prot/hidden-mode-line-mode').  The
+default typeface is set to a proportionately-spaced family,
+except for programming modes (see `prot/variable-pitch-mode').
+The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
+    :init-value nil
+    :global nil
+    (if prot/olivetti-mode
+        (progn
+          (olivetti-mode 1)
+          (set-window-fringes (selected-window) 0 0)
+          ;; (prot/variable-pitch-mode 1)
+          ;; (prot/cursor-type-mode 1)
+          (unless (derived-mode-p 'prog-mode)
+            (prot/hidden-mode-line-mode 1)))
+      (olivetti-mode -1)
+      (set-window-fringes (selected-window) nil) ; Use default width
+      ;; (prot/variable-pitch-mode -1)
+      (prot/cursor-type-mode -1)
+      (unless (derived-mode-p 'prog-mode)
+        (prot/hidden-mode-line-mode -1))))
+  :bind ("C-c o" . prot/olivetti-mode))
+
 
 #+END_SRC
 ** Spaceline : modeline configuration
