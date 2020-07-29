@@ -5241,12 +5241,13 @@ Entrypoint Hydra
 ("n" (hera-push 'hydra-notes/body) "notes" :column "Misc")
 ("S" (hera-push 'hydra-straight/body) "Straight")
 ("s" (call-interactively 'helm-imenu) "semantic")
-("g" (hera-push 'hydra-gist/body) "gist")
+("g" (hera-push 'hydra-git/body) "Git, paste and gist")
 ("v" (hera-push 'hydra-pyvenv/body) "pyvenv" :column "python")
 ("j" (hera-push 'hydra-jumper/body) "Jump around" :column "Daily")
 ("J" (hera-push 'hydra-journal/body) "Journal" :column "Daily")
 ("p" (hera-push 'hydra-perspective/body) "pyvenv" :column "Daily")
-("o" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
+("-" (hera-push 'hydra-clock/body) "Clock" :column "Daily")
+("o" (hera-push 'hydra-org-roam/body) "Clock" :column "Daily")
 ("l" (hera-push 'hydra-links/body) "Links")
 ("b" (hera-push 'hydra-brain/body) "brain"))
 
@@ -5621,19 +5622,30 @@ the mark-ring.
 #+END_SRC
 
 
-** TODO hydra-gists and pastes
+** TODO COMMENT hydra-git
+:PROPERTIES:
+:ID:       66EF7974-003B-4D21-9FFB-5BC5B5B253C2
+:END:
 - Note taken on [2020-05-23 Sat 11:02] \\
-  The paste region does not seem to work as expected. The mistake seems to
+  paste region does not seem to work as expected. The mistake seems to
   be that the region is not being supplied via the hydra. However, the
   command works as expected when accessed via M-x.
 
-#+BEGIN_SRC emacs-lisp
-(nougat-hydra hydra-gist (:color blue)
-("Gist and Pastes" (("g" (gist-region-or-buffer) "public gist")
-("G" (gist-region-or-buffer-private) "private gist")
+
+
+#+BEGIN_SRC emacs-lisp  
+(nougat-hydra hydra-git (:color blue)
+("Pastes and gists" 
+(("g" (gist-region-or-buffer) "public gist") 
+("G" gist-region-or-buffer-private "private gist")
 ("b" (browse-url "https://gist.github.com/shrysr") "browse gists")
-("pb" (webpaste-paste-buffer) "webpaste buffer")
-("pr" (webpaste-paste-buffer-or-region) "webpaste selected region"))))
+("pb" webpaste-paste-buffer "webpaste buffer")
+("pr" webpaste-paste-buffer-or-region "webpaste selected region"))
+"Git" 
+(("m" git-gutter:mark-hunk "mark hunk" :color red )
+	("s" git-gutter:stage-hunk "stage hunk" :color red)
+	("n" git-gutter:next-hunk "next hunk" :color red)
+	("p" git-gutter:previous-hunk "previous hunk" :color red))))
 #+END_SRC
 
 * TODO org-id setup
