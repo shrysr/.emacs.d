@@ -4932,6 +4932,15 @@ pip3 install black
 :hook (python-mode . blacken-mode))
 #+END_SRC
 
+** emacssql-sqlite
+:PROPERTIES:
+:ID:       34B0A562-D6DC-4347-A528-9680F243B886
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'emacsql-sqlite)
+#+END_SRC
+
 * Docker
 
 The following packages will enable me to handle docker containers right within Emacs.
