@@ -4013,6 +4013,26 @@ added more easily. For exmaple electric-pair mode.
     'sh-mode 'js2-mode 'markdown-mode 'haskell-mode 'org-mode 'c-mode 'css-mode
     'web-mode 'typescript-mode 'plantuml-mode))
 #+END_SRC
+** hl-todo
+:PROPERTIES:
+:ID:       1562C2DE-F59C-4456-B2AD-FEF3750A5318
+:END:
+
+Borrowed from [[file:../my_org/roam/20200729113305-grym.org][grym - Graham Voysey]]'s Emacs configuration:  https://github.com/gvoysey/emacs.d
+
+#+BEGIN_SRC emacs-lisp
+(use-package hl-todo
+ :straight (hl-todo :type git
+             :host github
+             :repo "tarsius/hl-todo")
+ :init  (setq hl-todo-exclude-modes nil)
+ :config
+       (global-hl-todo-mode)
+       (setq hl-todo-keyword-faces
+           '(("todo"   . "#FF0000")
+             ("fixme"  . "#FF0000"))))
+#+END_SRC
+
 ** Terraform stuff
 
 These are Emacs packages to help work with [[file:../my_org/roam/20200727145440-terraform.org][terraform]] configuration
