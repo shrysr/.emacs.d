@@ -4952,6 +4952,20 @@ pip3 install black
 :hook (python-mode . blacken-mode))
 #+END_SRC
 
+*** poetry
+
+Borrowed from [[file:../my_org/roam/20200729113305-grym.org][grym - Graham Voysey]]'s config. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package poetry
+:straight (poetry :type git
+                :host github
+                :repo "galaunay/poetry.el")
+;; :config (poetry-tracking-mode)
+)
+#+END_SRC
+
+
 ** emacssql-sqlite
 :PROPERTIES:
 :ID:       34B0A562-D6DC-4347-A528-9680F243B886
