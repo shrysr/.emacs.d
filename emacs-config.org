@@ -6929,20 +6929,25 @@ scimax-ipython upstream
   relatively minor customisations like the font, proportional headings and
   so on are made to all)
 
-  1. Modus operandi: well designed light theme that does not hurt my eyes
+  1. modus-vivendi: This is an +good+ awesome dark theme that I prefer
+     since it is based on similar design principles as the
+     modus-operandi theme (See [[https://gitlab.com/protesilaos/modus-themes][modus-themes · GitLab]]). I noted earlier
+     that the contrast was jarring and I would not use for long. However
+     that has changed completely with colored headings and source code
+     blocks along with a number of enhancements as discussed in the
+     readme and the gitlab issues of modus-themes. Heads-up, I got
+     mentioned in CHANGELOG [[https://gitlab.com/protesilaos/modus-themes/-/tags/0.11.0][0.11.0 · Tags]].
+  2. modus-operandi: well designed light theme that does not hurt my eyes
      and offers a good basic configuration. This theme appears to work
      well with terminal emacs as well. [2020-07-08 Wed] The theme now
      offers color highlighting for source code blocks and overall
      becomes very similar to the Leuven theme, but without the jarring
-     colors. 
-  2. Zenburn : As many say, this theme is definitely the easiest on my
-     eyes and will be a preferred dark theme. There are a tonne of
-     configuration options out of the box.
-  3. Modus vivendi: This is a good dark theme that I prefer since it is
-     based on similar design principles as the modus operandi. However,
-     the contrast is jarring as compared to the mute nature of the Zenburn
-     theme. I would not want to use the Modus vivendi theme for long
-     durations in low light.
+     colors that I dislike Leuven, not to mention the amount of
+     customisation that is possible with the modus themes.
+  3. Zenburn : As many say, this theme is definitely very easy on my
+     eyes and will be a preferred dark theme /alternative/. There are a
+     tonne of configuration options out of the box. [[id:F7BFD50A-F0A9-4107-BE53-80D8A7EFDFB6][Theme : Zenburn]]
+     contain my setup of this theme when I use it (which is rare now).
   4. Leuven: I used this theme for a long time when I was on
      Scimax. Undoubtedly this light theme has its advantages, however, it
      seems a little too opinionated on a lot of things, and I would prefer
