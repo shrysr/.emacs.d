@@ -6025,6 +6025,14 @@ Source : http://ergoemacs.org/emacs/emacs_set_default_browser.Html
 : ((wikipedia\.org . eww-browse-url) (github . eww-browse-url) (thefreedictionary\.com . eww-browse-url) (. . browse-url-default-browser))
 
 * New Scimax port
+
+I am currently sourcing these portions of scimax from a forked
+repository. Portions of the scimax setup packages are modified to work
+with straight.el and portions have been extracted into blocks within
+headings below. The package list has been extracted into separate
+use-packages and settings for the same. ob-ipython and John's
+enhancements ot the same are also incorporated. 
+
 ** COMMENT Adding scimax folder to load path
 :PROPERTIES:
 :ID:       07625F90-FBFE-46A1-8FDE-2E4D0B664B9D
