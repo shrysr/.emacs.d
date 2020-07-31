@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: cv-and-reference-letters-attach
+# key: cvra
+# --
+<#part type="application/pdf" filename="/Users/shrysr/Desktop/Resume_Shreyas_Ragavan.pdf" disposition=attachment description=resume>
+<#/part>
+
+<#part type="application/pdf" filename="/Users/shrysr/Documents/Reference_letters_Shreyas.pdf" disposition=attachment>
+<#/part>

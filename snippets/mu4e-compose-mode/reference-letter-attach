@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: mail-ref-letters-attach
+# key: ref-letters-mail
+# --
+<#part type="application/pdf" filename="/Users/shrysr/Documents/Reference_letters_Shreyas.pdf" disposition=attachment>
+<#/part>
