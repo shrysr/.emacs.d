@@ -5606,24 +5606,28 @@ their own views.
 :ID:       B3144404-6F5A-47E5-A5DB-11D96BE64111
 :END:
 
-This is a hydra for accessing perspective-el. 
+This is a hydra for accessing perspective-el.
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-perspective (:color red)
-("perspective-el"
+("Navigation"
 (("[" persp-prev "previous perspective" :color red)
  ("]" persp-next "next perspective" :color red)
  ("s" persp-switch "switch perspective" :color blue)
- ("x" persp-state-save "save perspective state"  red)
+ ("l" persp-switch-last "Last persective" :color red)
+("b" persp-ivy-switch-buffer "switch persp buffer" :color red))
+"State Modification"
+(("x" persp-state-save "save perspective state"  red)
  ("r" persp-rename "rename persp" :color red)
- ("k" persp-remove-buffer "remove buffer from perspective" :color red)
- ("k" persp-kill "kill perspective" :color red)
- ("o" persp-state-load "Load perspective" :color red)
- ("p" projectile-persp-switch-project "Project: persp switch" :color blue)
- ("e" hydra-eyebrowse/body "hydra eyebrowse" :color blue)
- ("i" persp-import "import perspective" :color blue)
-  ("a" persp-add-buffer "Add buffer to persp" :color blue)
- ("b" persp-ivy-switch-buffer "switch persp buffer" :color red))))
+ ("K" persp-remove-buffer "remove buffer from perspective" :color red)
+("a" persp-add-buffer "Add buffer to persp" :color blue)
+ ("k" persp-kill "kill perspective" :color red))
+"State Load and import"
+ (("o" persp-state-load "Load perspective" :color red)
+ ("i" persp-import "import perspective" :color blue))
+"General"
+ (("p" projectile-persp-switch-project "Project: persp switch" :color blue)
+ ("e" hydra-eyebrowse/body "hydra eyebrowse" :color blue))))
 
 #+END_SRC
 
