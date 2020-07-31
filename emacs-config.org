@@ -3548,6 +3548,26 @@ This includes functions for org-brain
 #+END_SRC
 
 : helm-multi-swoop
+*** helm-dash
+:PROPERTIES:
+:ID:       5E890FD9-DBD9-47C9-A5DE-56943A783528
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-dash
+:straight t
+:config
+ (setq helm-dash-common-docsets '("Redis" "Python 3" "Python 2" "PostgreSQL" "MongoDB")) )
+#+END_SRC
+
+*** helm-ls-git
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-ls-git
+:straight t)
+#+END_SRC
+
+
 ** TODO Projectile and helm
 :PROPERTIES:
 :ID:       CEEF5675-26B7-4EEF-8F07-62383E9614EE
