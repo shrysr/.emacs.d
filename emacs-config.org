@@ -6992,6 +6992,17 @@ scimax-ipython upstream
 (setq custom-safe-themes t)
 #+END_SRC
 
+** Enable fontification of example and quote blocks
+:PROPERTIES:
+:ID:       C2D3C30F-7297-484A-90DA-C332B5006139
+:END:
+
+As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
+
+#+BEGIN_SRC emacs-lisp
+(setq org-fontify-quote-and-verse-blocks t)
+#+END_SRC
+
 ** Theme : modus
 :PROPERTIES:
 :ID:       1F5F41EC-6BDA-46BC-B1E6-DED28B899196
