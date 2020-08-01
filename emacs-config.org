@@ -6981,7 +6981,7 @@ scimax-ipython upstream
      seems a little too opinionated on a lot of things, and I would prefer
      a lighter theme that also plays well on terminals.
   5. Doom's solarized dark theme: this is an honorable mention. As a dark theme
-     that does not hurt the themes - this is similar to zenburn, but not
+     that does not hurt the eyes - this is similar to zenburn, but not
      as good looking.
 ** Setting custom themes to be safe
 :PROPERTIES:
