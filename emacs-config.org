@@ -5688,8 +5688,42 @@ the mark-ring.
   ("," (push (point-marker) mark-ring) "Push location mark ring" :color red))))
 #+END_SRC
 
+** TODO hydra-org-roam
+:PROPERTIES:
+:ID:       A829ED34-FB49-46C9-8299-A7D1476802B9
+:END:
 
-** TODO COMMENT hydra-git
+- [ ] Jump to org-roam buffer and back.
+- [X] winner undo and redo 
+- [ ] crux for line manipulation
+- [ ] scimax register hydra. This may be unnecessary though. 
+
+ 
+#+BEGIN_SRC emacs-lisp
+(nougat-hydra hydra-org-roam (:color red)
+("Insert"
+ (("i" org-roam-insert-immediate "insert immediate" :color blue)
+  ("u" org-roam-insert "insert with capture" :color red)
+  ("9" company-org-roam "company org roam" :color blue)
+ ("u" org-ref-url-html-to-bibtex "URL to bibtex" :color blue))
+"Window"
+  (("o" org-roam "Org roam window" :color red)
+  ("[" winner-undo "winner UNDO" :color red)
+  ("]" winner-redo "winner REDO" :color red))
+"Jumping"
+(("f" org-roam-find-file "find file" :color red)
+  ("h" ivy-org-jump-to-open-headline "ivy jump to org headline" :color red)
+  ("l" hydra-clock/org-capture-goto-last-stored "Last captured heading" :color red)
+  ("r" scimax-registers/body "scimax register hydra" :color blue))
+"Editing"
+(("dl" crux-duplicate-current-line-or-region "crux duplicate line/region" :color red)
+  ("dc" crux-duplicate-and-comment-current-line-or-region "crux duplicate + comment line/region" :color red))))
+
+(global-set-key (kbd "H-o") (lambda () (interactive) (hera-start 'hydra-org-roam/body)))
+
+#+END_SRC
+
+** TODO hydra-git
 :PROPERTIES:
 :ID:       66EF7974-003B-4D21-9FFB-5BC5B5B253C2
 :END:
