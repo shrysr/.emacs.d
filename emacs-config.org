@@ -5734,7 +5734,13 @@ the mark-ring.
   be that the region is not being supplied via the hydra. However, the
   command works as expected when accessed via M-x.
 
+As long as the visual buffer updates and the git gutter chunks are
+available, it is easy to quickly mark and stage chunks using the hydra
+defined below. The mark command is a little clunky, but is still useful
+at times to view a hunk. This does not work well with staging a part of
+a chunk.
 
+- [ ] Add a hook to save the project buffers when this hydra is called. 
 
 #+BEGIN_SRC emacs-lisp  
 (nougat-hydra hydra-git (:color blue)
