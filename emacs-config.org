@@ -1,3 +1,4 @@
+#+STARTUP: overview
 #+PROPERTY: header-args :results silent :tangle ./dotemacs.el
 #+toc: t
 #+hugo_base_dir: ~/my_org/hugo-sr/
@@ -16,6 +17,7 @@
 :header-args: :comments both :tangle ./README.org
 :ID:       80A31FA5-3101-4875-BE20-03A4F640E5B5
 :END:
+
 
 #+BEGIN_SRC org
 I've been using my own configuration on top of the excellent
@@ -40,7 +42,6 @@ geniuses lurking in irc channels, and of course the vast internet.
 #+END_QUOTE
 
 #+END_SRC
-
 
 ** Overall setup
 :PROPERTIES:
@@ -122,7 +123,6 @@ In general - code and snippet source references are added as and when
 possible though this is a tedius task for those with configurations
 under a great rate of flux.
 #+END_SRC
-
 
 ** TODO Packages I've found very useful
 :PROPERTIES:
@@ -1010,6 +1010,7 @@ This should help with the generation of the org-agenda.
 #+END_SRC
 
 ** TODO Capture mechanics
+
 Over time I've found an efficient capture mechanism to be important to
 nurture productivity while accounting for interruptions. I think the
 process of gathering templates takes time, and can be facilitated by
@@ -1019,6 +1020,7 @@ into GTD. The ideal method seems to be to capture quickly ~somewhere and
 then review and refile, as well as schedule a time block for the
 tasks. Musa Al-hassy's [[https://alhassy.github.io/init/][A Life Configuring Emacs]] talks about the
 above. Some other good starting points are:
+
 - [[http://doc.norang.ca/org-mode.html][Bernt Hansen's config]]
 - [[http://pragmaticemacs.com/category/org/][org | Pragmatic Emacs]]
 - [[https://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's Emacs configuration]]
