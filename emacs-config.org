@@ -4175,6 +4175,41 @@ In addition, I combine the above with Treemacs, which gives me access to the tag
 #+END_SRC
 
 * Programming customisations
+** Markdown-mode
+:PROPERTIES:
+:ID:       EDDB1530-E130-48E2-A7FF-2BF0AC787BC5
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :straight t
+  :config
+  ;; Allows for fenced block focus with C-c ' (same as Org blocks).
+  (use-package edit-indirect
+    :straight t
+    :defer)
+  (setq markdown-fontify-code-blocks-natively t)
+  :mode ("\\.md$" . markdown-mode))
+#+END_SRC
+** Enabling Flyspell
+
+Reference: https://alhassy.github.io/init/
+
+Org mode is derived from text mode, therefore it is sufficient to activate for text mode.
+
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell
+  :hook (
+           (prog-mode . flyspell-prog-mode)
+           (text-mode . flyspell-mode))
+)
+
+#+END_SRC
+
+#+RESULTS:
+| flyspell-mode | er/add-text-mode-expansions | dubcaps-mode | flycheck-mode | text-mode-hook-identify |
+
+
 ** Common editing modes
 :PROPERTIES:
 :ID:       A655C868-0A42-4F78-80FA-163B15FFA14B
