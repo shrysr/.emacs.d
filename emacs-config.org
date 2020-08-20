@@ -7795,13 +7795,65 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
  #+END_SRC
 
 *** Diminishing modes
+:PROPERTIES:
+:ID:       EE5F4610-0D7D-42F8-9D7B-B4E28C9A6085
+:END:
 
 These are borrowed from scimax. I want to de-clutter my modeline. 
 
 #+BEGIN_SRC emacs-lisp
-(setq-default fill-column 72)
-(global-visual-line-mode 1)
-(add-hook 'text-mode-hook 'auto-fill-mode)
+(use-package diminish
+
+  :config
+  (diminish 'ivy-mode)
+  (diminish 'lispy-mode)
+  (diminish 'abbrev-mode)
+  (diminish 'visual-line-mode)
+  (diminish 'beacon-mode)
+  (diminish 'aggressive-indent-mode)
+  (diminish 'undo-tree-mode)
+  (diminish 'SMerge-mode)
+  (diminish 'git-gutter-mode)
+  (diminish 'counsel-mode)
+;;;  TODO Review whether I want the revert mode to be shown.
+  (diminish 'auto-revert-mode)
+  (diminish 'org-indent-mode)
+    (diminish 'helm-mode)
+    (diminish 'auto-fill-mode)
+    (diminish 'smerge-mode)
+    (diminish 'which-key-mode)
+    (diminish 'flyspell-mode)
+    (diminish 'refill-mode)
+   (diminish 'org-mode)
+    (diminish 'emacs-keybinding-command-tooltip-mode))
+#+END_SRC
+
+*** Delightful modes
+:PROPERTIES:
+:ID: 9AF32F03-2E2F-403D-9479-2D1533C2707A
+:END:
+
+There are some modes that I would like displayed. Let's lift this from https://www.emacswiki.org/emacs/DelightedModes
+
+#+BEGIN_SRC emacs-lisp
+(use-package delight
+:straight t
+:config
+ (delight '(;; (abbrev-mode " Abv" abbrev)
+            (smart-tab-mode " \\t" smart-tab)
+            (eldoc-mode nil "eld")
+            (rainbow-mode)
+            (overwrite-mode " Ov" t)
+            (org-roam-mode " OR" t)
+            ;; This is for the Narrow that shows
+	    ;; up when org mode headings are narrowed, or the buffer is
+	    ;; narrowed.
+	    ;; (narrow-mode " NRW " t)
+	    (auto-fill-function " AF" t)
+	    ;; I need a way to customise and shorten the projectile prompt
+	    ;; (projectile-mode " P" t)
+            (emacs-lisp-mode "Elisp" :major)
+	    ))) ;
 #+END_SRC
 
 ** COMMENT Visual Fill Column and global visual line
