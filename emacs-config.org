@@ -2526,6 +2526,162 @@ Suggest the URL title as a description for resource."
 
 #+RESULTS:
 : my/avy-brain-jump-sibling
+** TODO org-roam stuff
+
+I have decided to use org-roam for my knowledge base and even try to
+connect it with my existing org-brain database. They are after all only
+org files and also have some additional information like the brain
+links, and I do not think this should interfere with org-roam's
+database.
+
+*** Basic setup - org-roam
+:PROPERTIES:
+:ID:       61E64346-EE07-4268-88F0-FDBFAA02C43A
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-roam
+    :straight t
+    :after org
+    :hook
+    (after-init . org-roam-mode)
+    :custom
+    ;; (org-roam-directory "~/my_org/roam")
+    (org-roam-directory "~/my_org/roam")
+    ;; This does not seem to work or is meant for existing databases
+    ;; (org-roam-db-location "~/Databases/org-roam/")
+    :bind (:map org-roam-mode-map
+		(("C-c n l" . org-roam)
+		 ("C-c n f" . org-roam-find-file)
+		 ("C-c n g" . org-roam-graph-show))
+		:map org-mode-map
+		(("C-c n i" . org-roam-insert))
+		(("C-c n I" . org-roam-insert-immediate)))
+    :config
+    (setq org-roam-completion-system 'helm))
+
+#+END_SRC
+
+*** company-org-roam
+:PROPERTIES:
+:ID:       AF5D949C-F3AD-4F24-9415-D47EA0C46E2B
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-org-roam
+  :straight (:host github :repo "org-roam/company-org-roam")
+  :config
+  (push 'company-org-roam company-backends))
+#+END_SRC
+
+*** TODO COMMENT org-roam-bibtex
+:PROPERTIES:
+:ID:       2D759E87-0EC4-4DA5-82F4-1F573E99C62A
+:END:
+
+[[https://github.com/org-roam/org-roam-bibtex][org-roam/org-roam-bibtex: Connector between Org-roam, BibTeX-completion, and Org-ref]]
+
+#+BEGIN_SRC emacs-lisp
+(defconst org-roam-packages
+  '(org-roam org-roam-bibtex))
+
+
+(defun org-roam/init-org-roam-bibtex ()
+  (use-package org-roam-bibtex
+    :straight t
+    :after org-roam
+    :hook (org-roam-mode . org-roam-bibtex-mode)
+    :bind (:map org-mode-map
+                (("C-c n a" . orb-note-actions)))
+    :config
+    require 'org-roam-bibtex))
+
+#+END_SRC
+
+*** TODO COMMENT org-roam-protocol extension installation
+
+Org-roam's protocol extensions has to be enabled on different platforms
+for this to work. I am currently on a Mac.
+
+**** DONE Install platypus
+CLOSED: [2020-07-14 Tue 17:49]
+
+#+BEGIN_SRC sh :results verbatim :async yes
+brew cask install platypus
+#+END_SRC
+
+**** TODO Create the platypus app
+
+*** TODO COMMENT org-roam-server
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam-server
+  :straight t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-network-poll t
+        org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
+#+END_SRC
+
+*** Ignore notes tagged private from hugo export
+:PROPERTIES:
+:ID:       B1A5C433-7A6A-4005-944B-FF25DF132FDC
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun org-roam-to-hugo-md ()
+  (interactive)
+  (let ((files (mapcan (lambda (x) x)
+                       (org-roam-db-query [:select [files:file]
+                                                   :from files
+                                                   :left :outer :join tags :on (= files:file tags:file)
+                                                   :where (or (is tags:tags nil)
+                                                              (not-like tags:tags '%private%))]))))
+    (mapc
+     (lambda (f)
+       (with-current-buffer
+           (find-file-noselect f)
+         (org-hugo-export-to-md)))
+     files)))
+#+END_SRC
+
+*** Ignore backlinks tagged private from hugo export
+:PROPERTIES:
+:ID:       5663101F-5171-4828-A177-8AE4F42198DE
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(defun my/org-roam--backlinks-list (file)
+  (if (org-roam--org-roam-file-p file)
+      (--reduce-from
+       (concat acc (format "- [[file:%s][%s]]\n"
+                           (file-relative-name (car it) org-roam-directory)
+                           (org-roam--get-title-or-slug (car it))))
+       "" (org-roam-db-query [:select [links:from]
+                              :from links
+                              :left :outer :join tags :on (= links:from tags:file)
+                              :where (and (= to $s1)
+                                          (or (is tags:tags nil)
+                                              (not-like tags:tags '%private%)))]
+                             file))
+    ""))
+
+(defun my/org-export-preprocessor (backend)
+  (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+    (unless (string= links "")
+      (save-excursion
+        (goto-char (point-max))
+        (insert (concat "\n* Backlinks\n") links)))))
+
+(add-hook 'org-export-before-processing-hook 'my/org-export-preprocessor)
+#+END_SRC
+
 ** define-word
 :PROPERTIES:
 :ID:       50B2C2AA-D7C4-40FA-8600-138EA575C00F
@@ -6907,6 +7063,13 @@ Use a prefix arg to get regular RET. "
 
 #+RESULTS:
 : scimax-notebook
+** org-db
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-db
+    :straight (org-db :local-repo "scimax-subset" :files ("org-db.el")))
+(require 'org-db)
+#+END_SRC
 
 ** COMMENT scimax-journal
 :PROPERTIES:
