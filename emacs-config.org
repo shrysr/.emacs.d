@@ -7531,6 +7531,7 @@ scimax-ipython upstream
   5. Doom's solarized dark theme: this is an honorable mention. As a dark theme
      that does not hurt the eyes - this is similar to zenburn, but not
      as good looking.
+
 ** Setting custom themes to be safe
 :PROPERTIES:
 :ID:       E7FEA82C-0CCD-40D2-842A-E6797A9BB3BF
@@ -7556,13 +7557,23 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
 :ID:       1F5F41EC-6BDA-46BC-B1E6-DED28B899196
 :END:
 
-*** modus operandi
+*** Modus themes package
+    :PROPERTIES:
+    :ID:       85401D4B-CF7B-4997-BCD1-AC273FE4518E
+    :END:
+
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
+*** COMMENT modus operandi
 :PROPERTIES:
 :ID:       4353F3D3-6528-49E2-B9A3-16F98A490FF1
 :END:
 - Note taken on [2020-07-08 Wed 21:52] \\
   The settings are now directly borrowed from the package readme.
 
+#+name: modus-operandi
 #+BEGIN_SRC emacs-lisp
 ;; (straight-use-package 'modus-operandi-theme)
 
@@ -7709,10 +7720,83 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
 
 #+RESULTS:
 
-** Fill column and auto fill
-:PROPERTIES:
-:ID:       3A60EF9B-1308-44B9-B7D4-009370687D38
-:END:
+** Modeline
+*** COMMENT Doom modeline
+    :PROPERTIES:
+    :ID:       84F55D71-F357-4DD7-A322-BF7B726AD5F2
+    :END:
+ - Note taken on [2020-05-17 Sun 00:18] \\
+   Apparently, this is consuming a lot of CPU cycles in the org agenda
+   buffer and preventing a speedy navigation. The same behavior is seen on
+   enabling the spaceline package as well. This is not nice.
+ - Note taken on [2020-04-24 Fri 20:16] \\
+   The doom modeline possibly adds some extra seconds to the load
+   time. This has to be investigated. However, the aesthetics would seem to
+   make it well worth it.
+
+ - [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
+
+ #+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :straight t
+  :custom
+  (doom-modeline-buffer-file-name-style 'truncate-with-project)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon nil)
+  (doom-modeline-minor-modes nil)
+  (doom-modeline-lsp t)
+  ;; (doom-modeline-mu4e t)
+  (doom-modeline-env-version t)
+  :hook
+  (after-init . doom-modeline-mode)
+  :config
+  (line-number-mode 0)
+  (column-number-mode 0)
+  (doom-modeline-def-modeline 'main
+    '(bar window-number matches buffer-info remote-host buffer-position selection-info)
+    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
+
+ #+END_SRC
+
+*** COMMENT Spaceline : modeline configuration
+    :PROPERTIES:
+    :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
+    :END:
+ - [X] [[http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/][Get that spacemacs look without spacemacs | Pragmatic Emacs]] - this provides a bare bones setup
+ - [ ] [[http://amitp.blogspot.com/2017/01/emacs-spaceline-mode-line.html][Amit's Thoughts: Emacs spaceline mode line]] : This is an excellent guide covering a lot of possibilities to customise so many aspects of the modeline and make it look great.
+ - [ ] It seems that spaceline adds a few extra seconds to the init time. I wonder if there are lighter packages that achieve the same effect.
+
+ #+BEGIN_SRC emacs-lisp
+(use-package spaceline
+  :straight t
+  :init
+  (setq powerline-default-separator 'arrow-fade)
+  :config
+  (disable-theme 'smart-mode-line-light)
+  (require 'spaceline-config)
+  (spaceline-spacemacs-theme)
+  (spaceline-toggle-buffer-position-off)
+  (spaceline-toggle-hud-off)
+  (setq spaceline-python-pyvenv-on 1)
+  (spaceline-toggle-minor-modes-off t)
+(spaceline-toggle-buffer-id  t))
+   #+END_SRC
+
+ #+RESULTS:
+ : t
+*** powerline
+
+ #+BEGIN_SRC emacs-lisp
+(use-package powerline
+  :straight t
+  :config
+  (setq powerline-arrow-shape 'curve)
+  (powerline-default-theme))
+ #+END_SRC
+
+*** Diminishing modes
+
+These are borrowed from scimax. I want to de-clutter my modeline. 
 
 #+BEGIN_SRC emacs-lisp
 (setq-default fill-column 72)
@@ -7759,43 +7843,6 @@ and then have the visual line mode to
 
 #+RESULTS:
 | visual-fill-column-mode | visual-line-mode-set-explicitly |
-
-** COMMENT Doom modeline
-:PROPERTIES:
-:ID:       84F55D71-F357-4DD7-A322-BF7B726AD5F2
-:END:
-- Note taken on [2020-05-17 Sun 00:18] \\
-  Apparently, this is consuming a lot of CPU cycles in the org agenda
-  buffer and preventing a speedy navigation. The same behavior is seen on
-  enabling the spaceline package as well. This is not nice.
-- Note taken on [2020-04-24 Fri 20:16] \\
-  The doom modeline possibly adds some extra seconds to the load
-  time. This has to be investigated. However, the aesthetics would seem to
-  make it well worth it.
-
-- [[https://ladicle.com/post/config/#doom-dracula-theme-modeline][Ladicle's Emacs Configuration]]
-
-#+BEGIN_SRC emacs-lisp
-(use-package doom-modeline
-  :straight t
-  :custom
-  (doom-modeline-buffer-file-name-style 'truncate-with-project)
-  (doom-modeline-icon t)
-  (doom-modeline-major-mode-icon nil)
-  (doom-modeline-minor-modes nil)
-  (doom-modeline-lsp t)
-  (doom-modeline-mu4e t)
-  (doom-modeline-env-version t)
-  :hook
-  (after-init . doom-modeline-mode)
-  :config
-  (line-number-mode 0)
-  (column-number-mode 0)
-  (doom-modeline-def-modeline 'main
-    '(bar window-number matches buffer-info remote-host buffer-position selection-info)
-    '(misc-info persp-name lsp github debug minor-modes input-method major-mode process vcs checker)))
-
-#+END_SRC
 
 ** COMMENT Org Aesthetics Headline scales
 - Note taken on [2020-03-28 Sat 19:56] \\
@@ -7862,33 +7909,7 @@ The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
 
 
 #+END_SRC
-** Spaceline : modeline configuration
-   :PROPERTIES:
-   :ID:       1505e226-1321-4f3c-89e9-9dc8a5c91bd0
-   :END:
-- [X] [[http://pragmaticemacs.com/emacs/get-that-spacemacs-look-without-spacemacs/][Get that spacemacs look without spacemacs | Pragmatic Emacs]] - this provides a bare bones setup
-- [ ] [[http://amitp.blogspot.com/2017/01/emacs-spaceline-mode-line.html][Amit's Thoughts: Emacs spaceline mode line]] : This is an excellent guide covering a lot of possibilities to customise so many aspects of the modeline and make it look great.
-- [ ] It seems that spaceline adds a few extra seconds to the init time. I wonder if there are lighter packages that achieve the same effect.
-
-#+BEGIN_SRC emacs-lisp
-(use-package spaceline
-  :straight t
-  :init
-  (setq powerline-default-separator 'arrow-fade)
-  :config
-  (disable-theme 'smart-mode-line-light)
-  (require 'spaceline-config)
-  (spaceline-spacemacs-theme)
-  (spaceline-toggle-buffer-position-off)
-  (spaceline-toggle-hud-off)
-  (setq spaceline-python-pyvenv-on 1)
-  (spaceline-toggle-minor-modes-off))
-  #+END_SRC
-
-#+RESULTS:
-: t
-
-** Striking out Done headlines
+** COMMENT Strike out Done headlines
 :PROPERTIES:
 :ID:       3263d812-c3f5-4947-b2de-c75c537d19df
 :END:
@@ -7908,7 +7929,7 @@ source: Sacha Chua
 
 #+RESULTS:
 
-** keywords as boxes with inverted colors
+** COMMENT keywords as boxes with inverted colors
 :PROPERTIES:
 :ID:       62dcdc53-ee2f-4db2-afda-6b68a05cbeda
 :END:
@@ -7959,6 +7980,24 @@ Source : SO [[https://stackoverflow.com/questions/12707492/add-custom-markers-to
 ;; No start up message and nothing to pollute the scratch buffer
 (setq inhibit-startup-message t initial-scratch-message nil)
 #+END_SRC
+** Display time and date information
+:PROPERTIES:
+:ID:       5DA8D260-214D-4D7C-BA49-F9EEEAF2161F
+:END:
+
+#+BEGIN_SRC emacs-lisp
+(use-package time
+  :config
+  (setq display-time-format "%H:%M  %Y-%m-%d")
+  ;;;; Covered by `display-time-format'
+  ;; (setq display-time-24hr-format t)
+  ;; (setq display-time-day-and-date t)
+  (setq display-time-interval 60)
+  (setq display-time-mail-directory nil)
+  (setq display-time-default-load-average nil)
+  :hook (after-init-hook . display-time-mode))
+#+END_SRC
+
 * Hugo
 ** ox-hugo setup
 :PROPERTIES:
