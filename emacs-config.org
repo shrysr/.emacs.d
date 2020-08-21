@@ -6166,23 +6166,38 @@ This is a hydra for accessing perspective-el.
     ("b" dumb-jump-back "Back"))
 #+END_SRC
 
-** hydra-jumper
+** TODO hydra-jumper
+:PROPERTIES:
+:ID:       0E96A1C4-2660-4062-8959-8CFCEC8EFEF5
+:END:
 
 Thanks to jamzattack on #Emacs, I was able to push the current point to
-the mark-ring. 
+the mark-ring. However,  [[help:org-mark-ring-push]] seems to be a better
+option as this pushes to the current location Org and Emacs mark ring at the same time. 
 
 #+BEGIN_SRC emacs-lisp
 (nougat-hydra hydra-jumper (:color red)
-("jumper"
- (("b" helm-org-rifle-brain "helm org rifle brain" :color red)
-  ("j" helm-org-rifle "helm org rifle" :color red)
-  ("m" helm-mark-ring "helm local mark ring" :color red)
-  ("M" helm-global-mark-ring
-   "helm global  mark ring" :color red)
+("Code and blocks"
+ (("b" scimax-jump-to-block "Jump to block" :color red))
+ "Mark ring"
+ (("m" helm-mark-ring "helm local mark ring" :color red)
+  ("n" helm-global-mark-ring
+   "helm global mark ring" :color red)
+("o" org-mark-ring-goto
+   "org mark ring goto" :color red)
+  ;; ("," (push (point-marker) mark-ring) "Push location mark ring" :color red)
+ ("," org-mark-ring-push "Push to org and Emacs mark ring" :color red))
+ "Headlines"
+ (("j" helm-org-rifle "helm org rifle" :color red)
   ("h" ivy-org-jump-to-open-headline "ivy jump to org headline" :color red)
-  ("l" hydra/org-capture-last-stored "Last captured heading" :color red)
-  ("r" scimax-registers/body "scimax register hydra" :color red)
-  ("," (push (point-marker) mark-ring) "Push location mark ring" :color red))))
+  ("l" hydra-clock/org-capture-goto-last-stored "Last captured heading" :color red))
+ "Misc"
+ (("r" scimax-registers/body "scimax register hydra" :color blue)
+  ("dl" crux-duplicate-current-line-or-region "crux duplicate line/region" :color blue)
+  ("dc" crux-duplicate-and-comment-current-line-or-region "crux duplicate + comment line/region" :color blue))))
+
+;; note that there are several other jump and movement functions defined in scimax hydras. 
+(global-set-key (kbd "H-k") 'hydra-jumper/body)
 #+END_SRC
 
 ** TODO hydra-org-roam
@@ -6253,37 +6268,6 @@ a chunk.
 	("p" git-gutter:previous-hunk "previous hunk" :color red))))
 #+END_SRC
 
-* TODO org-id setup
-:PROPERTIES:
-:ID:       C88DA3CD-41CF-4B14-8B25-1E554CE49422
-:END:
-
-Using the org-id for reference to headings ensures that even if the
-heading changes, the links will still work.
-
-In addition, I would like an org id to be created every time the capture
-is used. This facilitates using packages like org-brain which rely
-extensively on org-id's.
-
-#+BEGIN_SRC emacs-lisp
-  (require 'org-id)
-  (setq org-id-link-to-org-use-id t)
-  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
-  ;; (org-link-set-parameters "nb" :store nil)
-  (org-link-set-parameters 'nil)
-  ;; (org-link-set-parameters "nb" :store nil)
-  ;; ;; Update ID file .org-id-locations on startup
-  ;; ;; This adds too much time to startup
-  ;; ;; (org-id-update-id-locations)
-
-  (setq org-id-method (quote uuidgen))
-  (setq org-id-track-globally t)
-  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
-  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
-#+end_src
-
-#+RESULTS:
-: ~/my_org/emacs_meta/.org-id-locations
 * COMMENT Elfeed :elfeed:
 - Note taken on [2019-09-25 Wed 14:09] \\
   Scimax's elfeed is enabled, along with elfeed-org and elfeeed-goodies
