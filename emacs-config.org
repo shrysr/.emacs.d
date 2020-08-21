@@ -2278,22 +2278,18 @@ Crux has a handle re-open and root function that will open a file as root if the
 #+RESULTS:
 : crux-open-with
 
-* Emacs information
-** which key
-:PROPERTIES:
-:ID:       5646C3F4-06BE-4754-8A7B-DED5EA8CD7B7
-:END:
+** transpose-frame
+
+Thanks to a tip from dale in #Emacs, I found the transpose-frame
+package. THis contains a bunch of nifty functions to quickly rotate and
+mirror frame configurations.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :defer 5
-    :diminish which-key-mode
-    :straight t
-    :config
-    (which-key-mode))
+(use-package transpose-frame
+  :straight (transpose-frame :host github :repo "emacsorphanage/transpose-frame")
+:config
+(require 'transpose-frame))
 #+END_SRC
-
-: t
 
 * Project management
 ** TODO org-projectile
