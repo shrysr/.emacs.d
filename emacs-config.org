@@ -8056,6 +8056,243 @@ url to quickly distinguish which post is being referred to. Even so, I
 would like to generate some properties and attributes based on the
 heading, tags and so on.
 
+* TODO org-id setup
+   :PROPERTIES:
+   :CUSTOM_ID: h:AE14D623-BB71-41D9-8AA4-5C7B21DCBD24
+   :ID:       19A7C4F6-EFB5-4B55-A4DF-3DEEE5A161C9
+   :END:
+   - Note taken on [2020-08-23 Sun 00:03] \\
+     Shuffling this here till I figure out a way to integrate org id and nb
+     links, as well as create custom ID's.
+ Reference: [[file:~/my_projects/protesilaos dotfiles/emacs/.emacs.d/emacs-init.org::#h:031f7dbf-19e4-4ddf-a3d3-f648261412f6][Consistent Org heading IDs (and anchor tags)]]
+
+ Using the org-id for reference to headings ensures that even if the
+ heading changes, the links will still work.
+
+ In addition, I would like an org id to be created every time the capture
+ is used. This facilitates using packages like org-brain which rely
+ extensively on org-id's.
+
+ - [ ] create custom id's if they do not exist. 
+
+ #+BEGIN_SRC emacs-lisp
+  (require 'org-id)
+  (setq org-id-link-to-org-use-id t)
+  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; (org-link-set-parameters 'nil)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; ;; Update ID file .org-id-locations on startup
+  ;; ;; This adds too much time to startup
+  ;; ;; (org-id-update-id-locations)
+
+  (setq org-id-method (quote uuidgen))
+  (setq org-id-track-globally t)
+  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+
+  ;; (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+  (setq org-id-link-to-org-use-id 't)
+
+  (defun contrib/org-get-id (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker
+POM. If POM is nil, refer to the entry at point. If the entry
+does not have an CUSTOM_ID, the function returns nil. However,
+when CREATE is non nil, create a CUSTOM_ID if none is present
+already. PREFIX will be passed through to `org-id-new'. In any
+case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (org-id-new (concat prefix "h")))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun contrib/org-id-headlines ()
+    "Add CUSTOM_ID properties to all headlines in the current
+file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda ()
+                       (contrib/org-get-id (point) 'create))))
+
+ #+end_src
+
+* Loading secret config
+:PROPERTIES:
+:ID:       F71603D8-BA36-4055-9417-FFED3ABF9E4B
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;; Loading secret config containing personal information
+(org-babel-load-file (sr/fun/emacs-dir "sr-secrets.org.gpg"))
+#+END_SRC
+
+#+RESULTS:
+: Loaded /Users/shrysr/.emacs.d/sr-secrets.org.el
+
+* TODO org-id setup
+   :PROPERTIES:
+   :CUSTOM_ID: h:AE14D623-BB71-41D9-8AA4-5C7B21DCBD24
+   :ID:       19A7C4F6-EFB5-4B55-A4DF-3DEEE5A161C9
+   :END:
+   - Note taken on [2020-08-23 Sun 00:03] \\
+     Shuffling this here till I figure out a way to integrate org id and nb
+     links, as well as create custom ID's.
+ Reference: [[file:~/my_projects/protesilaos dotfiles/emacs/.emacs.d/emacs-init.org::#h:031f7dbf-19e4-4ddf-a3d3-f648261412f6][Consistent Org heading IDs (and anchor tags)]]
+
+ Using the org-id for reference to headings ensures that even if the
+ heading changes, the links will still work.
+
+ In addition, I would like an org id to be created every time the capture
+ is used. This facilitates using packages like org-brain which rely
+ extensively on org-id's.
+
+ - [ ] create custom id's if they do not exist. 
+
+ #+BEGIN_SRC emacs-lisp
+  (require 'org-id)
+  (setq org-id-link-to-org-use-id t)
+  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; (org-link-set-parameters 'nil)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; ;; Update ID file .org-id-locations on startup
+  ;; ;; This adds too much time to startup
+  ;; ;; (org-id-update-id-locations)
+
+  (setq org-id-method (quote uuidgen))
+  (setq org-id-track-globally t)
+  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+
+  ;; (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+  (setq org-id-link-to-org-use-id 't)
+
+  (defun contrib/org-get-id (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker
+POM. If POM is nil, refer to the entry at point. If the entry
+does not have an CUSTOM_ID, the function returns nil. However,
+when CREATE is non nil, create a CUSTOM_ID if none is present
+already. PREFIX will be passed through to `org-id-new'. In any
+case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (org-id-new (concat prefix "h")))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun contrib/org-id-headlines ()
+    "Add CUSTOM_ID properties to all headlines in the current
+file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda ()
+                       (contrib/org-get-id (point) 'create))))
+
+ #+end_src
+
+* Loading secret config
+:PROPERTIES:
+:ID:       F71603D8-BA36-4055-9417-FFED3ABF9E4B
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;; Loading secret config containing personal information
+(org-babel-load-file (sr/fun/emacs-dir "sr-secrets.org.gpg"))
+#+END_SRC
+
+#+RESULTS:
+: Loaded /Users/shrysr/.emacs.d/sr-secrets.org.el
+
+* TODO org-id setup
+   :PROPERTIES:
+   :CUSTOM_ID: h:AE14D623-BB71-41D9-8AA4-5C7B21DCBD24
+   :ID:       19A7C4F6-EFB5-4B55-A4DF-3DEEE5A161C9
+   :END:
+   - Note taken on [2020-08-23 Sun 00:03] \\
+     Shuffling this here till I figure out a way to integrate org id and nb
+     links, as well as create custom ID's.
+ Reference: [[file:~/my_projects/protesilaos dotfiles/emacs/.emacs.d/emacs-init.org::#h:031f7dbf-19e4-4ddf-a3d3-f648261412f6][Consistent Org heading IDs (and anchor tags)]]
+
+ Using the org-id for reference to headings ensures that even if the
+ heading changes, the links will still work.
+
+ In addition, I would like an org id to be created every time the capture
+ is used. This facilitates using packages like org-brain which rely
+ extensively on org-id's.
+
+ - [ ] create custom id's if they do not exist. 
+
+ #+BEGIN_SRC emacs-lisp
+  (require 'org-id)
+  (setq org-id-link-to-org-use-id t)
+  ;; (org-link-set-parameters "id" :store #'org-id-store-link)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; (org-link-set-parameters 'nil)
+  ;; (org-link-set-parameters "nb" :store nil)
+  ;; ;; Update ID file .org-id-locations on startup
+  ;; ;; This adds too much time to startup
+  ;; ;; (org-id-update-id-locations)
+
+  (setq org-id-method (quote uuidgen))
+  (setq org-id-track-globally t)
+  (setq org-id-locations-file "~/my_org/emacs_meta/.org-id-locations")
+  ;; (add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+
+  ;; (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+  (setq org-id-link-to-org-use-id 't)
+
+  (defun contrib/org-get-id (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker
+POM. If POM is nil, refer to the entry at point. If the entry
+does not have an CUSTOM_ID, the function returns nil. However,
+when CREATE is non nil, create a CUSTOM_ID if none is present
+already. PREFIX will be passed through to `org-id-new'. In any
+case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (org-id-new (concat prefix "h")))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun contrib/org-id-headlines ()
+    "Add CUSTOM_ID properties to all headlines in the current
+file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda ()
+                       (contrib/org-get-id (point) 'create))))
+
+ #+end_src
+
+* Loading secret config
+:PROPERTIES:
+:ID:       F71603D8-BA36-4055-9417-FFED3ABF9E4B
+:END:
+
+#+BEGIN_SRC emacs-lisp
+;; Loading secret config containing personal information
+(org-babel-load-file (sr/fun/emacs-dir "sr-secrets.org.gpg"))
+#+END_SRC
+
+#+RESULTS:
+: Loaded /Users/shrysr/.emacs.d/sr-secrets.org.el
+
 * TODO COMMENT Bare minimum Emacs Config
 ** Option as Meta for Misuharu Emacs
 
