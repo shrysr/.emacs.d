@@ -53,4 +53,6 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(setq load-prefer-newer t)
+
 (load (sr/fun/emacs-dir "dotemacs.el"))
