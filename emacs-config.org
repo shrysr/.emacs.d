@@ -10,16 +10,20 @@
 #+hugo_menu: :menu "docs" :weight 2001 :parent "Emacs"
 #+hugo_custom_front_matter: :linktitle Dotemacs - Emacs config  :toc true
 #+hugo_draft: false
-#+TITLE: shrysr's Dotemacs
+#+TITLE: shrysr's Dotemacs.
 
-* Introduction
-:PROPERTIES:
-:header-args: :comments both :tangle ./README.org
-:ID:       80A31FA5-3101-4875-BE20-03A4F640E5B5
-:END:
+* Readme
+
+#+BEGIN_SRC org :tangle ./README.org
 
 
 #+BEGIN_SRC org
+This is my Emacs configuration. As with every Emacs configuration, it
+works very well for my needs, and there is always something to learn
+from each configuration. In general, I use Emacs for task management,
+coding, email, web browsing, blogging, as well as a journal system to
+say the least. Using and learning Emacs and Org mode has changed my
+life.
 I've been using my own configuration on top of the excellent
 [[https://github.com/jkitchin/scimax][Scimax starter-kit]] for the past
 many years. This is a reboot to reverse or study the bias, and create My
@@ -149,9 +153,6 @@ Emacs config that can be used for a rapid setup on a headless server.
 10. magit
 11. hydra (and other variants)
 12. straight.el
-
-#+END_SRC
-
 * Init setup
 :PROPERTIES:
 :header-args: :tangle ./init.el
