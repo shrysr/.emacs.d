@@ -6910,6 +6910,16 @@ This function tries to do what you mean:
 
 #+END_SRC
 
+*** TODO Keyboard shortcuts for org markup functions
+
+Lets try the usual Super keys for bold and italics since those are not
+bound to anything. 
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "s-b") 'org-bold-region-or-point)
+(global-set-key (kbd "s-i") 'org-italics-region-or-point)
+#+END_SRC
+
 *** Links and Jumping functions
 :PROPERTIES:
 :ID:       566F6D94-A39B-40D9-BD0A-321B56FC34B4
