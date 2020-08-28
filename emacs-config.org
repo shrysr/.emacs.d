@@ -3432,6 +3432,41 @@ This is a nifty little package that makes expansion of selection at point more c
 
 #+RESULTS:
 | lambda | (arg) | Try to expand text before point, using the following functions: |
+** Company mode
+:PROPERTIES:
+:ID:       908BD689-1C48-415E-AE28-749415C617E4
+:CUSTOM_ID: h:9EE5767D-1437-44B3-8607-4209EE02CC5B
+:END:
+
+- Note taken on [2020-08-27 Thu 21:36] \\
+  I face lag while typing and the cursor movement with company mode
+  enabled. Therefore the mode is not enabled globally and will be used
+  especially for org-roam documents. For the moment, it is better to use
+  org-roam with company mode only for org-roam documents rather than all
+  org documents. This has to be explored in more detail.
+- [[http://cachestocaches.com/2015/8/c-completion-emacs/][C/C++ Completion in Emacs]]
+- [[id:5D2C1E56-A80C-46F1-BC2C-397C4339BED7][Company and Autocomplete]] are my observations and notes on the topic of
+  using company mode and auto-complete. This setup is in it's initial
+  stages and may change. company-mode's homepage has references to other
+  similar discussions of interest. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :straight t
+  :init ;; (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  ;; (use-package company-irony :ensure t :defer t)
+  (setq company-idle-delay              3
+        company-minimum-prefix-length   2
+        company-show-numbers            t
+        company-tooltip-limit           20
+        company-dabbrev-downcase        nil
+        ;; company-backends                '((company-irony company-gtags))
+        )
+  :bind ("C-/" . company-complete-common))
+
+#+END_SRC
+
 ** Browse kill ring
 :PROPERTIES:
 :ID:       91183327-CDC5-482B-8A21-303467ED1AE3
