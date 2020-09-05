@@ -2065,6 +2065,24 @@ I have modified it to my own file names.
 #+RESULTS:
 : t
 
+* COMMENT which-key
+
+- Note taken on [2020-08-24 Mon 17:54] \\
+  With default settings, this introduces some lag while browsing the
+  buffer. There must be some setting to increase the delay before
+  activation or have a condition that it will not activate while
+  navigating with org-speed keys.
+
+- [ ] Find the setting to set the delay 
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :straight t
+  :config
+  (which-key-mode))
+#+END_SRC
+
 * git related
 ** TODO Git gutter
 :PROPERTIES:
