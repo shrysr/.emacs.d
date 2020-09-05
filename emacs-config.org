@@ -7616,6 +7616,18 @@ scimax-ipython upstream
 
 #+RESULTS:
 * Aesthetics
+:PROPERTIES:
+:CUSTOM_ID: h:E3856DC0-C71D-48D7-9D20-EB37E64CD645
+:END:
+- Note taken on [2020-08-25 Tue 21:19] \\
+  I would strongly recommend any Emacs user to try out modus-themes,
+  both of which have become my staple themes. You may be surprised that
+  a white based theme could be so aesthetically /right/. The awesome
+  maintainer, [[https://protesilaos.com][Protesilaos Stavrou]] is committed to creating a theme that
+  is very configurable and one that is rigorously and methodically
+  designed, and not to mention aesthetically very pleasing. I'm pleased
+  to note that I have made some /minor/ contributions to the development
+  efforts. It is mentioned in the package [[https://gitlab.com/protesilaos/modus-themes/-/blob/master/CHANGELOG.org][CHANGELOG.org]].
 - Note taken on [2020-04-24 Fri 20:06] \\
   I've tried quite a few themes over the years, and have even had phases
   where I was constantly changing themes. One caveat I've noticed is that
@@ -7631,8 +7643,7 @@ scimax-ipython upstream
      that the contrast was jarring and I would not use for long. However
      that has changed completely with colored headings and source code
      blocks along with a number of enhancements as discussed in the
-     readme and the gitlab issues of modus-themes. Heads-up, I got
-     mentioned in CHANGELOG [[https://gitlab.com/protesilaos/modus-themes/-/tags/0.11.0][0.11.0 · Tags]].
+     readme and the gitlab issues of modus-themes. 
   2. modus-operandi: well designed light theme that does not hurt my eyes
      and offers a good basic configuration. This theme appears to work
      well with terminal emacs as well. [2020-07-08 Wed] The theme now
@@ -7676,17 +7687,7 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
 :PROPERTIES:
 :ID:       1F5F41EC-6BDA-46BC-B1E6-DED28B899196
 :END:
-
-*** Modus themes package
-    :PROPERTIES:
-    :ID:       85401D4B-CF7B-4997-BCD1-AC273FE4518E
-    :END:
-
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-
-*** COMMENT modus operandi
+*** modus operandi
 :PROPERTIES:
 :ID:       4353F3D3-6528-49E2-B9A3-16F98A490FF1
 :END:
@@ -7700,25 +7701,29 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
 (use-package modus-operandi-theme
   :straight t
   :init
+  ;; NOTE: Everything is disabled by default.
   (setq modus-operandi-theme-slanted-constructs t
         modus-operandi-theme-bold-constructs t
-        modus-operandi-theme-visible-fringes t
+        modus-operandi-theme-fringes 'subtle ; {nil,'subtle,'intense}
         modus-operandi-theme-3d-modeline t
-        modus-operandi-theme-subtle-diffs t
-        modus-operandi-theme-intense-standard-completions t
-        ;; modus-operandi-theme-distinct-org-blocks nil
-        modus-operandi-theme-rainbow-org-src-blocks t
-        modus-operandi-theme-proportional-fonts t
+        modus-operandi-theme-faint-syntax nil
+        modus-operandi-theme-intense-hl-line t
+        modus-operandi-theme-intense-paren-match t
+        modus-operandi-theme-prompts 'intense ; {nil,'subtle,'intense}
+        modus-operandi-theme-completions 'opinionated ; {nil,'moderate,'opinionated}
+        modus-operandi-theme-diffs 'desaturated
+        modus-operandi-theme-org-blocks 'rainbow ; {nil,'greyscale,'rainbow}
+        modus-operandi-theme-variable-pitch-headings t
         modus-operandi-theme-rainbow-headings t
         modus-operandi-theme-section-headings nil
         modus-operandi-theme-scale-headings t
-	modus-operandi-theme-intense-standard-completions t
-        ;; modus-operandi-theme-scale-1 1.05
-        ;; modus-operandi-theme-scale-2 1.1
-        ;; modus-operandi-theme-scale-3 1.15
-        ;; modus-operandi-theme-scale-4 1.2
-        ;; modus-operandi-theme-scale-5 1.3
-	)
+        modus-operandi-theme-scale-1 1.05
+        modus-operandi-theme-scale-2 1.1
+        modus-operandi-theme-scale-3 1.15
+        modus-operandi-theme-scale-4 1.2
+        modus-operandi-theme-scale-5 1.3)
+
+
   :config
   (load-theme 'modus-operandi t))
 #+END_SRC
@@ -7726,7 +7731,12 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
 #+RESULTS:
 : t
 *** COMMENT modus vivendi
+:PROPERTIES:
+:ID:       65FD8B91-2305-447C-B78D-0B9D93804512
+:CUSTOM_ID: h:8FAADC0D-65A6-4CDC-B50A-D397E00AC694
+:END:
 
+#+name: modus-vivendi
 #+BEGIN_SRC emacs-lisp  
 
 (use-package modus-vivendi-theme
@@ -7734,51 +7744,46 @@ As noted in https://gitlab.com/protesilaos/modus-themes/-/issues/68
   :init
   (setq modus-vivendi-theme-slanted-constructs t
         modus-vivendi-theme-bold-constructs t
-        modus-vivendi-theme-visible-fringes t
+        modus-vivendi-theme-fringes 'intense
+        modus-vivendi-theme-intense-hl-line t
         modus-vivendi-theme-3d-modeline t
-        modus-vivendi-theme-subtle-diffs t
-        modus-vivendi-theme-intense-standard-completions t
-        ;; modus-vivendi-theme-distinct-org-blocks nil
-        modus-vivendi-theme-rainbow-org-src-blocks t
+        modus-vivendi-theme-diffs 'desaturated
+        modus-vivendi-theme-org-blocks 'rainbow
         modus-vivendi-theme-proportional-fonts t
         modus-vivendi-theme-rainbow-headings t
         modus-vivendi-theme-section-headings nil
         modus-vivendi-theme-scale-headings t
-	modus-vivendi-theme-intense-standard-completions t
-        ;; modus-vivendi-theme-scale-1 1.05
+	modus-vivendi-theme-faint-syntax t
+	modus-vivendi-theme-intense-paren-match t
+	modus-vivendi-theme-prompts 'subtle ; {nil,'subtle,'intense}
+	modus-vivendi-theme-completions 'opinionated
+
+	
+	;; modus-vivendi-theme-scale-1 1.05
         ;; modus-vivendi-theme-scale-2 1.1
         ;; modus-vivendi-theme-scale-3 1.15
         ;; modus-vivendi-theme-scale-4 1.2
         ;; modus-vivendi-theme-scale-5 1.3
-	)
+        )
   :config
-  (load-theme 'modus-vivendi t))
+  (load-theme 'modus-vivendi t)
+;; *("is the symbol powerline-reset bound to a function")
+  (fboundp 'powerline-reset))
+;; ALternatives
+;; This will attemp to load powerline, if it is available and not loaded.
+
+
+;; (require 'powerline nil t ) (if (featurep 'powerline) ...)
 #+END_SRC
+*** TODO Function to update and rebuild both modus theme packages 
+*** TODO COMMENT Test for switching themes
 
-
-
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'modus-vivendi-theme)
-
-(use-package modus-vivendi-theme
-:straight t
-:config
-(setq modus-vivendi-theme-scale-headings t)
-(setq modus-vivendi-theme-proportional-fonts t)
-(setq modus-vivendi-theme-slanted-constructs t)
-(setq modus-vivendi-theme-visible-fringes t)
-(setq modus-vivendi-theme-distinct-org-blocks t)
-(load-theme 'modus-vivendi t))
-
-;; These are placed here for ready reference
-;; (setq modus-vivendi-theme-scale-1 1.05)
-;; (setq modus-vivendi-theme-scale-2 1.1)
-;; (setq modus-vivendi-theme-scale-3 1.15)
-;; (setq modus-vivendi-theme-scale-4 1.2)
+This may be in-built into the theme
 
 #+END_SRC
 
 ** Font and other aesthetics
+
 *** COMMENT Old config
 #+BEGIN_SRC emacs-lisp
 ;; My customisations
