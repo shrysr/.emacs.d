@@ -362,6 +362,22 @@ var/
 .lsp-session*
 #+END_SRC
 
+* TODO [#A]  Separate Package installation
+
+Use-package is meant to configure packages and is not really meant to be
+used as an installer. However, since straight is set up, it should be
+possible to freeze packages and have them included as a subtree in the
+emacs configuration.
+
+- [ ] have a clear setup for package installation  and freezing of
+  packages.
+- [ ] straight will take care of package rebuilds across platforms, and
+  this has to happen only once, and can also be saved in a separate
+  branch.
+- [ ] A methodical manner of upgrading the packages used should be
+  done. This should include studying the commit messages atleast and the
+  diff of the code. 
+
 * Tangle Emacs config on save
 :PROPERTIES:
 :ID:       EE52585C-C1D6-4759-94AE-CCECA01E5D41
