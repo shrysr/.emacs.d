@@ -1,3 +1,5 @@
+\* shryr's Dotemacs
+
 This is my Emacs configuration. As with every Emacs configuration, it
 works very well for my needs, and there is always something to learn
 from each configuration. In general, I use Emacs for task management,
@@ -8,4 +10,6 @@ life.
 Package management via straight.el. I use an org-mode based literate
 configuration, and my configuration is fluid as you can see from the
 number of commits. I would recommend browsing through the configuration
-and picking up the snippets that interest you.
+and picking up the snippets that interest you. The file
+[[file:emacs-config.org][emacs-config.org]] is the source of truth from
+which every file is tangled.
